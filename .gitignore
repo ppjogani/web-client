@@ -12,5 +12,13 @@ build
 # misc
 .DS_Store
 .env
+.env.local
+.env.*.local
 npm-debug.log
 yarn-error.log
+
+# Branch-specific environment files (commit templates, ignore actual configs)
+# Keep .env.dev and .env.main templates in repo
+# Ignore any local overrides
+.env.dev.local
+.env.main.local
