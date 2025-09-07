@@ -105,8 +105,8 @@ REACT_APP_MAPBOX_ACCESS_TOKEN=your-mapbox-token
 # Will be updated for Render deployment URL
 REACT_APP_MARKETPLACE_ROOT_URL=http://localhost:3000
 
-# Optional - your marketplace name
-REACT_APP_MARKETPLACE_NAME=Mela
+# Mandatory - your marketplace name
+REACT_APP_MARKETPLACE_NAME=mela-marketplace
 
 # Required for full-stack deployment on Render
 SHARETRIBE_SDK_CLIENT_SECRET=your-actual-client-secret-here
@@ -172,6 +172,7 @@ In Render's service configuration:
 # Frontend variables (public)
 REACT_APP_SHARETRIBE_SDK_CLIENT_ID=your-actual-client-id-here
 REACT_APP_MARKETPLACE_ROOT_URL=https://your-service-name.onrender.com
+REACT_APP_MARKETPLACE_NAME=mela-marketplace
 REACT_APP_ENV=production
 
 # Backend variables (private - secure on Render)
@@ -188,7 +189,7 @@ REACT_APP_STRIPE_PUBLISHABLE_KEY=pk_live_your_stripe_key
 REACT_APP_MAPBOX_ACCESS_TOKEN=your-mapbox-token
 
 # Marketplace branding
-REACT_APP_MARKETPLACE_NAME=Mela
+REACT_APP_MARKETPLACE_NAME=mela-marketplace
 
 # Analytics
 REACT_APP_GOOGLE_ANALYTICS_ID=G-XXXXXXXXXX
@@ -418,6 +419,7 @@ All `REACT_APP_` variables become visible in:
      REACT_APP_SHARETRIBE_SDK_CLIENT_ID = your-client-id
      SHARETRIBE_SDK_CLIENT_SECRET = your-client-secret
      REACT_APP_MARKETPLACE_ROOT_URL = https://your-service.onrender.com
+     REACT_APP_MARKETPLACE_NAME = mela-marketplace
      REACT_APP_ENV = production
      NODE_ENV = production
      ```
