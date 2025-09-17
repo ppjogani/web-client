@@ -44,6 +44,19 @@
 - "[US City] Indian baby products store"
 - "Natural baby products from India"
 
+#### Technical SEO Foundation (Sharetribe Implementation)
+**Schema.org Structured Data**:
+- **Comprehensive Coverage**: JSON-LD implementation across all page types
+- **Rich Results Optimization**: Product, Organization, WebSite, and SearchResultsPage schemas
+- **Cultural Context Enhancement**: Custom schema properties highlighting Indian heritage and diaspora targeting
+- **Search Engine Visibility**: Structured data enables enhanced snippets, product carousels, and knowledge panels
+
+**Platform SEO Advantages**:
+- **Built-in Best Practices**: Sharetribe's SEO-optimized architecture reduces technical implementation time
+- **Mobile-First Indexing**: Responsive templates ensure consistent schema markup across devices
+- **Page Speed Optimization**: Framework supports fast-loading pages critical for SEO rankings
+- **Canonical URL Management**: Automatic handling of duplicate content issues
+
 #### Content Pillars
 1. **Brand Discovery**: "Best Indian Baby Brands You Need to Know"
 2. **Cultural Heritage**: "Traditional Indian Baby Care Practices for Modern Parents"
@@ -116,6 +129,26 @@ Laem.com
 - **Meta Descriptions**: Include brand, benefits, cultural relevance
 - **Schema Markup**: Product, Brand, Organization, Review schemas
 - **Internal Linking**: Link to related products, brand pages, categories
+
+#### Schema.org Implementation (Current Sharetribe Integration)
+**Comprehensive Structured Data Coverage**:
+- **JSON-LD Format**: Modern implementation using `application/ld+json` in page head
+- **Organization Schema**: Marketplace details, contact information, and branding
+- **WebSite Schema**: Site description and navigation structure
+- **Product Schema**: Complete product data including:
+  - Name, description, images, brand information
+  - Offers with pricing and availability status
+  - Seller organization details
+  - Target audience (Indian Diaspora Parents in USA)
+  - Cultural heritage properties for authentic Indian products
+- **SearchResultsPage Schema**: Structured listing results with ItemList ordering
+- **Rich Snippets Ready**: Optimized for Google's enhanced search results
+
+**Sharetribe Platform Benefits**:
+- Built-in schema.org compliance reduces development overhead
+- Automatic structured data generation for all product and category pages
+- SEO-optimized page templates with proper markup hierarchy
+- Mobile-responsive implementation ensuring consistent schema across devices
 
 #### Category Pages
 - **SEO-Rich Descriptions**: 300-500 words about category significance in Indian culture
