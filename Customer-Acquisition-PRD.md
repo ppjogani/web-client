@@ -183,20 +183,33 @@ Laem.com
 - **Expert Content**: Collaboration with pediatricians, traditional medicine experts
 - **Social Proof**: "Join 10,000+ Indian American parents who trust Laem"
 
+### 4.4 Cross-Selling Strategy
+- **"You May Also Like" Recommendations**: Increase session value and affiliate click-through rates
+- **Strategic Product Pairing**: Drive discovery of complementary Indian baby products
+- **Enhanced User Journey**: Keep users engaged longer, reducing bounce rates
+
 ---
 
 ## 5. Conversion Optimization (Affiliate Focus)
 
 ### 5.1 CTA Strategy
-- **Primary CTA**: "Shop at [Brand Name]" (clear affiliate link)
+- **Primary CTA**: "Shop from [Brand Name]" (clear affiliate link)
+- **Out-of-Stock CTA**: "View on [Brand Name]" (maintains engagement)
 - **Secondary CTA**: "Add to Wishlist", "Compare Products"
 - **Trust CTAs**: "Read Reviews", "Learn About Brand"
+- **Cross-Sell CTA**: "You May Also Like" recommendations
 
 ### 5.2 Affiliate Link Optimization
+- **Primary CTA Integration**: "Shop from [Brand Name]" buttons replace traditional cart functionality
+- **Dynamic Button Behavior**:
+  - In Stock: "Shop from [Brand]" → Opens brand's product page
+  - Out of Stock: "View on [Brand]" → Enables restock notifications and alternatives
+  - No Brand/URL: Falls back to traditional marketplace behavior
 - **Strategic Placement**: Within product descriptions, comparison tables, reviews
 - **Transparent Labeling**: Clear "Affiliate Link" disclaimers for trust
-- **Multiple Options**: "Buy on Amazon", "Shop Direct", "Compare Prices"
+- **Multiple Options**: Direct brand links, comparison features
 - **Tracking Parameters**: UTM codes for detailed analytics
+- **Cross-Selling Enhancement**: "You May Also Like" module drives additional affiliate traffic
 
 ### 5.3 Exit Intent & Retention
 - **Exit Intent Popups**: "Wait! Get 10% off your first purchase"

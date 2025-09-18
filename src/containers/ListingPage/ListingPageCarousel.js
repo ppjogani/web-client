@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
+import loadable from '@loadable/component';
 import classNames from 'classnames';
 
 // Contexts
@@ -85,6 +86,11 @@ import SectionAuthorMaybe from './SectionAuthorMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
 import SectionGallery from './SectionGallery';
 import CustomListingFields from './CustomListingFields';
+
+// Lazy-loaded components
+const RecommendedProducts = loadable(() =>
+  import(/* webpackChunkName: "RecommendedProducts" */ '../../components/RecommendedProducts/RecommendedProducts')
+);
 
 import css from './ListingPage.module.css';
 
@@ -498,6 +504,14 @@ export const ListingPageComponent = props => {
             />
           </div>
         </div>
+
+        {/* Recommended Products Section */}
+        {publicData.recommendedProducts && publicData.recommendedProducts.length > 0 && (
+          <RecommendedProducts
+            recommendedProductSKUs={publicData.recommendedProducts}
+            onManageDisableScrolling={onManageDisableScrolling}
+          />
+        )}
       </LayoutSingleColumn>
     </Page>
   );
