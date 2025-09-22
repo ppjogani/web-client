@@ -739,6 +739,7 @@
   "RecommendedProducts.loadError": "Unable to load recommended products",
   "RecommendedProducts.noProducts": "No recommended products available",
   "RecommendedProducts.noImage": "No image available",
+  "CategoryBreadcrumb.home": "Home",
   "ProductOrderForm.ctaButtonNoStock": "Out of stock",
   "ProductOrderForm.deliveryMethodLabel": "Delivery method",
   "ProductOrderForm.deliveryMethodRequired": "Delivery method is required.",

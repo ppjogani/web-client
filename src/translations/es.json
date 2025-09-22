@@ -736,6 +736,7 @@
   "RecommendedProducts.loadError": "No se pudieron cargar los productos recomendados",
   "RecommendedProducts.noProducts": "No hay productos recomendados disponibles",
   "RecommendedProducts.noImage": "No hay imagen disponible",
+  "CategoryBreadcrumb.home": "Inicio",
   "ProductOrderForm.ctaButtonNoStock": "Agotado",
   "ProductOrderForm.deliveryMethodLabel": "Método de entrega",
   "ProductOrderForm.deliveryMethodRequired": "Se requiere método de entrega.",

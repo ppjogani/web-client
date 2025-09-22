@@ -736,6 +736,7 @@
   "RecommendedProducts.loadError": "Empfohlene Produkte konnten nicht geladen werden",
   "RecommendedProducts.noProducts": "Keine empfohlenen Produkte verfügbar",
   "RecommendedProducts.noImage": "Kein Bild verfügbar",
+  "CategoryBreadcrumb.home": "Startseite",
   "ProductOrderForm.ctaButtonNoStock": "Ausverkauft",
   "ProductOrderForm.deliveryMethodLabel": "Versandmethode",
   "ProductOrderForm.deliveryMethodRequired": "Versandmethode ist erforderlich.",

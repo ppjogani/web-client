@@ -55,6 +55,7 @@ import {
   NamedRedirect,
   OrderPanel,
   LayoutSingleColumn,
+  CategoryBreadcrumb,
 } from '../../components';
 
 // Related components and modules
@@ -408,6 +409,15 @@ export const ListingPageComponent = props => {
                 </H3>
               )}
             </div>
+
+            {/* Category Breadcrumb Navigation */}
+            {publicData.category && (
+              <CategoryBreadcrumb
+                category={publicData.category}
+                className={css.categoryBreadcrumb}
+              />
+            )}
+
             <SectionTextMaybe text={description} showAsIngress />
 
             <CustomListingFields
