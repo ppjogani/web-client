@@ -1,4 +1,5 @@
 import React, { useEffect } from 'react';
+import { arrayOf, bool, func, string } from 'prop-types';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 import classNames from 'classnames';
@@ -129,13 +130,13 @@ RecommendedProductsComponent.defaultProps = {
 };
 
 RecommendedProductsComponent.propTypes = {
-  rootClassName: propTypes.string,
-  className: propTypes.string,
-  recommendedProductSKUs: propTypes.arrayOf(propTypes.string).isRequired,
-  recommendedProducts: propTypes.arrayOf(propTypes.listing),
-  fetchRecommendedProductsInProgress: propTypes.bool,
+  rootClassName: string,
+  className: string,
+  recommendedProductSKUs: arrayOf(string).isRequired,
+  recommendedProducts: arrayOf(propTypes.listing),
+  fetchRecommendedProductsInProgress: bool,
   fetchRecommendedProductsError: propTypes.error,
-  onFetchRecommendedProducts: propTypes.func.isRequired,
+  onFetchRecommendedProducts: func.isRequired,
 };
 
 const mapStateToProps = (state, ownProps) => {

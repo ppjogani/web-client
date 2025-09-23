@@ -1,9 +1,9 @@
 import React from 'react';
+import { array, bool, object, oneOfType, string } from 'prop-types';
 import classNames from 'classnames';
 
 import { FormattedMessage } from '../../util/reactIntl';
 import { createSlug } from '../../util/urlHelpers';
-import { propTypes } from '../../util/types';
 import { NamedLink } from '../../components';
 
 import css from './CategoryBreadcrumb.module.css';
@@ -37,10 +37,22 @@ const parseCategoryHierarchy = (category) => {
   // If it's an object with hierarchy properties
   if (typeof category === 'object') {
     const hierarchy = [];
+
+    // Support both legacy format (main, sub, specific, detailed) and level-based format
     if (category.main) hierarchy.push(category.main);
     if (category.sub) hierarchy.push(category.sub);
     if (category.specific) hierarchy.push(category.specific);
     if (category.detailed) hierarchy.push(category.detailed);
+
+    // Support level-based format (level1, level2, level3, etc.)
+    const levelKeys = Object.keys(category)
+      .filter(key => key.startsWith('level'))
+      .sort(); // Sort to ensure correct order (level1, level2, level3, etc.)
+
+    levelKeys.forEach(key => {
+      if (category[key]) hierarchy.push(category[key]);
+    });
+
     return hierarchy;
   }
 
@@ -155,15 +167,15 @@ CategoryBreadcrumb.defaultProps = {
 };
 
 CategoryBreadcrumb.propTypes = {
-  rootClassName: propTypes.string,
-  className: propTypes.string,
-  category: propTypes.oneOfType([
-    propTypes.string,
-    propTypes.array,
-    propTypes.object,
+  rootClassName: string,
+  className: string,
+  category: oneOfType([
+    string,
+    array,
+    object,
   ]).isRequired,
-  showHomeLink: propTypes.bool,
-  separator: propTypes.string,
+  showHomeLink: bool,
+  separator: string,
 };
 
 export default CategoryBreadcrumb;

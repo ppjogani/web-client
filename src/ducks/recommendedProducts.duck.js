@@ -1,5 +1,5 @@
-import { storableError } from '../../util/errors';
-import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
+import { storableError } from '../util/errors';
+import { addMarketplaceEntities } from './marketplaceData.duck';
 
 // ================ Action types ================ //
 
