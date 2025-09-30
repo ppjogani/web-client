@@ -147,6 +147,22 @@ export const ListingPageComponent = props => {
       ? ensureOwnListing(getOwnListing(listingId))
       : ensureListing(getListing(listingId));
 
+  // Helper function to recursively search through nested category structure
+  const findCategoryById = (categories, categoryId) => {
+    if (!categories || !Array.isArray(categories)) return null;
+
+    for (const category of categories) {
+      if (category.id === categoryId) {
+        return category;
+      }
+      if (category.subcategories && category.subcategories.length > 0) {
+        const found = findCategoryById(category.subcategories, categoryId);
+        if (found) return found;
+      }
+    }
+    return null;
+  };
+
   // Helper function to resolve category IDs to readable names
   const resolveCategoryNames = (categoryIds, categoryConfig) => {
     if (!categoryConfig || !categoryIds) return {};
@@ -154,10 +170,9 @@ export const ListingPageComponent = props => {
     const resolved = {};
     Object.keys(categoryIds).forEach(levelKey => {
       const categoryId = categoryIds[levelKey];
-      if (categoryId && categoryConfig[categoryId]) {
-        resolved[levelKey] = categoryConfig[categoryId].label || categoryId;
-      } else {
-        resolved[levelKey] = categoryId; // Fallback to ID if not found
+      if (categoryId) {
+        const categoryItem = findCategoryById(categoryConfig, categoryId);
+        resolved[levelKey] = categoryItem?.name || categoryId; // Use 'name' property
       }
     });
     return resolved;
@@ -497,7 +512,8 @@ export const ListingPageComponent = props => {
                     level2: publicData.categoryLevel2,
                     level3: publicData.categoryLevel3
                   };
-                  const categoryNames = resolveCategoryNames(categoryIds, config.categoryConfiguration);
+
+                  const categoryNames = resolveCategoryNames(categoryIds, config.categoryConfiguration?.categories);
                   return (
                     <CategoryBreadcrumb
                       category={categoryNames}

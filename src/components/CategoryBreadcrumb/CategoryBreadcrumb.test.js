@@ -288,5 +288,81 @@ describe('CategoryBreadcrumb', () => {
       // Should have 2 links total: just the 2 categories
       expect(links.length).toBe(2);
     });
+
+    it('handles category objects with resolved names from category configuration', () => {
+      const resolvedCategoryObject = {
+        level1: 'Baby Clothes & Accessories',
+        level2: 'Clothing',
+        level3: 'Tops & One-Pieces'
+      };
+      renderWithProviders(<CategoryBreadcrumb category={resolvedCategoryObject} />);
+
+      expect(screen.getByRole('list')).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Baby Clothes & Accessories' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Clothing' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Tops & One-Pieces' })).toBeInTheDocument();
+    });
+
+    it('handles sparse category objects with missing levels', () => {
+      const sparseCategoryObject = {
+        level1: 'Baby Clothes & Accessories',
+        level3: 'Tops & One-Pieces' // Missing level2
+      };
+      renderWithProviders(<CategoryBreadcrumb category={sparseCategoryObject} />);
+
+      expect(screen.getByRole('list')).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Baby Clothes & Accessories' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Tops & One-Pieces' })).toBeInTheDocument();
+      expect(screen.queryByText('level2')).not.toBeInTheDocument();
+    });
+
+    it('generates correct search URLs for resolved category names', () => {
+      const resolvedCategoryObject = {
+        level1: 'Baby Clothes & Accessories',
+        level2: 'Clothing'
+      };
+      renderWithProviders(<CategoryBreadcrumb category={resolvedCategoryObject} />);
+
+      const level1Link = screen.getByRole('link', { name: 'Baby Clothes & Accessories' });
+      const level2Link = screen.getByRole('link', { name: 'Clothing' });
+
+      expect(level1Link).toHaveAttribute('href', '/s?pub_category=Baby%20Clothes%20%26%20Accessories');
+      expect(level2Link).toHaveAttribute('href', '/s?pub_category=Baby%20Clothes%20%26%20Accessories%20%3E%20Clothing');
+    });
+
+    it('handles special characters in category names', () => {
+      const categoryWithSpecialChars = {
+        level1: 'Baby & Kids',
+        level2: 'Toys, Games & Books',
+        level3: 'Arts & Crafts'
+      };
+      renderWithProviders(<CategoryBreadcrumb category={categoryWithSpecialChars} />);
+
+      expect(screen.getByRole('link', { name: 'Baby & Kids' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Toys, Games & Books' })).toBeInTheDocument();
+      expect(screen.getByRole('link', { name: 'Arts & Crafts' })).toBeInTheDocument();
+
+      // Check URL encoding
+      const level1Link = screen.getByRole('link', { name: 'Baby & Kids' });
+      expect(level1Link).toHaveAttribute('href', '/s?pub_category=Baby%20%26%20Kids');
+    });
+
+    it('maintains accessibility with resolved category names', () => {
+      const resolvedCategoryObject = {
+        level1: 'Baby Clothes & Accessories',
+        level2: 'Clothing',
+        level3: 'Tops & One-Pieces'
+      };
+      renderWithProviders(<CategoryBreadcrumb category={resolvedCategoryObject} />);
+
+      const links = screen.getAllByRole('link');
+      links.forEach(link => {
+        expect(link).toHaveAttribute('title');
+        expect(link.getAttribute('title')).toContain('View all products in');
+      });
+
+      const lastLink = screen.getByRole('link', { name: 'Tops & One-Pieces' });
+      expect(lastLink).toHaveClass('currentCategory');
+    });
   });
 });
