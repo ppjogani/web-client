@@ -513,7 +513,12 @@ const OrderPanel = props => {
             {...sharedProps}
           />
         ) : showInquiryForm ? (
-          <InquiryWithoutPaymentForm formId="OrderPanelInquiryForm" onSubmit={onSubmit} />
+          <InquiryWithoutPaymentForm
+            formId="OrderPanelInquiryForm"
+            onSubmit={onSubmit}
+            brand={brand}
+            productUrl={productUrl}
+          />
         ) : !isKnownProcess ? (
           <p className={css.errorSidebar}>
             <FormattedMessage id="OrderPanel.unknownTransactionProcess" />

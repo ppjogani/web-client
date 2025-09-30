@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -56,6 +56,7 @@ import {
   OrderPanel,
   LayoutSingleColumn,
   CategoryBreadcrumb,
+  ItemSpecifics,
 } from '../../components';
 
 // Related components and modules
@@ -146,6 +147,22 @@ export const ListingPageComponent = props => {
       ? ensureOwnListing(getOwnListing(listingId))
       : ensureListing(getListing(listingId));
 
+  // Helper function to resolve category IDs to readable names
+  const resolveCategoryNames = (categoryIds, categoryConfig) => {
+    if (!categoryConfig || !categoryIds) return {};
+
+    const resolved = {};
+    Object.keys(categoryIds).forEach(levelKey => {
+      const categoryId = categoryIds[levelKey];
+      if (categoryId && categoryConfig[categoryId]) {
+        resolved[levelKey] = categoryConfig[categoryId].label || categoryId;
+      } else {
+        resolved[levelKey] = categoryId; // Fallback to ID if not found
+      }
+    });
+    return resolved;
+  };
+
   const listingSlug = rawParams.slug || createSlug(currentListing.attributes.title || '');
   const params = { slug: listingSlug, ...rawParams };
 
@@ -209,6 +226,18 @@ export const ListingPageComponent = props => {
   const userAndListingAuthorAvailable = !!(currentUser && authorAvailable);
   const isOwnListing =
     userAndListingAuthorAvailable && currentListing.author.id.uuid === currentUser.id.uuid;
+
+  // Memoize the recommended products SKUs to prevent infinite re-renders
+  // IMPORTANT: This must be called before any conditional returns to follow Rules of Hooks
+  const recommendedProductSKUs = useMemo(() => {
+    if (!publicData.recommendedProducts) return null;
+
+    return typeof publicData.recommendedProducts === 'string'
+      ? publicData.recommendedProducts.split(',').map(sku => sku.trim()).filter(Boolean)
+      : Array.isArray(publicData.recommendedProducts)
+      ? publicData.recommendedProducts
+      : null;
+  }, [publicData.recommendedProducts]);
 
   const { listingType, transactionProcessAlias, unitType } = publicData;
   if (!(listingType && transactionProcessAlias && unitType)) {
@@ -380,7 +409,7 @@ export const ListingPageComponent = props => {
           '@type': 'Brand',
           name: brandName // Helps Google show brand in search results
         } : undefined,
-        category: publicData.category, // Product category for search engines
+        category: publicData.categoryLevel1 || publicData.categoryLevel2 || publicData.categoryLevel3, // Product category for search engines
         offers: {
           '@type': 'Offer',
           url: productURL,
@@ -447,13 +476,37 @@ export const ListingPageComponent = props => {
               )}
             </div>
 
-            {/* Category Breadcrumb Navigation */}
-            {publicData.category && (
-              <CategoryBreadcrumb
-                category={publicData.category}
-                className={css.categoryBreadcrumb}
-              />
-            )}
+            {/* Item Specifics Section */}
+            <ItemSpecifics
+              attributes={[
+                ...(publicData.brand ? [{ key: 'Brand', value: publicData.brand }] : []),
+                ...(publicData.sku ? [{ key: 'SKU', value: publicData.sku }] : []),
+                ...(publicData.material ? [{ key: 'Material', value: publicData.material }] : []),
+                ...(publicData.ageRange ? [{ key: 'Age Range', value: publicData.ageRange }] : []),
+                ...(publicData.color ? [{ key: 'Color', value: publicData.color }] : []),
+                ...(publicData.size ? [{ key: 'Size', value: publicData.size }] : []),
+                ...(publicData.weight ? [{ key: 'Weight', value: publicData.weight }] : []),
+                ...(publicData.dimensions ? [{ key: 'Dimensions', value: publicData.dimensions }] : []),
+                ...(publicData.origin ? [{ key: 'Origin', value: publicData.origin }] : []),
+                ...(publicData.certifications ? [{ key: 'Certifications', value: publicData.certifications }] : []),
+              ]}
+              categoryBreadcrumb={
+                (publicData.categoryLevel1 || publicData.categoryLevel2 || publicData.categoryLevel3) && (() => {
+                  const categoryIds = {
+                    level1: publicData.categoryLevel1,
+                    level2: publicData.categoryLevel2,
+                    level3: publicData.categoryLevel3
+                  };
+                  const categoryNames = resolveCategoryNames(categoryIds, config.categoryConfiguration);
+                  return (
+                    <CategoryBreadcrumb
+                      category={categoryNames}
+                      className={css.categoryBreadcrumbInline}
+                    />
+                  );
+                })()
+              }
+            />
 
             <SectionTextMaybe text={description} showAsIngress />
 
@@ -473,25 +526,31 @@ export const ListingPageComponent = props => {
                 <div className={css.brandLink}>
                   {/* Shows: "Explore more [Brand Name]" as clickable link */}
                   <FormattedMessage id="ListingPage.exploreBrand" />
-                  <NamedLink 
-                    name="BrandPage" 
-                    params={{ brandSlug: brandName.toLowerCase().replace(/\s+/g, '-') }}
+                  <NamedLink
+                    name="BrandPage"
+                    params={{ brandSlug: brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') }}
                     className={css.internalLink}
                   >
                     {brandName}
                   </NamedLink>
                 </div>
               )}
-              {publicData.category && (
+              {(publicData.categoryLevel1 || publicData.categoryLevel2 || publicData.categoryLevel3) && (
                 <div className={css.categoryLink}>
                   {/* Shows: "Shop more in [Category Name]" as clickable link */}
                   <FormattedMessage id="ListingPage.exploreCategory" />
-                  <NamedLink 
-                    name="CategoryPage" 
-                    params={{ categorySlug: publicData.category.toLowerCase().replace(/\s+/g, '-') }}
+                  <NamedLink
+                    name="SearchPage"
+                    to={{
+                      search: [
+                        publicData.categoryLevel1 && `pub_categoryLevel1=${encodeURIComponent(publicData.categoryLevel1)}`,
+                        publicData.categoryLevel2 && `pub_categoryLevel2=${encodeURIComponent(publicData.categoryLevel2)}`,
+                        publicData.categoryLevel3 && `pub_categoryLevel3=${encodeURIComponent(publicData.categoryLevel3)}`
+                      ].filter(Boolean).join('&').replace(/^/, '?')
+                    }}
                     className={css.internalLink}
                   >
-                    {publicData.category}
+                    {publicData.categoryLevel3 || publicData.categoryLevel2 || publicData.categoryLevel1}
                   </NamedLink>
                 </div>
               )}
@@ -555,9 +614,9 @@ export const ListingPageComponent = props => {
         </div>
 
         {/* Recommended Products Section */}
-        {publicData.recommendedProducts && publicData.recommendedProducts.length > 0 && (
+        {recommendedProductSKUs && recommendedProductSKUs.length > 0 && (
           <RecommendedProducts
-            recommendedProductSKUs={publicData.recommendedProducts}
+            recommendedProductSKUs={recommendedProductSKUs}
             onManageDisableScrolling={onManageDisableScrolling}
           />
         )}

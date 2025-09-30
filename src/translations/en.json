@@ -1200,5 +1200,10 @@
   "UserDisplayName.deleted": "Deleted user",
   "UserNav.accountSettings": "Account settings",
   "UserNav.profileSettings": "Profile settings",
-  "UserNav.yourListings": "Your listings"
+  "UserNav.yourListings": "Your listings",
+  "ItemSpecifics.title": "Item Specifics",
+  "ItemSpecifics.category": "Category",
+  "ItemSpecifics.showMore": "Show {count} more",
+  "ItemSpecifics.modalTitle": "All Item Specifics",
+  "CategoryBreadcrumb.home": "Home"
 }
