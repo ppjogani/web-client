@@ -498,6 +498,7 @@
   "ListingImageGallery.imageAltText": "listing photo {index}/{count}",
   "ListingImageGallery.imageThumbnailAltText": "listing photo thumbnail {index}/{count}",
   "ListingImageGallery.viewImagesButton": "View large photos ({count})",
+  "ListingImageGallery.dotIndicatorLabel": "Go to image {index} of {total}",
   "ListingPage.aboutProviderTitle": "About the listing author",
   "ListingPage.addPayoutDetails": "Add payout details",
   "ListingPage.addPayoutDetailsMessage": "Please add your payout details to start accepting orders.",
