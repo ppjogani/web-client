@@ -579,6 +579,14 @@ export const ListingPageComponent = props => {
               mapsConfig={config.maps}
             />
             <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+            {/* Recommended Products Section */}
+            {recommendedProductSKUs && recommendedProductSKUs.length > 0 && (
+              <RecommendedProducts
+                recommendedProductSKUs={recommendedProductSKUs}
+                brandName={brandName}
+                onManageDisableScrolling={onManageDisableScrolling}
+              />
+            )}
             <SectionAuthorMaybe
               title={title}
               listing={currentListing}
@@ -629,13 +637,6 @@ export const ListingPageComponent = props => {
           </div>
         </div>
 
-        {/* Recommended Products Section */}
-        {recommendedProductSKUs && recommendedProductSKUs.length > 0 && (
-          <RecommendedProducts
-            recommendedProductSKUs={recommendedProductSKUs}
-            onManageDisableScrolling={onManageDisableScrolling}
-          />
-        )}
       </LayoutSingleColumn>
     </Page>
   );

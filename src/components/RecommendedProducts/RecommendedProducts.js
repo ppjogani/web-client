@@ -67,6 +67,7 @@ const RecommendedProductsComponent = ({
   fetchRecommendedProductsInProgress = false,
   fetchRecommendedProductsError = null,
   onFetchRecommendedProducts,
+  brandName = null,
 }) => {
 
   const intl = useIntl();
@@ -101,7 +102,11 @@ const RecommendedProductsComponent = ({
   return (
     <div className={classes}>
       <H3 as="h2" className={css.title}>
-        <FormattedMessage id="RecommendedProducts.title" />
+        {brandName ? (
+          <FormattedMessage id="RecommendedProducts.titleWithBrand" values={{ brandName }} />
+        ) : (
+          <FormattedMessage id="RecommendedProducts.title" />
+        )}
       </H3>
 
       {hasError ? (
@@ -140,6 +145,7 @@ RecommendedProductsComponent.propTypes = {
   fetchRecommendedProductsInProgress: bool,
   fetchRecommendedProductsError: propTypes.error,
   onFetchRecommendedProducts: func.isRequired,
+  brandName: string,
 };
 
 const mapStateToProps = (state, ownProps) => {
