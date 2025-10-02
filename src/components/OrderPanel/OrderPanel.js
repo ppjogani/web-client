@@ -261,7 +261,7 @@ const hasValidPriceVariants = priceVariants => {
  *
  * @returns {JSX.Element} Component that displays the order panel with appropriate form
  */
-const OrderPanel = props => {
+const OrderPanel = React.forwardRef((props, ref) => {
   const [mounted, setMounted] = useState(false);
   const intl = useIntl();
   const location = useLocation();
@@ -412,7 +412,7 @@ const OrderPanel = props => {
   const titleClasses = classNames(titleClassName || css.orderTitle);
 
   return (
-    <div className={classes}>
+    <div ref={ref} className={classes}>
       <ModalInMobile
         containerClassName={css.modalContainer}
         id="OrderFormInModal"
@@ -581,6 +581,8 @@ const OrderPanel = props => {
       </div>
     </div>
   );
-};
+});
+
+OrderPanel.displayName = 'OrderPanel';
 
 export default OrderPanel;

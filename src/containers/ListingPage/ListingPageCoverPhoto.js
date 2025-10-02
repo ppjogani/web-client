@@ -1,9 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useHistory, useLocation } from 'react-router-dom';
 import loadable from '@loadable/component';
 import classNames from 'classnames';
+import { useDesktopLayoutManager } from './layoutUtils';
 
 // Contexts
 import { useConfiguration } from '../../context/configurationContext';
@@ -93,6 +94,9 @@ import ActionBarMaybe from './ActionBarMaybe';
 const RecommendedProducts = loadable(() =>
   import(/* webpackChunkName: "RecommendedProducts" */ '../../components/RecommendedProducts/RecommendedProducts')
 );
+const CategoryProducts = loadable(() =>
+  import(/* webpackChunkName: "CategoryProducts" */ '../../components/CategoryProducts/CategoryProducts')
+);
 
 import css from './ListingPage.module.css';
 
@@ -108,9 +112,20 @@ export const ListingPageComponent = props => {
 
   const [mounted, setMounted] = useState(false);
 
+  // Desktop-only layout management (mobile-safe)
+  const { registerOrderPanel, registerContentSection, layoutManager } = useDesktopLayoutManager();
+  const orderPanelRef = useRef(null);
+
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Register OrderPanel for desktop layout detection (mobile-safe)
+  useEffect(() => {
+    if (orderPanelRef.current) {
+      registerOrderPanel(orderPanelRef.current);
+    }
+  }, [registerOrderPanel]);
 
   const {
     isAuthenticated,
@@ -538,19 +553,6 @@ export const ListingPageComponent = props => {
             {/* This DOES appear on the visible product page as clickable links */}
             {/* Benefits: SEO link juice + user discovery of related products */}
             <div className={css.seoLinksContainer}>
-              {brandName && (
-                <div className={css.brandLink}>
-                  {/* Shows: "Explore more [Brand Name]" as clickable link */}
-                  <FormattedMessage id="ListingPage.exploreBrand" />
-                  <NamedLink
-                    name="BrandPage"
-                    params={{ brandSlug: brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') }}
-                    className={css.internalLink}
-                  >
-                    {brandName}
-                  </NamedLink>
-                </div>
-              )}
               {(publicData.categoryLevel1 || publicData.categoryLevel2 || publicData.categoryLevel3) && (
                 <div className={css.categoryLink}>
                   {/* Shows: "Shop more in [Category Name]" as clickable link */}
@@ -603,6 +605,7 @@ export const ListingPageComponent = props => {
           </div>
           <div className={css.orderColumnForHeroLayout}>
             <OrderPanel
+              ref={orderPanelRef}
               className={css.orderPanel}
               listing={currentListing}
               isOwnListing={isOwnListing}
@@ -636,6 +639,32 @@ export const ListingPageComponent = props => {
             />
           </div>
         </div>
+
+        {/* Category Products Sections - Outside main column for full width */}
+        {publicData.categoryLevel3 && (
+          <CategoryProducts
+            categoryLevel="categoryLevel3"
+            categoryName={publicData.categoryLevel3}
+            layoutManager={layoutManager}
+            useFullWidth={true}
+          />
+        )}
+        {publicData.categoryLevel2 && publicData.categoryLevel2 !== publicData.categoryLevel3 && (
+          <CategoryProducts
+            categoryLevel="categoryLevel2"
+            categoryName={publicData.categoryLevel2}
+            layoutManager={layoutManager}
+            useFullWidth={true}
+          />
+        )}
+        {publicData.categoryLevel1 && publicData.categoryLevel1 !== publicData.categoryLevel2 && publicData.categoryLevel1 !== publicData.categoryLevel3 && (
+          <CategoryProducts
+            categoryLevel="categoryLevel1"
+            categoryName={publicData.categoryLevel1}
+            layoutManager={layoutManager}
+            useFullWidth={true}
+          />
+        )}
 
       </LayoutSingleColumn>
     </Page>

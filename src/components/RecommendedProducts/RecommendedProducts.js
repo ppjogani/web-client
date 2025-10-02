@@ -118,15 +118,28 @@ const RecommendedProductsComponent = ({
           <FormattedMessage id="RecommendedProducts.loading" />
         </div>
       ) : hasProducts ? (
-        <div className={css.productsGrid}>
-          {recommendedProducts.map(product => (
-            <RecommendedProductCard
-              key={product.id.uuid}
-              product={product}
-              intl={intl}
-            />
-          ))}
-        </div>
+        <>
+          <div className={css.productsGrid}>
+            {recommendedProducts.map(product => (
+              <RecommendedProductCard
+                key={product.id.uuid}
+                product={product}
+                intl={intl}
+              />
+            ))}
+          </div>
+          {brandName && (
+            <div className={css.viewMoreContainer}>
+              <NamedLink
+                name="BrandPage"
+                params={{ brandSlug: brandName.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '') }}
+                className={css.viewMoreLink}
+              >
+                <FormattedMessage id="RecommendedProducts.viewMoreFromBrand" values={{ brandName }} />
+              </NamedLink>
+            </div>
+          )}
+        </>
       ) : (
         <div className={css.noProducts}>
           <FormattedMessage id="RecommendedProducts.noProducts" />

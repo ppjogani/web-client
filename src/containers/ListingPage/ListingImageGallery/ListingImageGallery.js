@@ -72,12 +72,16 @@ const ListingImageGallery = props => {
   // Check if we're on mobile (viewport width < 768px)
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768);
+      if (typeof window !== 'undefined') {
+        setIsMobile(window.innerWidth < 768);
+      }
     };
 
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    return () => window.removeEventListener('resize', checkMobile);
+    if (typeof window !== 'undefined') {
+      window.addEventListener('resize', checkMobile);
+      return () => window.removeEventListener('resize', checkMobile);
+    }
   }, []);
   const { rootClassName, className, images, imageVariants, thumbnailVariants } = props;
   const thumbVariants = thumbnailVariants || imageVariants;

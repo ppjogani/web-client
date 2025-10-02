@@ -1,0 +1,1492 @@
+
+MELA BRAND PARTNER LANDING PAGE PRD (v2.0)
+═══════════════════════════════════════════════════════════════
+
+EXECUTIVE SUMMARY
+─────────────────
+
+Product: Brand Partner Landing Page for Mela Marketplace
+Purpose: Invite Indian baby clothing & accessories brands to co-build an export marketplace as equal partners
+Target Audience: 
+  • Primary: Established Indian D2C baby clothing & accessories brands
+  • Secondary: Other product category brands with export appetite and proven import demand
+Primary Goal: Generate qualified brand partnership inquiries and onboard 10+ baby clothing brands in first 3 months
+Partnership Philosophy: Building together as equals - Mela provides the platform and US market access, brands provide authentic products and expertise
+
+Success Metrics:
+  • Landing page conversion rate (form submissions)
+  • Quality of brand inquiries (alignment with baby clothing/accessories focus)
+  • Time from inquiry to partnership activation
+
+═══════════════════════════════════════════════════════════════
+
+1. STRATEGIC CONTEXT
+────────────────────
+
+BRAND VALUE PROPOSITION
+Mela offers Indian baby clothing & accessories brands:
+  • Equal Partnership: Build the US export marketplace together - we succeed when you succeed
+  • Proven Market Need: Starting with validated demand for baby clothing/accessories in US diaspora
+  • Category-Focused Launch: Deep expertise in baby fashion rather than scattered marketplace
+  • Zero Platform Fees: Performance-based model means brands pay only commission on completed sales
+  • Brand Storytelling (Coming Soon): Dedicated brand pages showcasing heritage and craftsmanship
+  • Collaborative Growth: Your insights shape how we market to diaspora families
+  • Marketing Amplification: SEO-driven content marketing featuring partner brands
+
+PARTNERSHIP PHILOSOPHY
+
+Building Together as Equals:
+Mela is not a traditional marketplace where brands are just vendors. We're building an export platform together:
+  • Your Expertise + Our Platform: You know your products and Indian market; we know US diaspora and digital marketing
+  • Shared Decision-Making: Partner input on category expansion, marketing strategies, and platform features
+  • Transparent Communication: Regular updates, open feedback loops, collaborative problem-solving
+  • Mutual Investment: We invest in marketing and technology; you invest in quality products and customer service
+  • Aligned Incentives: Performance-based model means we only earn when you earn
+  • Long-Term Vision: Building sustainable export channels, not quick transactions
+
+TARGET BRAND PROFILE
+
+Primary Target: Baby Clothing & Accessories Brands
+
+Ideal Partner Characteristics:
+  • Product Focus: 
+    - Baby clothing (0-24 months): bodysuits, rompers, ethnic wear, sleepwear
+    - Toddler clothing (2-5 years): everyday wear, festive outfits, traditional attire
+    - Accessories: bibs, caps, mittens, booties, swaddles, blankets, toys, cloth diapers
+  
+  • Business Maturity: 
+    - Established D2C presence (existing website/e-commerce)
+    - 2+ years in operation preferred
+    - Proven product-market fit in India
+    - Strong social media presence
+  
+  • Brand Values:
+    - Quality-focused with attention to fabric and comfort
+    - Cultural authenticity (traditional Indian designs, festivals, heritage)
+    - Safe materials (GOTS certified, organic cotton, baby-safe dyes)
+    - Strong brand story and founder narrative
+    - Eager to learn and grow in US market
+
+Examples of Target Brands:
+  • Masilo (organic baby clothing)
+  • Nino Bambino (premium baby wear)
+  • The Little Tailor (traditional ethnic wear)
+  • Pluchi Baby (premium children's products)
+  • Crane Baby (contemporary baby essentials)
+  • Dulaar.co (modern Indian baby wear)
+  • Curious Cub (playful children's clothing)
+  • A Toddler Thing (toddler fashion)
+  • Aplito Baby (organic baby products)
+  • Mokobara (travel and lifestyle products for kids)
+
+Secondary Target: Expansion Categories (Future Pipeline)
+
+Criteria for Secondary Brands:
+  • Export Appetite: Already shipping internationally or ready to start
+  • Import Demand Signals: High search volume from diaspora, requests in community forums, cultural significance
+  • Categories with Proven Interest: Baby care, traditional toys and books, feeding accessories, nursery decor
+
+Waitlist Approach: Accept applications from non-clothing brands for future category expansion
+
+═══════════════════════════════════════════════════════════════
+
+2. LANDING PAGE STRUCTURE
+──────────────────────────
+
+/partners/brands/
+├── Hero Section (Baby Clothing Focus)
+├── Building Together - Partnership Philosophy
+├── Why Start with Baby Clothing
+├── Opportunity Overview
+├── Why Partner with Mela
+├── How It Works
+├── Success Stories (Placeholder - To Be Populated)
+├── Brand Requirements (Clothing-Specific)
+├── Partnership Benefits (Detailed)
+├── Future Categories (Expansion Vision)
+├── Call to Action
+└── Application Form (Priority + Waitlist Options)
+
+[Separate document: FAQs and detailed supporting content]
+
+HERO SECTION
+────────────
+
+Headline: "Bring Your Indian Baby Clothing Brand to Millions of US Families"
+
+Subheadline: "Join Mela - Build the US export marketplace together as equal partners. Zero listing fees, pure performance-based partnership."
+
+Primary CTA: "Sign Up to Export Baby Clothing"
+Secondary CTA: "Join Waitlist (Other Categories)"
+
+Key Stats Display:
+  • "Millions of Diaspora Families in USA"
+  • "Starting with Baby Clothing"
+  • "Zero Platform Listing Fees"
+  • "Building Together as Partners"
+
+Category Badge: 
+  🎯 NOW ACCEPTING:
+  Baby Clothing & Accessories (0-5 years)
+
+BUILDING TOGETHER - PARTNERSHIP PHILOSOPHY SECTION
+───────────────────────────────────────────────────
+
+Headline: "We're Not Just a Marketplace. We're Your Export Partners."
+
+Two-Column Comparison:
+
+Traditional Marketplace vs. Mela Partnership Model
+  • Brands are vendors → Brands are equal partners
+  • Platform dictates terms → We build strategy together
+  • One-size-fits-all → Collaborative, customized approach
+  • Brands compete on price → Brands showcase unique value
+  • Transactional relationship → Long-term partnership
+  • Platform success ≠ Brand success → Aligned incentives - we win when you win
+
+Partnership Promise:
+  🤝 OUR COMMITMENT TO YOU:
+  ✓ Your voice shapes platform decisions
+  ✓ Transparent communication and data
+  ✓ We invest in your success (marketing)
+  ✓ Performance-based - no fees unless you make sales
+  ✓ Regular partner meetings and feedback
+  ✓ Long-term growth, not quick profits
+
+WHY START WITH BABY CLOTHING
+─────────────────────────────
+
+Headline: "Why Baby Clothing? Because We're Proving the Market Together, One Category at a Time."
+
+Three Pillars:
+
+1. Proven Demand
+  • Highest search volume: "Indian baby clothes USA"
+  • Strong emotional connection to cultural heritage
+  • Parents want authentic traditional outfits for festivals
+  • Low friction: lightweight, easy international shipping
+  • Visual appeal drives social sharing
+
+2. Clear Value Proposition
+  • Unique designs not available in US retail
+  • Quality fabrics and safe materials stand out
+  • Festival/occasion wear creates urgency
+  • Price point suitable for online purchase
+  • Easy to showcase through photography
+
+3. Strategic Partnership
+  • Focused category = deeper expertise together
+  • Better SEO targeting and content quality
+  • Strong brand partnerships vs. scattered inventory
+  • Prove model before expanding categories
+  • Build community around specific need
+  • Learn together what works in US market
+
+OPPORTUNITY OVERVIEW
+────────────────────
+
+Headline: "The US Indian Baby Clothing Market Opportunity"
+
+The Market Reality:
+  • 4.5M Indian Americans seeking cultural connection
+  • $126K median household income (high purchasing power)
+  • 200K+ Indian babies born in US annually
+  • Zero specialty retailers for authentic Indian baby clothing
+  • Parents willing to pay premium for quality + culture
+
+Your Current Challenges:
+  • ₹2,000-5,000 international shipping kills margins
+  • No awareness in US market despite quality products
+  • Amazon/Etsy commoditizes your brand story
+  • Individual marketing to US costly and inefficient
+  • Complex US market entry (payments, logistics, trust)
+
+The Mela Partnership Solution:
+  • We drive qualified traffic to your existing website
+  • Category-focused SEO (not competing with millions of products)
+  • Curated positioning: premium, not price war
+  • You handle fulfillment using current systems
+  • Pay only commission on completed sales (rates to be determined)
+  • We learn and grow together in US market
+
+WHY PARTNER WITH MELA
+─────────────────────
+
+Headline: "Built With Indian Clothing Brands, Designed for Diaspora Parents"
+
+Six Key Benefits:
+
+1. Zero Risk, Performance-Based
+  • No listing fees or monthly costs
+  • Pay only commission on completed sales (rates TBD)
+  • Keep your existing pricing and margins
+  • Cancel anytime, no long-term contracts
+  • No inventory requirements from you
+
+2. Category-Focused Brand Storytelling (Coming Soon)
+  • Dedicated brand pages in development
+  • Professional lookbook-style product showcase
+  • Blog features highlighting your design story
+  • Fabric sourcing, artisan partnerships, cultural inspiration
+  • Festival campaign integration
+  • Partner input on content strategy
+
+3. Clothing-Specific SEO Strategy
+  • Ranking for "Indian baby clothes USA", "ethnic baby wear"
+  • Festival searches: "Diwali outfit for baby"
+  • Brand name keywords
+  • Category-focused (not competing with millions of products)
+  • Monthly organic traffic growth target: 25%+
+
+4. Curated, Premium Positioning
+  • Quality partnerships over quantity
+  • No competition with mass-market or unbranded sellers
+  • Target: affluent parents prioritizing quality
+  • Premium positioning alongside other respected brands
+  • Your brand personality shines
+
+5. Collaborative Marketing (In Development)
+  • We're building marketing strategy with partner input
+  • Instagram-first visual storytelling planned
+  • Pinterest boards for outfit inspiration
+  • Email lookbooks to engaged subscribers
+  • Festival campaign partnerships
+  • Guidance on selling to US diaspora audience
+
+6. Simple Integration
+  • Just provide product photos and descriptions
+  • No complex size/inventory APIs required
+  • We create affiliate links to your product pages
+  • Track performance through simple dashboard
+  • Monthly reports: clicks, conversions, bestsellers
+
+Founding Partner Benefits:
+  • Voice in platform development decisions
+  • Early access to new features
+  • Priority marketing support
+  • Partner advisory board participation
+  • Collaborative campaign planning
+  • Shared learnings and best practices
+
+HOW IT WORKS
+────────────
+
+Headline: "From Partnership Application to Your First US Sale in 3 Weeks"
+
+Step 1: Apply & Partner Discussion (Week 1)
+  • Submit partnership application
+  • Share product catalog or website
+  • Quick review (2-3 business days)
+  • Partnership call to discuss mutual goals
+  • Sign simple partnership agreement
+
+Step 2: Onboarding & Setup Together (Week 2)
+  • Collaborate on brand page content
+  • Set up product listings with affiliate links
+  • Write SEO-optimized descriptions together
+  • Review and approve all content collaboratively
+  • Technical setup and tracking
+
+Step 3: Launch & Grow Together (Week 3+)
+  • Your brand goes live on Mela
+  • We drive traffic through SEO and content
+  • Customers click through to your website
+  • You fulfill orders using existing systems
+  • Regular partner check-ins
+  • Continuous optimization
+
+What We Need from Partners:
+  ✓ Product catalog with photos
+  ✓ Size charts and fabric details
+  ✓ Brand story and design philosophy
+  ✓ Ability to ship to USA (or willing to explore)
+  ✓ Affiliate tracking capability
+  ✓ Open communication and partnership mindset
+
+What You Don't Need:
+  ✗ Complex API integrations
+  ✗ Inventory management systems
+  ✗ US warehouse or fulfillment center
+  ✗ Large marketing budget
+  ✗ Previous US market experience
+  ✗ Everything figured out - we learn together!
+
+SUCCESS STORIES SECTION
+───────────────────────
+
+Headline: "Partner Success Stories (Coming Soon)"
+
+TRANSPARENCY NOTE: The case studies below are placeholder templates. As we onboard our founding partners and gather real data, we'll showcase actual brand success stories, metrics, and testimonials.
+
+Three placeholder templates ready for real data:
+  • Traditional Ethnic Wear Brand
+  • Modern Fusion Brand
+  • Artisan Partnership Brand
+
+Note to Brands: "We're in the early stages of building Mela with our founding brand partners. Interested in being one of our founding partners whose story we'll tell? Apply now!"
+
+BRAND REQUIREMENTS
+──────────────────
+
+Headline: "Is Your Baby Clothing Brand a Good Partner Fit?"
+
+Product Requirements:
+  ✓ Baby/toddler clothing or accessories (0-5 years)
+  ✓ Accessories: bibs, caps, mittens, booties, swaddles, blankets, toys, cloth diapers
+  ✓ Indian brand or India-manufactured
+  ✓ Quality fabrics suitable for baby skin
+  ✓ Safety standards (preferably GOTS/organic certified)
+  ✓ Clear size charts and measurements
+  ✓ Unique designs with cultural connection
+  ✓ Professional product photography (or willing to create)
+
+Business Requirements:
+  ✓ Established brand with existing customers
+  ✓ E-commerce website OR willing to set up
+  ✓ Can ship to USA OR interested in exploring
+  ✓ Responsive customer service
+  ✓ Ability to process affiliate sales tracking
+  ✓ Monthly production capacity for US orders
+  ✓ Partnership mindset - willing to collaborate
+
+Partnership Alignment:
+  ✓ Values authenticity and cultural heritage
+  ✓ Committed to quality and customer satisfaction
+  ✓ Interested in long-term US market presence
+  ✓ Willing to provide product details and brand assets
+  ✓ Open to collaborative marketing campaigns
+  ✓ Aligns with premium positioning
+  ✓ Excited to be part of building something together
+
+Priority Products:
+  🎯 CURRENTLY SEEKING:
+  High Priority:
+    • Ethnic/traditional baby wear
+    • Organic/natural fabric everyday clothing
+    • Festival occasion outfits
+    • Premium baby accessories
+    • Cloth diapers and sustainable products
+    • Baby toys with cultural relevance
+    • Gender-neutral contemporary designs
+  
+  Good Fit:
+    • Matching family outfits
+    • Seasonal collections
+    • Special occasion gifting sets
+    • Handloom/artisan collaborations
+    • Bibs, caps, mittens, booties
+
+FUTURE CATEGORIES - EXPANSION VISION
+─────────────────────────────────────
+
+Headline: "Beyond Clothing: Building the Complete Indian Baby Marketplace Together"
+
+Subheadline: "We're starting with clothing to prove the model. Here's where we're building next - with your input."
+
+Expansion Roadmap:
+
+Phase 1 (NOW): Baby Clothing & Accessories
+  ├─ Bibs, caps, mittens, booties, swaddles, blankets
+  ├─ Toys and cloth diapers
+  ├─ Establishing trust and traffic
+  ├─ Proving affiliate model works
+  └─ Building diaspora community with founding partners
+
+Phase 2 (Months 3-6): Baby Care Products
+  ├─ Organic/Ayurvedic care products
+  ├─ Natural bath and skin products
+  └─ Traditional remedies and wellness
+
+Phase 3 (Months 3-6): Toys & Books Expansion
+  ├─ Educational toys in regional languages
+  ├─ Traditional Indian toys and games
+  └─ Culturally relevant children's books
+
+Phase 4 (After 6+ months): Category Expansion
+  ├─ Home decor and furnishings
+  ├─ Garden and outdoor products
+  └─ Additional categories based on partner input and demand
+
+Partner-Driven Expansion:
+  🚀 YOU SHAPE WHAT'S NEXT
+  As founding partners, you'll have input on:
+    • Which categories we expand to next
+    • Marketing strategies for new categories
+    • Platform features and improvements
+    • Community building initiatives
+
+PARTNERSHIP BENEFITS (DETAILED)
+───────────────────────────────
+
+Marketing & Visibility:
+  • Brand storytelling platform (in development)
+  • Blog features and brand spotlights
+  • Instagram and social media presence
+  • Email newsletter features
+  • SEO content targeting your brand
+  • Festival campaign participation
+  • Partner collaboration on content strategy
+  • Guidance on US diaspora audience
+
+Sales & Growth:
+  • Access to millions of high-income diaspora families
+  • High-intent traffic
+  • Category-focused SEO (not competing with millions)
+  • Growing marketplace (25% monthly target)
+  • Cross-selling through curated collections
+  • Festival season campaigns
+  • New customer acquisition in US
+  • Repeat purchase potential
+
+Partnership Support:
+  • Dedicated partner success manager
+  • Monthly performance reports
+  • Regular partner meetings and strategy sessions
+  • Best practices for diaspora market
+  • Shipping & logistics guidance
+  • Partner community events and networking
+  • Technical integration assistance
+  • Voice in platform development decisions
+
+Financial Terms:
+  • Zero listing or monthly fees
+  • Commission: Pay only on completed sales (rates TBD)
+  • Transparent tracking and reporting
+  • Clear payment terms
+  • No hidden costs
+  • Fair commission structure
+  • Aligned incentives
+
+Founding Partner Advantages:
+  • Early platform access and input
+  • Shape marketing strategy together
+  • Advisory board participation
+  • Priority support during launch
+  • Collaborative problem-solving
+  • Shared learnings across partners
+  • Long-term growth partnership
+
+═══════════════════════════════════════════════════════════════
+
+3. APPLICATION FORM DESIGN
+───────────────────────────
+
+Two-Path Application:
+  1. Priority Path: Baby Clothing & Accessories (Primary Form)
+  2. Waitlist Path: Other Categories (Simplified Form)
+
+Primary CTA Text: "Sign Up to Export Baby Clothing"
+
+PRIORITY APPLICATION FORM (BABY CLOTHING)
+
+Form Headline: "Sign Up to Export Baby Clothing"
+Subheadline: "Join us as a founding partner. We review applications within 48 hours."
+
+Section 1: Brand Information
+  • Brand Name*
+  • Brand Website*
+  • Year Established*
+  • Product Category* (Baby Clothing & Accessories)
+  • Product Subcategory* (multi-select):
+    - Newborn clothing (0-6 months)
+    - Baby clothing (6-24 months)
+    - Toddler clothing (2-5 years)
+    - Ethnic/traditional wear
+    - Everyday/casual wear
+    - Accessories (bibs, caps, mittens, booties, swaddles, blankets)
+    - Toys
+    - Cloth diapers
+    - Other
+  • Brief Brand Description*
+
+Section 2: Product Details
+  • Professional product photography?*
+  • Number of Product Designs*
+  • Primary Fabrics Used* (multi-select)
+  • Certifications* (multi-select)
+  • Price Range (INR)*
+
+Section 3: Contact Information
+  • Full Name*
+  • Position/Role*
+  • Email Address*
+  • Phone Number*
+  • WhatsApp Number (optional)
+
+Section 4: Business Readiness
+  • Ship to USA?*
+  • E-commerce website?*
+  • Track affiliate sales?*
+  • Monthly Production Capacity*
+  • Current Monthly Revenue (optional)
+  • How did you hear about Mela?*
+
+Section 5: Partnership Interest
+  • Why partner with Mela for US market?* (500 char)
+  • What makes your brand unique?* (500 char)
+  • What do you hope to learn/gain?* (300 char)
+  • Additional Comments (optional)
+
+Consent Checkboxes:
+  □ Products suitable for babies/toddlers and meet safety standards
+  □ Interested in building as equal partners
+  □ Agree to Terms of Partnership
+  □ Consent to partnership program communications
+
+Submit Button: "Submit Partnership Application"
+
+WAITLIST FORM (OTHER CATEGORIES)
+
+Form Headline: "Join the Waitlist for Future Categories"
+
+Fields:
+  • Brand Name*
+  • Brand Website or Instagram*
+  • Product Category* (Baby Care, Toys & Books, Home & Garden, Other)
+  • Brief Product Description*
+  • Contact Name*
+  • Email Address*
+  • Phone Number (optional)
+  • Why interested in partnering?*
+
+Consent:
+  □ Notify when ready for my category
+  □ Interested in being a partner, not just vendor
+  □ Agree to receive expansion updates
+
+Submit Button: "Join Category Waitlist"
+
+═══════════════════════════════════════════════════════════════
+
+4. SUCCESS METRICS & ANALYTICS
+───────────────────────────────
+
+PRIMARY KPIs (PARTNERSHIP-FOCUSED)
+
+Application Metrics:
+  • Overall Conversion Rate: Target 8-12% for clothing
+  • Clothing vs. Waitlist Ratio: Target 70% clothing, 30% waitlist
+  • Partnership Quality Score: Target Average 3.5+ (1-5 scale)
+  • Founding Partner Applications: Target 30%+ high-score (40+ points)
+  • Application Completion Rate: Target 60%+
+
+Engagement Metrics:
+  • Time on Page: Target 4+ minutes
+  • Scroll Depth:
+    - "Building Together" section: 80%+
+    - "Brand Requirements": 75%+
+    - "Future Categories": 60%+
+  • Section Engagement:
+    - Partnership Philosophy: 70%+ read rate
+    - "Why Clothing First": 65%+ read rate
+    - "How It Works": 70%+ read rate
+  • CTA Click Rate: Track Primary vs. Waitlist ratio
+
+Application Processing:
+  • Response Time: <48 hours (100% SLA)
+  • Approval Rate: Target 25-35% for quality partnerships
+  • Time to Partnership: Target <21 days
+  • Partnership Call Conversion: Target 85%+
+
+SECONDARY METRICS
+
+Traffic Quality:
+  • Traffic Sources:
+    - Organic search: 40%
+    - Direct/referral: 30%
+    - Paid ads: 20%
+    - Social media: 10%
+  • Geographic Distribution: Major Indian cities
+  • Device Breakdown: Expect 60%+ mobile
+  • Returning Visitors: Track consideration journey
+
+Content Performance:
+  • "Building Together" time spent
+  • Success Stories placeholder interaction
+  • Partnership Benefits tabs - most opened
+  • Future Categories scroll and read rate
+  • Exit points before form submission
+  • Return to apply rate: Target 20%+
+
+Waitlist Quality:
+  • Category distribution
+  • Email open rates for announcements
+  • Waitlist to application conversion
+
+Partnership Philosophy Resonance:
+  • Time on partnership philosophy section
+  • Application response quality and depth
+  • Partnership mindset during calls
+
+═══════════════════════════════════════════════════════════════
+
+5. TECHNICAL REQUIREMENTS
+──────────────────────────
+
+FILE STRUCTURE
+
+/partners/brands/
+├── index.js (or .tsx)
+├── components/
+│   ├── HeroSection.jsx
+│   ├── PartnershipPhilosophy.jsx
+│   ├── WhyClothing.jsx
+│   ├── OpportunityOverview.jsx
+│   ├── WhyPartner.jsx
+│   ├── HowItWorks.jsx
+│   ├── SuccessStories.jsx (with placeholder notice)
+│   ├── BrandRequirements.jsx
+│   ├── PartnershipBenefits.jsx
+│   ├── FutureCategories.jsx
+│   └── ApplicationForm.jsx
+├── styles/
+│   └── brands-landing.css
+├── api/
+│   └── submit-application.js
+└── thank-you/
+    └── index.js
+
+DATABASE SCHEMA
+
+-- Primary Applications Table (Clothing)
+CREATE TABLE brand_applications_clothing (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  brand_name VARCHAR(255) NOT NULL,
+  brand_website VARCHAR(500),
+  year_established VARCHAR(50),
+  product_category VARCHAR(100) DEFAULT 'Baby Clothing & Accessories',
+  product_subcategories JSONB,
+  brand_description TEXT,
+  has_photography VARCHAR(100),
+  number_of_designs VARCHAR(50),
+  primary_fabrics JSONB,
+  certifications JSONB,
+  price_range_inr VARCHAR(50),
+  contact_name VARCHAR(255),
+  contact_position VARCHAR(255),
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  whatsapp VARCHAR(50),
+  ships_to_usa VARCHAR(100),
+  has_ecommerce VARCHAR(100),
+  can_track_affiliate VARCHAR(100),
+  production_capacity VARCHAR(100),
+  monthly_revenue VARCHAR(100),
+  hear_about VARCHAR(100),
+  why_partner TEXT,
+  brand_uniqueness TEXT,
+  partnership_goals TEXT,
+  additional_comments TEXT,
+  status VARCHAR(50) DEFAULT 'pending',
+  priority_score INTEGER DEFAULT 0,
+  reviewed_by VARCHAR(255),
+  review_notes TEXT,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  reviewed_at TIMESTAMP,
+  CONSTRAINT unique_email_clothing UNIQUE(email)
+);
+
+-- Waitlist Applications Table
+CREATE TABLE brand_applications_waitlist (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  brand_name VARCHAR(255) NOT NULL,
+  brand_website VARCHAR(500),
+  product_category VARCHAR(100),
+  product_description TEXT,
+  contact_name VARCHAR(255),
+  email VARCHAR(255) NOT NULL,
+  phone VARCHAR(50),
+  interest TEXT,
+  status VARCHAR(50) DEFAULT 'waitlist',
+  notified BOOLEAN DEFAULT FALSE,
+  category_priority INTEGER DEFAULT 0,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  CONSTRAINT unique_email_waitlist UNIQUE(email)
+);
+
+API ENDPOINTS
+
+POST /api/submit-application/clothing
+POST /api/submit-application/waitlist
+
+ANALYTICS EVENTS
+
+Key events to track:
+  • page_view (partnership focus)
+  • section_view (building_together, why_clothing, etc.)
+  • section_engagement (extended_read tracking)
+  • placeholder_notice_view
+  • cta_click (sign_up_export_clothing vs join_waitlist)
+  • form_start/progress/submit/abandon
+  • partnership_philosophy_engagement
+  • expansion_roadmap_view
+  • exit_intent_triggered
+
+SEO REQUIREMENTS
+
+Meta Tags:
+  • Title: "Partner with Mela | Build US Export Marketplace for Indian Baby Brands"
+  • Description: "Join Mela as a founding partner. Build the US export marketplace together. Zero listing fees, performance-based partnership. Baby clothing & accessories brands apply now."
+  • Keywords: Indian baby brand partnership, export to USA diaspora, baby clothing export, founding partner program
+
+Schema.org Markup:
+  • WebPage type
+  • Organization details
+  • Partnership program structured data
+
+Performance:
+  • Page load time: <2 seconds
+  • Mobile-first responsive design
+  • Optimized images and assets
+
+═══════════════════════════════════════════════════════════════
+
+6. CONTENT CALENDAR & LAUNCH PLAN
+──────────────────────────────────
+
+PRE-LAUNCH PREPARATION (WEEKS 1-3)
+
+Week 1: Content Development
+  □ Finalize partnership philosophy messaging
+  □ Create placeholder success story templates
+  □ Write 5 email variations (partnership-focused)
+  □ Draft partnership terms document
+  □ Develop partnership evaluation rubric
+  □ Create expansion roadmap visual
+
+Week 2: Design & Assets
+  □ Design hero section with "building together" theme
+  □ Create partnership comparison visual
+  □ Source collaboration/partnership imagery
+  □ Design benefit icons (mutual growth emphasis)
+  □ Create "How It Works" timeline
+  □ Design form UI with partnership language
+  □ Create email templates (warm, collaborative tone)
+
+Week 3: Development & Testing
+  □ Build landing page with all sections
+  □ Implement dual-path form
+  □ Add placeholder notices to success stories
+  □ Set up database with revised fields
+  □ Configure email system
+  □ Install analytics with partnership events
+  □ Test all CTAs
+  □ Cross-browser and mobile testing
+  □ Load test form submissions
+
+LAUNCH WEEK (WEEK 4)
+
+Pre-Launch Checklist:
+  □ Final review of partnership philosophy
+  □ Verify placeholder transparency notices
+  □ Test both application paths
+  □ Verify all CTAs use correct text
+  □ Check commission language ("TBD" clear)
+  □ Verify expansion roadmap accuracy
+  □ Confirm target brand examples
+  □ Test email delivery
+  □ Verify analytics events
+  □ Mobile responsiveness check
+  □ Page speed optimization
+  □ SEO meta tags verification
+  □ Legal review of partnership terms
+
+Launch Day:
+  □ Push to production (morning IST)
+  □ Announce to target brands
+  □ Post on social media (partnership model emphasis)
+  □ Direct outreach to priority brands
+  □ Monitor analytics first 24 hours
+  □ Test form submissions
+  □ Monitor for errors
+  □ Be available for immediate fixes
+
+POST-LAUNCH ACTIVITIES (MONTHS 1-3)
+
+Month 1: Targeted Partnership Outreach
+  Week 1: Direct outreach to 10 priority brands
+  Week 2: Personalized emails to 40 additional brands
+  Week 3: LinkedIn outreach (partnership model emphasis)
+  Week 4: Follow-up with engaged brands, schedule calls
+
+Month 2: Content & Partnership Proof
+  Week 1: Blog "Why We're Building WITH Brands"
+  Week 2: Partner onboarding documentation
+  Week 3: First partner spotlight
+  Week 4: Webinar "Exporting to US Diaspora Market"
+
+Month 3: Scale & Optimize
+  Week 1: Replace placeholder success stories (if available)
+  Week 2: Launch paid ads with partnership angle
+  Week 3: Partner advisory board first meeting
+  Week 4: Review and optimize based on first 10 partnerships
+
+═══════════════════════════════════════════════════════════════
+
+7. BUDGET & RESOURCES
+──────────────────────
+
+DEVELOPMENT BUDGET
+
+Design & Copywriting: $5,500-8,400
+  • Landing page copywriting (partnership focus): $1,800-2,500
+  • Email template writing: $600-900
+  • UI/UX design: $2,200-3,500
+  • Visual asset creation: $900-1,500
+
+Development: $7,200-11,600
+  • Landing page build: $3,500-6,000
+  • Dual-path form development: $1,200-1,800
+  • API endpoints and database: $900-1,400
+  • Email notification system: $600-900
+  • Analytics implementation: $400-600
+  • Testing and QA: $600-900
+
+Content & Media: $750-1,500
+  • Stock photography: $300-600
+  • Icon sets/illustrations: $250-500
+  • Expansion roadmap visual: $200-400
+
+Total MVP Budget: $13,450-21,500
+
+ONGOING MONTHLY COSTS
+
+Infrastructure: $90-550/month
+  • Hosting: $20-100
+  • Email service: $20-50
+  • Analytics tools: $0-200
+  • Form/CRM tool: $50-200
+
+Marketing: $1,500-3,100/month
+  • Google Ads: $500-1,000
+  • LinkedIn Ads: $500-1,000
+  • Content creation: $300-600
+  • Social media management: $200-500
+
+Operations: $1,500-2,500/month
+  • Partnership manager (part-time)
+
+Total Monthly Operating: $3,090-6,150
+
+TEAM REQUIREMENTS
+
+1. Partnership Lead / Founder (20-25 hours/week)
+   • Application review and brand vetting
+   • Partnership calls and negotiations
+   • Strategy and optimization decisions
+
+2. Developer (100-120 hours one-time, 5-10 hours/month ongoing)
+   • Landing page development
+   • Form and API implementation
+   • Analytics setup
+
+3. Designer (50-70 hours one-time, 5 hours/month ongoing)
+   • Page design and visual assets
+   • Email template design
+   • Brand guidelines application
+
+4. Copywriter (35-45 hours one-time, 5 hours/month ongoing)
+   • Landing page content
+   • Email templates
+   • Partnership-focused messaging
+
+5. Partnership/Growth Manager (15-20 hours/week ongoing)
+   • Paid ad campaigns
+   • Content marketing
+   • Brand outreach
+   • SEO optimization
+
+═══════════════════════════════════════════════════════════════
+
+8. RISK MITIGATION
+───────────────────
+
+PARTNERSHIP MODEL RISKS
+
+Risk: Brands expect traditional marketplace, not collaborative partnership
+Mitigation:
+  • Clear messaging throughout landing page
+  • Partnership philosophy section prominent
+  • Filter for partnership mindset in application
+  • Partnership call to align expectations
+  • Set clear collaboration expectations upfront
+
+Risk: Partnership model perceived as too vague or risky
+Mitigation:
+  • Transparent about what's "coming soon" vs ready
+  • Clear financial terms (even if TBD, explain why)
+  • Show roadmap and timeline
+  • Founding partner benefits clearly stated
+  • Reference successful partnership models
+
+APPLICATION VOLUME RISKS
+
+Risk: Too few applications from clothing brands
+Mitigation:
+  • Aggressive direct outreach to 100+ identified brands
+  • Paid advertising to drive awareness
+  • Referral incentives for early applicants
+  • Content marketing showcasing opportunity
+  • Personal invitations to priority brands (Masilo, etc.)
+  • Highlight founding partner advantages
+
+Risk: Too many applications to process
+Mitigation:
+  • Auto-scoring system prioritizes review queue
+  • Set application caps if overwhelmed
+  • Hire part-time application reviewer
+  • Create self-service resources
+  • Batch processing during peak times
+
+QUALITY CONTROL RISKS
+
+Risk: Low-quality brand applications
+Mitigation:
+  • Clear requirements stated upfront
+  • Auto-reject obviously unqualified applications
+  • Photography and website requirements as filters
+  • Thorough vetting process before approval
+  • Partnership call screens for collaboration mindset
+
+Risk: Approved brands underperform or don't collaborate well
+Mitigation:
+  • 90-day performance and partnership reviews
+  • Support and optimization guidance
+  • Clear partnership expectations document
+  • Remove non-collaborative partners after warnings
+  • Focus marketing on engaged, performing partners
+
+OPERATIONAL RISKS
+
+Risk: Can't respond to applications within 48-hour SLA
+Mitigation:
+  • Auto-responder confirms receipt immediately
+  • Queue management system with reminders
+  • Templated responses for common scenarios
+  • Hire support if volume exceeds capacity
+  • Set realistic expectations if delays occur
+
+Risk: Partnership philosophy sounds good but hard to execute
+Mitigation:
+  • Start with small cohort of founding partners
+  • Regular partner meetings to gather feedback
+  • Document partnership processes and best practices
+  • Be transparent when things don't work
+  • Iterate based on partner input
+
+TECHNICAL RISKS
+
+Risk: Form submission failures or data loss
+Mitigation:
+  • Comprehensive testing before launch
+  • Auto-save form progress
+  • Email confirmation with copy of submission
+  • Database backups
+  • Error logging and monitoring
+  • Quick response team for technical issues
+
+Risk: Website performance issues under traffic
+Mitigation:
+  • Load testing before launch
+  • CDN for static assets
+  • Database query optimization
+  • Monitoring and alerting
+  • Scalable hosting infrastructure
+
+MARKET RISKS
+
+Risk: US diaspora demand not as strong as projected
+Mitigation:
+  • Start with proven search volume data
+  • Test marketing before full brand onboarding
+  • Transparent communication with partners about results
+  • Pivot strategy based on early learnings
+  • Lower commission rates if needed to attract traffic
+
+Risk: Brands can't/won't ship to USA
+Mitigation:
+  • Provide shipping guidance and resources
+  • Connect brands with fulfillment services
+  • Accept brands "interested to start" shipping
+  • Partner with logistics providers
+  • Start with brands already shipping internationally
+
+EXPANSION RISKS
+
+Risk: Pressure to expand too quickly to other categories
+Mitigation:
+  • Clear roadmap communicated upfront
+  • Waitlist manages expectations
+  • Prove clothing model first
+  • Partner input on expansion timing
+  • Quality over speed approach
+
+Risk: Waitlist brands lose interest during wait
+Mitigation:
+  • Regular email updates on progress
+  • Share success stories from clothing partners
+  • Invite to webinars and events
+  • Preview upcoming category launches
+  • Offer preparation resources
+
+═══════════════════════════════════════════════════════════════
+
+9. KEY DIFFERENTIATORS
+───────────────────────
+
+What Makes Mela Different:
+
+1. PARTNERSHIP-FIRST APPROACH
+   Traditional: Brands are vendors
+   Mela: Brands are equal partners with voice in decisions
+
+2. CATEGORY FOCUS
+   Traditional: Competing with millions of products
+   Mela: Deep expertise in baby clothing, not diluted
+
+3. PERFORMANCE-BASED MODEL
+   Traditional: Listing fees + commissions
+   Mela: Zero fees, pay only on completed sales (rates TBD)
+
+4. CULTURAL AUTHENTICITY
+   Traditional: Generic "ethnic" or "Indian" tags
+   Mela: Built specifically for diaspora cultural connection
+
+5. COLLABORATIVE GROWTH
+   Traditional: Platform success ≠ brand success
+   Mela: Aligned incentives - we win together
+
+6. TRANSPARENT ROADMAP
+   Traditional: Opaque platform decisions
+   Mela: Clear expansion plan, partner input valued
+
+7. FOUNDING PARTNER ADVANTAGES
+   Traditional: First-come-first-served
+   Mela: Early partners get advisory role, shape platform
+
+8. PREMIUM POSITIONING
+   Traditional: Race to bottom on price
+   Mela: Curated quality, premium brand storytelling
+
+═══════════════════════════════════════════════════════════════
+
+10. EMAIL TEMPLATES
+───────────────────
+
+EMAIL 1: CLOTHING BRAND APPLICATION CONFIRMATION
+
+Subject: Welcome! Your Mela Partnership Application Received ✓
+
+Hi [Contact Name],
+
+Thank you for your interest in partnering with Mela! We're excited to learn about [Brand Name] and explore building the US export marketplace together.
+
+🤝 What happens next:
+
+✓ Within 48 hours: Our partnership team will review your application
+✓ Within 3-5 days: We'll email you at [Email] with next steps
+✓ If approved: We'll schedule a 30-minute partnership call
+
+🎯 Our Partnership Philosophy:
+
+We're not just another marketplace. We believe in building WITH brands, not FOR brands. Your expertise in creating beautiful Indian baby products + our understanding of the US diaspora market = something neither of us could build alone.
+
+As a founding partner, you'll have:
+• Voice in platform development decisions
+• Transparent communication and performance data
+• Collaborative marketing strategy
+• Zero fees unless you make sales
+• Long-term growth partnership
+
+📚 While you wait, explore:
+• Understanding Our Partnership Model: [Link]
+• The US Diaspora Market Opportunity: [Link]
+• Preparing Your Products for Export: [Link]
+
+❓ Have questions?
+Simply reply to this email and our partnership team will respond within 24 hours.
+
+Looking forward to potentially building together!
+
+Best regards,
+[Name]
+Mela Partnership Team
+
+---
+
+EMAIL 2: WAITLIST CONFIRMATION
+
+Subject: You're on the Mela Waitlist - We'll Build Your Category Together! 🚀
+
+Hi [Contact Name],
+
+Thank you for your interest in partnering with Mela! We've added [Brand Name] to our waitlist for [Product Category].
+
+🎯 Our Expansion Roadmap:
+Phase 1 (Current): Baby Clothing & Accessories
+Phase 2 (Months 3-6): Baby Care Products & Toys/Books Expansion
+Phase 3 (After 6+ months): Home & Garden + Other Categories
+
+📧 We'll notify you when we're ready for [Product Category] partnerships.
+
+Stay tuned - and thank you for wanting to build with us!
+
+Best regards,
+[Name]
+Mela Partnership Team
+
+---
+
+EMAIL 3: APPLICATION APPROVED
+
+Subject: 🎉 Let's Build Together! [Brand Name] Approved as Mela Partner
+
+Hi [Contact Name],
+
+Exciting news! We'd love to welcome [Brand Name] as a founding Mela partner.
+
+🤝 Why we're excited to partner with you:
+[Personalized reasons based on application]
+
+📅 Next Step: Partnership Discussion Call
+[Calendar Link]
+
+On this call, we'll discuss our partnership model, review the agreement, plan your launch timeline, and explore how we can build together.
+
+We're thrilled to partner with [Brand Name]!
+
+Best regards,
+[Name]
+Mela Partnership Team
+
+---
+
+EMAIL 4: APPLICATION UNDER REVIEW
+
+Subject: Quick Question About Your Partnership Application - [Brand Name]
+
+Hi [Contact Name],
+
+Thank you for your application. We're reviewing [Brand Name] and have a few questions:
+
+[Personalized questions based on application gaps]
+
+Please reply with the requested information, and we'll complete our review within 48 hours.
+
+Looking forward to hearing from you!
+
+Best regards,
+[Name]
+Mela Partnership Team
+
+---
+
+EMAIL 5: APPLICATION NOT APPROVED (YET)
+
+Subject: Update on Your Mela Partnership Application - [Brand Name]
+
+Hi [Contact Name],
+
+Thank you for your interest in partnering with Mela. After careful review, we've decided not to move forward with a partnership at this time.
+
+🤔 Why this decision?
+[Honest, constructive feedback]
+
+❗ This isn't a permanent "no"
+We encourage you to reapply when:
+[Specific improvements needed]
+
+We'd love to see [Brand Name] grow and potentially partner in the future!
+
+Best regards,
+[Name]
+Mela Partnership Team
+
+═══════════════════════════════════════════════════════════════
+
+11. APPENDICES
+──────────────
+
+APPENDIX A: TARGET BRAND LIST (PRIORITY OUTREACH)
+
+Top 10 Priority Brands:
+1. Masilo - Organic baby clothing
+2. Nino Bambino - Premium baby wear
+3. The Little Tailor - Traditional ethnic wear
+4. Pluchi Baby - Premium children's products
+5. Crane Baby - Contemporary baby essentials
+6. Dulaar.co - Modern Indian baby wear
+7. Curious Cub - Playful children's clothing
+8. A Toddler Thing - Toddler fashion
+9. Aplito Baby - Organic baby products
+10. Mokobara - Travel and lifestyle products for kids
+
+Additional 40 Brands: [To be researched and added]
+
+APPENDIX B: PARTNERSHIP EVALUATION RUBRIC
+
+Scoring Criteria (0-50 points):
+
+Shipping to USA (0-10 points):
+  • 10: Yes/Regularly
+  • 7: Yes/Can arrange
+  • 4: No/Interested to start
+  • 0: No/Not possible
+
+E-commerce Capability (0-10 points):
+  • 10: Yes/Full website
+  • 6: Yes/Instagram Shop only
+  • 3: No/Building one
+  • 1: No/Need help
+
+Product Photography (0-10 points):
+  • 10: Yes/High Quality
+  • 6: Yes/Basic
+  • 2: No but can arrange / Need help
+
+Certifications (0-5 points):
+  • 5: GOTS/Organic certified
+  • 3: Other certifications
+  • 0: No certifications
+
+Business Maturity (0-5 points):
+  • 5: Established (Before 2020)
+  • 3: Growing (2020-2023)
+  • 2: New (2024-present)
+
+Partnership Mindset (0-10 points):
+  • Evaluated based on application responses
+  • Partnership interest depth
+  • Collaboration willingness
+  • Long-term vision alignment
+
+Total Score Interpretation:
+  • 40-50: High Priority - Fast-track approval
+  • 25-39: Medium Priority - Review and consider
+  • 15-24: Low Priority - Needs improvement
+  • <15: Not ready - Provide feedback
+
+APPENDIX C: PARTNERSHIP CALL SCRIPT
+
+Opening (2 minutes):
+  • Welcome and thank them for applying
+  • Share excitement about their brand
+  • Set agenda for call
+
+Brand Deep Dive (10 minutes):
+  • Tell us more about your brand story
+  • What makes your products unique?
+  • Current challenges in reaching US market
+  • Questions about their business readiness
+
+Mela Partnership Model (8 minutes):
+  • Explain partnership philosophy
+  • Walk through how it works
+  • Discuss financial model (commission TBD)
+  • Timeline to launch (3 weeks)
+  • Founding partner benefits
+
+Q&A and Next Steps (10 minutes):
+  • Address their questions and concerns
+  • Discuss mutual expectations
+  • If good fit: Outline next steps
+  • Send partnership agreement
+  • Schedule onboarding kickoff
+
+APPENDIX D: BROWSER/DEVICE SUPPORT
+
+Minimum Browser Versions:
+  • Chrome: Last 2 versions
+  • Firefox: Last 2 versions
+  • Safari: Last 2 versions
+  • Edge: Last 2 versions
+  • Mobile Safari (iOS): 13+
+  • Chrome Mobile (Android): Last 2 versions
+
+Responsive Breakpoints:
+  • Mobile: 320px - 767px
+  • Tablet: 768px - 1023px
+  • Desktop: 1024px+
+
+APPENDIX E: CONTENT STYLE GUIDE
+
+Voice & Tone:
+  • Partnership-focused: Always emphasize collaboration
+  • Warm and welcoming: Not corporate or cold
+  • Transparent: Honest about what's ready vs. coming
+  • Entrepreneurial: We're building something new together
+  • Respectful: Honor brand expertise and vision
+
+Language Guidelines:
+  • Use "we" and "together" frequently
+  • Avoid "vendor", "supplier" - use "partner"
+  • Say "building with" not "building for"
+  • Emphasize "equal partnership"
+  • Be specific about timelines and commitments
+
+Writing Best Practices:
+  • Short paragraphs (3-4 lines max)
+  • Active voice
+  • Concrete examples
+  • Clear calls-to-action
+  • Scannable with headers and bullets
+
+APPENDIX F: SEO KEYWORD STRATEGY
+
+Primary Keywords:
+  • Indian baby brand partnership USA
+  • Export baby clothing to USA
+  • Sell Indian baby products diaspora
+  • Baby clothing export marketplace
+  • Indian brand US market entry
+
+Secondary Keywords:
+  • Indian baby clothing brands USA
+  • Export Indian products to America
+  • Diaspora marketplace partnership
+  • Baby product export program
+  • Indian entrepreneur US expansion
+
+Long-tail Keywords:
+  • How to sell Indian baby clothes in USA
+  • Partnership program for Indian baby brands
+  • Export baby clothing to Indian Americans
+  • Indian brand affiliate marketplace
+  • Sell traditional baby wear to diaspora
+
+Local SEO (India):
+  • Baby brand partnership Mumbai
+  • Export assistance for Indian brands
+  • US market entry for baby products
+  • Delhi baby brand export program
+
+═══════════════════════════════════════════════════════════════
+
+12. IMPLEMENTATION CHECKLIST
+────────────────────────────
+
+DESIGN PHASE
+□ Create wireframes for all page sections
+□ Design hero section with partnership theme
+□ Design partnership comparison visual
+□ Create "How It Works" timeline
+□ Design form UI (both paths)
+□ Create email templates
+□ Design expansion roadmap visual
+□ Source/create all imagery
+□ Design mobile responsive views
+□ Create style guide
+
+DEVELOPMENT PHASE
+□ Set up project repository
+□ Build page components
+□ Implement dual-path application form
+□ Add form validation
+□ Create API endpoints
+□ Set up database tables
+□ Implement email notification system
+□ Add placeholder transparency notices
+□ Integrate analytics tracking
+□ Implement responsive design
+□ Add loading states
+□ Error handling
+□ Form auto-save functionality
+
+CONTENT PHASE
+□ Write all landing page copy
+□ Create 5 email templates
+□ Write FAQ content (separate document)
+□ Create partnership terms document
+□ Write thank-you page content
+□ Create supporting resource content
+□ Proofread all content
+□ Get legal review
+
+TESTING PHASE
+□ Cross-browser testing
+□ Mobile device testing
+□ Form submission testing (both paths)
+□ Email delivery testing
+□ Analytics event verification
+□ Load testing
+□ Security testing
+□ Accessibility testing (WCAG AA)
+□ SEO validation
+□ Page speed optimization
+
+PRE-LAUNCH PHASE
+□ Set up Google Analytics 4
+□ Set up Google Search Console
+□ Configure email service
+□ Set up error monitoring
+□ Create internal dashboard for applications
+□ Train team on application review process
+□ Prepare partnership call scripts
+□ Create internal documentation
+□ Set up backup systems
+□ Final content review
+
+LAUNCH PHASE
+□ Deploy to production
+□ Monitor for 24 hours
+□ Test live form submissions
+□ Verify email notifications
+□ Check analytics data
+□ Monitor error logs
+□ Be on standby for issues
+□ Announce launch
+□ Begin outreach campaigns
+
+POST-LAUNCH PHASE
+□ Daily analytics review (Week 1)
+□ Weekly performance reports
+□ Respond to applications within SLA
+□ Conduct partnership calls
+□ Gather user feedback
+□ A/B testing setup
+□ Continuous optimization
+□ Update placeholder content with real data
+□ Scale marketing efforts
+□ Refine based on learnings
+
+═══════════════════════════════════════════════════════════════
+
+13. FUTURE ENHANCEMENTS (POST-MVP)
+───────────────────────────────────
+
+Phase 2 (Months 4-6):
+  • Replace placeholder success stories with real data
+  • Add video testimonials from partners
+  • Create interactive ROI calculator
+  • Build partner portal preview/demo
+  • Add live chat for immediate questions
+  • Create Hindi language version
+  • Develop webinar series
+  • Launch partner referral program
+
+Phase 3 (Months 7-12):
+  • Advanced analytics dashboard for partners
+  • Category-specific landing pages
+  • Partner community forum
+  • Mobile app for partner management
+  • Automated lead nurturing sequences
+  • Integration with more e-commerce platforms
+  • Expanded resource library
+  • Partner certification program
+
+═══════════════════════════════════════════════════════════════
+
+END OF PRD
+
+Document Version: 2.0
+Last Updated: [Date]
+Next Review: [Date]
+
+For questions or clarifications, contact:
+[Your Name]
+[Email]
+[Phone]
+
+═══════════════════════════════════════════════════════════════
