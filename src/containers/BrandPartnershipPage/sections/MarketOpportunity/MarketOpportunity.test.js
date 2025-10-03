@@ -21,18 +21,26 @@ describe('MarketOpportunity', () => {
   it('renders all opportunity cards', () => {
     render(<MarketOpportunity />);
 
-    expect(screen.getByText('The Market Reality')).toBeInTheDocument();
-    expect(screen.getByText('Your Current Challenges')).toBeInTheDocument();
-    expect(screen.getByText('The Mela Solution')).toBeInTheDocument();
+    // Should render cards in preview, mobile carousel, and desktop grid (3 total)
+    expect(screen.getAllByText('The Market Reality')).toHaveLength(3);
+    expect(screen.getAllByText('Your Current Challenges')).toHaveLength(3);
+    expect(screen.getAllByText('The Mela Solution')).toHaveLength(3);
+  });
+
+  it('renders mobile preview navigation text', () => {
+    render(<MarketOpportunity />);
+
+    expect(screen.getByText('Navigate through: Market Reality → Your Challenges → Our Solution')).toBeInTheDocument();
   });
 
   it('renders correct market data in first card', () => {
     render(<MarketOpportunity />);
 
-    expect(screen.getByText('4.5M Indian Americans')).toBeInTheDocument();
-    expect(screen.getByText('$126K median household income (high purchasing power)')).toBeInTheDocument();
-    expect(screen.getByText('200K+ Indian babies born in US annually')).toBeInTheDocument();
-    expect(screen.getByText('Zero Indian baby clothing specialty retailers serving US market')).toBeInTheDocument();
+    // Data should appear in mobile and desktop versions (2 total, not in preview)
+    expect(screen.getAllByText('4.5M Indian Americans')).toHaveLength(2);
+    expect(screen.getAllByText('$126K median household income (high purchasing power)')).toHaveLength(2);
+    expect(screen.getAllByText('200K+ Indian babies born in US annually')).toHaveLength(2);
+    expect(screen.getAllByText('Zero Indian baby clothing specialty retailers serving US market')).toHaveLength(2);
   });
 
   it('renders navigation buttons', () => {
@@ -45,11 +53,24 @@ describe('MarketOpportunity', () => {
     expect(nextButton).toBeInTheDocument();
   });
 
-  it('renders page indicators', () => {
+  it('renders preview cards as navigation instead of dots', () => {
     render(<MarketOpportunity />);
 
-    const indicators = screen.getAllByLabelText(/Go to card \d+/);
-    expect(indicators).toHaveLength(3); // Three opportunity cards
+    // Preview cards provide better navigation than abstract dots
+    expect(screen.getAllByText('The Market Reality')).toHaveLength(3); // Preview + mobile + desktop
+    expect(screen.getAllByText('Your Current Challenges')).toHaveLength(3);
+    expect(screen.getAllByText('The Mela Solution')).toHaveLength(3);
+  });
+
+  it('renders preview cards for mobile navigation', () => {
+    render(<MarketOpportunity />);
+
+    // Should have navigation buttons (2) only, no dots
+    const allButtons = screen.getAllByRole('button');
+    expect(allButtons.length).toBe(2);
+
+    // Preview cards should be present but may not have button role
+    expect(screen.getByText('Navigate through: Market Reality → Your Challenges → Our Solution')).toBeInTheDocument();
   });
 
   it('navigates to next card when next button is clicked', () => {
@@ -58,8 +79,9 @@ describe('MarketOpportunity', () => {
     const nextButton = screen.getByLabelText('Next opportunity card');
     fireEvent.click(nextButton);
 
-    expect(screen.getByText('Your Current Challenges')).toBeInTheDocument();
-    expect(screen.getByText('High shipping costs')).toBeInTheDocument();
+    // Content should appear in preview, mobile, and desktop (3 total)
+    expect(screen.getAllByText('Your Current Challenges')).toHaveLength(3);
+    expect(screen.getAllByText('High shipping costs')).toHaveLength(2); // Only in content areas, not preview
   });
 
   it('navigates to previous card when prev button is clicked', () => {
@@ -73,8 +95,8 @@ describe('MarketOpportunity', () => {
     const prevButton = screen.getByLabelText('Previous opportunity card');
     fireEvent.click(prevButton);
 
-    expect(screen.getByText('The Market Reality')).toBeInTheDocument();
-    expect(screen.getByText('4.5M Indian Americans')).toBeInTheDocument();
+    expect(screen.getAllByText('The Market Reality')).toHaveLength(3);
+    expect(screen.getAllByText('4.5M Indian Americans')).toHaveLength(2);
   });
 
   it('disables prev button on first card', () => {
@@ -93,18 +115,19 @@ describe('MarketOpportunity', () => {
     fireEvent.click(nextButton);
     fireEvent.click(nextButton);
 
-    expect(screen.getByText('The Mela Solution')).toBeInTheDocument();
+    expect(screen.getAllByText('The Mela Solution')).toHaveLength(3);
     expect(nextButton).toBeDisabled();
   });
 
-  it('allows direct navigation via page indicators', () => {
+  it('allows direct navigation via preview cards', () => {
     render(<MarketOpportunity />);
 
-    const thirdIndicator = screen.getByLabelText('Go to card 3');
-    fireEvent.click(thirdIndicator);
+    // Find and click the "Mela Solution" preview card
+    const previewCards = screen.getAllByText('The Mela Solution');
+    fireEvent.click(previewCards[0]); // Click the preview card version
 
-    expect(screen.getByText('The Mela Solution')).toBeInTheDocument();
-    expect(screen.getByText('We drive qualified traffic to your existing website')).toBeInTheDocument();
+    expect(screen.getAllByText('The Mela Solution')).toHaveLength(3);
+    expect(screen.getAllByText('We drive qualified traffic to your existing website')).toHaveLength(2);
   });
 
   it('renders key stats section', () => {
@@ -128,12 +151,12 @@ describe('MarketOpportunity', () => {
 
     const subHeadings = screen.getAllByRole('heading', { level: 3 });
     expect(subHeadings.length).toBeGreaterThan(0);
-    // Should find the first carousel card heading
-    expect(screen.getByText('The Market Reality')).toBeInTheDocument();
+    // Should find multiple instances of card headings
+    expect(screen.getAllByText('The Market Reality')).toHaveLength(3);
 
-    // Check for button accessibility
+    // Check for button accessibility (navigation arrows only, no dots)
     const buttons = screen.getAllByRole('button');
-    expect(buttons.length).toBeGreaterThan(0);
+    expect(buttons.length).toBe(2); // Only navigation buttons
   });
 
   it('handles keyboard navigation', () => {
@@ -145,6 +168,6 @@ describe('MarketOpportunity', () => {
     nextButton.focus();
     fireEvent.keyDown(nextButton, { key: 'Enter' });
 
-    expect(screen.getByText('Your Current Challenges')).toBeInTheDocument();
+    expect(screen.getAllByText('Your Current Challenges')).toHaveLength(3);
   });
 });

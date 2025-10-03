@@ -64,20 +64,20 @@
   margin-bottom: 1rem;
   line-height: 1.2;
 
-  /* Small screens: Larger title */
+  /* Small screens: Optimized title */
   @media (--viewportSmall) {
-    font-size: 2rem;
+    font-size: 1.875rem;
   }
 
-  /* Tablet: Even larger */
+  /* Tablet: Optimized size */
   @media (--viewportMedium) {
-    font-size: 2.5rem;
+    font-size: 1.875rem;
     margin-bottom: 1.5rem;
   }
 
-  /* Desktop: Maximum impact */
+  /* Desktop: Optimized size */
   @media (--viewportLarge) {
-    font-size: 3rem;
+    font-size: 2rem;
   }
 }
 
@@ -88,9 +88,9 @@
   line-height: 1.5;
   margin: 0;
 
-  /* Tablet: Larger text */
+  /* Tablet: Optimized text */
   @media (--viewportMedium) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
 }
 
@@ -327,14 +327,14 @@
 
 .desktopStepTitle {
   /* Tablet: Step title */
-  font-size: 1.5rem;
+  font-size: 1.375rem;
   font-weight: 600;
   color: #1f2937;
   margin-bottom: 1rem;
 
-  /* Desktop: Larger title */
+  /* Desktop: Optimized title */
   @media (--viewportLarge) {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     margin-bottom: 1.5rem;
   }
 }
@@ -346,9 +346,9 @@
   line-height: 1.6;
   margin-bottom: 1.5rem;
 
-  /* Desktop: Larger text */
+  /* Desktop: Optimized text */
   @media (--viewportLarge) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
 }
 

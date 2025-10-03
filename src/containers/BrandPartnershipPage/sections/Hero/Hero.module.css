@@ -93,15 +93,15 @@
     margin-bottom: 2rem;
   }
 
-  /* Tablet: Even larger */
+  /* Tablet: Optimized size */
   @media (--viewportMedium) {
-    font-size: 2.75rem;
+    font-size: 2.25rem;
     margin-bottom: 2.5rem;
   }
 
-  /* Desktop: Maximum impact */
+  /* Desktop: Optimized size */
   @media (--viewportLarge) {
-    font-size: 3.25rem;
+    font-size: 2.75rem;
     margin-bottom: 3rem;
   }
 }
@@ -189,19 +189,24 @@
     margin: 0 auto 3rem auto;
   }
 
-  /* Desktop: Larger text */
+  /* Desktop: Optimized text */
   @media (--viewportLarge) {
-    font-size: 1.375rem;
+    font-size: 1.125rem;
   }
 }
 
 .ctaSection {
-  /* Mobile: Full-width CTA section */
+  /* Mobile: Full-width CTA section with proper stacking */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
   margin-bottom: 3rem;
 
   /* Tablet: More spacing */
   @media (--viewportMedium) {
     margin-bottom: 4rem;
+    gap: 1.25rem;
   }
 }
 
@@ -216,7 +221,7 @@
   border-radius: 12px;
   font-size: 1.125rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(93, 43, 192, 0.3);
   cursor: pointer;
@@ -235,6 +240,7 @@
   @media (--viewportSmall) {
     max-width: 350px;
     width: auto;
+    margin: 0;
     padding: 1.125rem 2rem;
   }
 
@@ -242,6 +248,7 @@
   @media (--viewportMedium) {
     font-size: 1.25rem;
     padding: 1.25rem 2.5rem;
+    margin: 0;
   }
 }
 

@@ -81,65 +81,108 @@ const WhyClothing = () => {
         </div>
 
         <div className={css.pillarSection}>
-
-          <div className={css.pillarCard}>
-            <div className={css.pillarIcon}>
-              {pillars[activePillar].icon}
-            </div>
-            <H3 className={css.pillarTitle}>
-              {pillars[activePillar].title}
-            </H3>
-
-            {/* Quick highlights for mobile scanning */}
-            <div className={css.highlightGrid}>
-              {pillars[activePillar].highlights.map((highlight, index) => (
-                <div key={index} className={css.highlight}>
-                  <span className={css.checkmark}>✓</span>
-                  <span>{highlight}</span>
-                </div>
-              ))}
-            </div>
-
-            {/* Detailed points */}
-            <div className={css.detailsList}>
-              {pillars[activePillar].details.map((detail, index) => (
-                <div key={index} className={css.detail}>
-                  <span className={css.bullet}>•</span>
-                  <span>{detail}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Navigation */}
-          <div className={css.navigation}>
-            <button
-              className={css.navButton}
-              onClick={prevPillar}
-              disabled={activePillar === 0}
-              aria-label="Previous pillar"
-            >
-              ←
-            </button>
-            <button
-              className={css.navButton}
-              onClick={nextPillar}
-              disabled={activePillar === pillars.length - 1}
-              aria-label="Next pillar"
-            >
-              →
-            </button>
-          </div>
-
-          {/* Page Indicators */}
-          <div className={css.indicators}>
-            {pillars.map((_, index) => (
+          {/* Mobile Carousel */}
+          <div className={css.mobileCarousel}>
+            <div className={css.carouselContainer}>
+              {/* Navigation Arrows */}
               <button
-                key={index}
-                className={`${css.indicator} ${index === activePillar ? css.active : ''}`}
-                onClick={() => setActivePillar(index)}
-                aria-label={`Go to pillar ${index + 1}`}
-              />
+                className={css.navButton}
+                onClick={prevPillar}
+                disabled={activePillar === 0}
+                aria-label="Previous pillar"
+              >
+                ←
+              </button>
+              <button
+                className={css.navButton}
+                onClick={nextPillar}
+                disabled={activePillar === pillars.length - 1}
+                aria-label="Next pillar"
+              >
+                →
+              </button>
+
+              <div
+                className={css.carouselTrack}
+                style={{ transform: `translateX(-${activePillar * 100}%)` }}
+              >
+                {pillars.map((pillar, index) => (
+                  <div key={index} className={css.pillarCard}>
+                    <div className={css.pillarIcon}>
+                      {pillar.icon}
+                    </div>
+                    <H3 className={css.pillarTitle}>
+                      {pillar.title}
+                    </H3>
+
+                    {/* Quick highlights for mobile scanning */}
+                    <div className={css.highlightGrid}>
+                      {pillar.highlights.map((highlight, i) => (
+                        <div key={i} className={css.highlight}>
+                          <span className={css.checkmark}>✓</span>
+                          <span>{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Detailed points */}
+                    <div className={css.detailsList}>
+                      {pillar.details.map((detail, i) => (
+                        <div key={i} className={css.detail}>
+                          <span className={css.bullet}>•</span>
+                          <span>{detail}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Dots Navigation - Mobile Only */}
+            <div className={css.indicators}>
+              {pillars.map((_, index) => (
+                <button
+                  key={index}
+                  className={`${css.indicator} ${index === activePillar ? css.active : ''}`}
+                  onClick={() => setActivePillar(index)}
+                  aria-label={`Go to pillar ${index + 1}`}
+                />
+              ))}
+            </div>
+          </div>
+
+          {/* Desktop Grid - 3 columns */}
+          <div className={css.desktopGrid}>
+            {pillars.map((pillar, index) => (
+              <div key={index} className={css.desktopCard}>
+                <div className={css.pillarIcon}>
+                  {pillar.icon}
+                </div>
+                <H3 className={css.pillarTitle}>
+                  {pillar.title}
+                </H3>
+
+                {/* Quick highlights */}
+                <div className={css.highlightGrid}>
+                  {pillar.highlights.map((highlight, i) => (
+                    <div key={i} className={css.highlight}>
+                      <span className={css.checkmark}>✓</span>
+                      <span>{highlight}</span>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Detailed points */}
+                <div className={css.detailsList}>
+                  {pillar.details.map((detail, i) => (
+                    <div key={i} className={css.detail}>
+                      <span className={css.bullet}>•</span>
+                      <span>{detail}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>

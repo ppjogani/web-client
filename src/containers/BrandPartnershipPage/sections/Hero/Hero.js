@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { H1, H3, Button } from '../../../../components';
+import { H1, H3, Button, NamedLink } from '../../../../components';
 import css from './Hero.module.css';
 
 const Hero = ({ onFormClick, clothingFormUrl, waitlistFormUrl }) => {
@@ -50,12 +50,13 @@ const Hero = ({ onFormClick, clothingFormUrl, waitlistFormUrl }) => {
         <div className={css.ctaSection}>
           {!showWaitlist ? (
             <>
-              <Button
+              <NamedLink
+                name="SignupForUserTypePage"
+                params={{ userType: 'provider' }}
                 className={css.primaryCta}
-                onClick={() => handleFormClick(clothingFormUrl, 'clothing_application')}
               >
                 Apply for Baby Clothing
-              </Button>
+              </NamedLink>
               <button
                 className={css.secondaryLink}
                 onClick={() => setShowWaitlist(true)}
@@ -65,12 +66,13 @@ const Hero = ({ onFormClick, clothingFormUrl, waitlistFormUrl }) => {
             </>
           ) : (
             <>
-              <Button
+              <NamedLink
+                name="SignupForUserTypePage"
+                params={{ userType: 'provider' }}
                 className={css.waitlistCta}
-                onClick={() => handleFormClick(waitlistFormUrl, 'waitlist_application')}
               >
                 Join Waitlist (Other Categories)
-              </Button>
+              </NamedLink>
               <button
                 className={css.backLink}
                 onClick={() => setShowWaitlist(false)}

@@ -72,6 +72,7 @@ const MarketOpportunity = () => {
     setActiveCard(index);
   };
 
+
   return (
     <section className={css.section}>
       <div className={css.container}>
@@ -82,70 +83,118 @@ const MarketOpportunity = () => {
           </p>
         </div>
 
-        {/* Mobile Carousel */}
+        {/* Mobile Preview Headers */}
+        <div className={css.mobilePreviewContainer}>
+          <div className={css.previewHeader}>
+            <p className={css.previewText}>Navigate through: Market Reality → Your Challenges → Our Solution</p>
+          </div>
+          <div className={css.previewCards}>
+            {opportunityCards.map((card, index) => (
+              <div
+                key={index}
+                className={`${css.previewCard} ${index === activeCard ? css.previewCardActive : ''}`}
+                onClick={() => goToCard(index)}
+              >
+                <span className={css.previewIcon}>{card.icon}</span>
+                <span className={css.previewTitle}>{card.title}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Mobile Carousel + Desktop Grid */}
         <div className={css.carouselContainer}>
+          {/* Mobile Carousel */}
+          <div className={css.mobileCarousel}>
+            <div className={css.carousel}>
+              {/* Navigation Arrows */}
+              <button
+                className={css.navButton}
+                onClick={prevCard}
+                disabled={activeCard === 0}
+                aria-label="Previous opportunity card"
+              >
+                ←
+              </button>
+              <button
+                className={css.navButton}
+                onClick={nextCard}
+                disabled={activeCard === opportunityCards.length - 1}
+                aria-label="Next opportunity card"
+              >
+                →
+              </button>
 
-          <div className={css.carousel}>
-            <div
-              className={css.carouselTrack}
-              style={{ transform: `translateX(-${activeCard * 100}%)` }}
-            >
-              {opportunityCards.map((card, index) => (
-                <div key={index} className={css.opportunityCard}>
-                  <div className={css.cardIcon}>{card.icon}</div>
-                  <H3 className={css.cardTitle}>{card.title}</H3>
+              <div
+                className={css.carouselTrack}
+                style={{ transform: `translateX(-${activeCard * 100}%)` }}
+              >
+                {opportunityCards.map((card, index) => (
+                  <div key={index} className={css.opportunityCard}>
+                    <div className={css.cardIcon}>{card.icon}</div>
+                    <H3 className={css.cardTitle}>{card.title}</H3>
 
-                  <div className={css.highlightGrid}>
-                    {card.highlights.map((highlight, i) => (
-                      <div key={i} className={css.highlight}>
-                        <span className={css.bullet}>•</span>
-                        <span>{highlight}</span>
-                      </div>
-                    ))}
+                    <div className={css.highlightGrid}>
+                      {card.highlights.map((highlight, i) => (
+                        <div key={i} className={css.highlight}>
+                          <span className={css.bullet}>✓</span>
+                          <span>{highlight}</span>
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className={css.detailsList}>
+                      {card.details.map((detail, i) => (
+                        <div key={i} className={css.detail}>
+                          <span className={css.detailBullet}>◆</span>
+                          <span>{detail}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
+                ))}
+              </div>
+            </div>
 
-                  <div className={css.detailsList}>
-                    {card.details.map((detail, i) => (
-                      <div key={i} className={css.detail}>
-                        <span className={css.detailBullet}>→</span>
-                        <span>{detail}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
+            {/* Dots Navigation */}
+            <div className={css.indicators}>
+              {opportunityCards.map((_, index) => (
+                <button
+                  key={index}
+                  className={`${css.indicator} ${index === activeCard ? css.active : ''}`}
+                  onClick={() => goToCard(index)}
+                  aria-label={`Go to opportunity ${index + 1}`}
+                />
               ))}
             </div>
+
           </div>
 
-          {/* Navigation */}
-          <div className={css.navigation}>
-            <button
-              className={css.navButton}
-              onClick={prevCard}
-              disabled={activeCard === 0}
-              aria-label="Previous opportunity card"
-            >
-              ←
-            </button>
-            <button
-              className={css.navButton}
-              onClick={nextCard}
-              disabled={activeCard === opportunityCards.length - 1}
-              aria-label="Next opportunity card"
-            >
-              →
-            </button>
-          </div>
+          {/* Desktop Grid */}
+          <div className={css.desktopGrid}>
+            {opportunityCards.map((card, index) => (
+              <div key={index} className={css.desktopCard}>
+                <div className={css.cardIcon}>{card.icon}</div>
+                <H3 className={css.cardTitle}>{card.title}</H3>
 
-          {/* Page Indicators */}
-          <div className={css.indicators}>
-            {opportunityCards.map((_, index) => (
-              <button
-                key={index}
-                className={`${css.indicator} ${index === activeCard ? css.active : ''}`}
-                onClick={() => goToCard(index)}
-                aria-label={`Go to card ${index + 1}`}
-              />
+                <div className={css.highlightGrid}>
+                  {card.highlights.map((highlight, i) => (
+                    <div key={i} className={css.highlight}>
+                      <span className={css.bullet}>✓</span>
+                      <span>{highlight}</span>
+                    </div>
+                  ))}
+                </div>
+
+                <div className={css.detailsList}>
+                  {card.details.map((detail, i) => (
+                    <div key={i} className={css.detail}>
+                      <span className={css.detailBullet}>◆</span>
+                      <span>{detail}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
             ))}
           </div>
         </div>

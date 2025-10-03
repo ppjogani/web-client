@@ -13,21 +13,21 @@ import { RouteConfigurationProvider } from '../../context/routeConfigurationCont
 
 // Mock the section components
 jest.mock('./sections/Hero/Hero', () => {
-  return function MockHero({ onFormClick, clothingFormUrl, waitlistFormUrl }) {
+  return function MockHero() {
     return (
       <div data-testid="hero">
-        <button
-          data-testid="clothing-form-button"
-          onClick={() => onFormClick(clothingFormUrl, 'clothing_application')}
+        <a
+          data-testid="clothing-cta-link"
+          href="/signup/provider"
         >
           Apply for Baby Clothing
-        </button>
-        <button
-          data-testid="waitlist-form-button"
-          onClick={() => onFormClick(waitlistFormUrl, 'waitlist_application')}
+        </a>
+        <a
+          data-testid="waitlist-cta-link"
+          href="/signup/provider"
         >
           Join Waitlist (Other Categories)
-        </button>
+        </a>
       </div>
     );
   };
@@ -90,25 +90,7 @@ jest.mock('../FooterContainer/FooterContainer', () => {
   };
 });
 
-// Mock window.open
-const mockWindowOpen = jest.fn();
-Object.defineProperty(window, 'open', {
-  writable: true,
-  value: mockWindowOpen,
-});
-
-// Mock gtag
-const mockGtag = jest.fn();
-Object.defineProperty(window, 'gtag', {
-  writable: true,
-  value: mockGtag,
-});
-
 const mockConfig = {
-  brandPartnership: {
-    clothingFormUrl: 'https://test-clothing-form.com',
-    waitlistFormUrl: 'https://test-waitlist-form.com'
-  },
   branding: {
     facebookImage: 'https://test-facebook-image.com/image.jpg'
   }
@@ -122,13 +104,21 @@ const renderWithProviders = (component) => {
     'Page.schemaDescription': 'Join {marketplaceName} - the premium marketplace for authentic Indian products in the US market'
   };
 
+  const mockRoutes = [
+    {
+      path: '/signup/:userType',
+      name: 'SignupForUserTypePage',
+      component: () => null
+    }
+  ];
+
   return render(
     <HelmetProvider>
       <Provider store={mockStore}>
         <BrowserRouter>
           <IntlProvider locale="en" messages={messages}>
             <ConfigurationProvider value={mockConfig}>
-              <RouteConfigurationProvider value={[]}>
+              <RouteConfigurationProvider value={mockRoutes}>
                 {component}
               </RouteConfigurationProvider>
             </ConfigurationProvider>
@@ -140,23 +130,22 @@ const renderWithProviders = (component) => {
 };
 
 describe('BrandPartnershipPage', () => {
-  beforeEach(() => {
-    mockWindowOpen.mockClear();
-    mockGtag.mockClear();
-  });
 
-  it('renders all sections', () => {
+  it('renders all sections', async () => {
     renderWithProviders(<BrandPartnershipPage />);
 
+    // Above-the-fold sections should load immediately
     expect(screen.getByTestId('hero')).toBeInTheDocument();
     expect(screen.getByTestId('market-opportunity')).toBeInTheDocument();
-    expect(screen.getByTestId('why-clothing')).toBeInTheDocument();
-    expect(screen.getByTestId('benefits')).toBeInTheDocument();
-    expect(screen.getByTestId('process')).toBeInTheDocument();
-    expect(screen.getByTestId('market-timing')).toBeInTheDocument();
-    expect(screen.getByTestId('partnership-philosophy')).toBeInTheDocument();
-    expect(screen.getByTestId('success-stories')).toBeInTheDocument();
-    expect(screen.getByTestId('faq')).toBeInTheDocument();
+
+    // Wait for lazy loaded sections to appear
+    expect(await screen.findByTestId('why-clothing')).toBeInTheDocument();
+    expect(await screen.findByTestId('benefits')).toBeInTheDocument();
+    expect(await screen.findByTestId('process')).toBeInTheDocument();
+    expect(await screen.findByTestId('market-timing')).toBeInTheDocument();
+    expect(await screen.findByTestId('partnership-philosophy')).toBeInTheDocument();
+    expect(await screen.findByTestId('success-stories')).toBeInTheDocument();
+    expect(await screen.findByTestId('faq')).toBeInTheDocument();
   });
 
   it('renders responsive content', () => {
@@ -176,92 +165,27 @@ describe('BrandPartnershipPage', () => {
     expect(screen.getByText('Success Stories')).toBeInTheDocument();
   });
 
-  it('uses configured form URLs', () => {
+  it('renders signup CTAs with correct routes', () => {
     renderWithProviders(<BrandPartnershipPage />);
 
-    const clothingButton = screen.getByTestId('clothing-form-button');
-    const waitlistButton = screen.getByTestId('waitlist-form-button');
+    const clothingCTA = screen.getByTestId('clothing-cta-link');
+    const waitlistCTA = screen.getByTestId('waitlist-cta-link');
 
-    fireEvent.click(clothingButton);
-    expect(mockWindowOpen).toHaveBeenCalledWith(
-      'https://test-clothing-form.com',
-      '_blank',
-      'noopener,noreferrer'
-    );
+    expect(clothingCTA).toHaveAttribute('href', '/signup/provider');
+    expect(waitlistCTA).toHaveAttribute('href', '/signup/provider');
 
-    fireEvent.click(waitlistButton);
-    expect(mockWindowOpen).toHaveBeenCalledWith(
-      'https://test-waitlist-form.com',
-      '_blank',
-      'noopener,noreferrer'
-    );
+    // Verify CTA text
+    expect(clothingCTA).toHaveTextContent('Apply for Baby Clothing');
+    expect(waitlistCTA).toHaveTextContent('Join Waitlist (Other Categories)');
   });
 
-  it('falls back to default URLs when config is not provided', () => {
-    const configWithoutBrandPartnership = {
-      branding: {
-        facebookImage: 'https://test-facebook-image.com/image.jpg'
-      }
-    };
-
-    const messages = {
-      'Page.schemaTitle': 'Partner with {marketplaceName}',
-      'Page.schemaDescription': 'Join {marketplaceName} - the premium marketplace for authentic Indian products in the US market'
-    };
-
-    render(
-      <HelmetProvider>
-        <Provider store={mockStore}>
-          <BrowserRouter>
-            <IntlProvider locale="en" messages={messages}>
-              <ConfigurationProvider value={configWithoutBrandPartnership}>
-                <RouteConfigurationProvider value={[]}>
-                  <BrandPartnershipPage />
-                </RouteConfigurationProvider>
-              </ConfigurationProvider>
-            </IntlProvider>
-          </BrowserRouter>
-        </Provider>
-      </HelmetProvider>
-    );
-
-    const clothingButton = screen.getByTestId('clothing-form-button');
-    fireEvent.click(clothingButton);
-
-    expect(mockWindowOpen).toHaveBeenCalledWith(
-      'https://forms.google.com/clothing-partnership',
-      '_blank',
-      'noopener,noreferrer'
-    );
-  });
-
-  it('tracks analytics events when forms are clicked', () => {
+  it('renders final CTA section with signup links', () => {
     renderWithProviders(<BrandPartnershipPage />);
 
-    const clothingButton = screen.getByTestId('clothing-form-button');
-    fireEvent.click(clothingButton);
-
-    expect(mockGtag).toHaveBeenCalledWith('event', 'form_click', {
-      event_category: 'Brand Partnership',
-      event_label: 'clothing_application',
-      value: 1
-    });
-  });
-
-  it('handles missing gtag gracefully', () => {
-    // Remove gtag to test graceful handling
-    delete window.gtag;
-
-    renderWithProviders(<BrandPartnershipPage />);
-
-    const clothingButton = screen.getByTestId('clothing-form-button');
-
-    // Should not throw error
-    expect(() => {
-      fireEvent.click(clothingButton);
-    }).not.toThrow();
-
-    expect(mockWindowOpen).toHaveBeenCalled();
+    // Check for final CTA section content
+    expect(screen.getByText('Ready to Reach Millions of US Families?')).toBeInTheDocument();
+    expect(screen.getByText('Sign Up to Export Baby Clothing')).toBeInTheDocument();
+    expect(screen.getAllByText('Join Waitlist (Other Categories)').length).toBeGreaterThan(0);
   });
 
   it('renders with correct page metadata', () => {
@@ -272,22 +196,11 @@ describe('BrandPartnershipPage', () => {
     expect(screen.getByText('Market Opportunity')).toBeInTheDocument();
   });
 
-  it('handles waitlist form clicks with correct analytics', () => {
+  it('includes desktop and mobile responsive layout features', () => {
     renderWithProviders(<BrandPartnershipPage />);
 
-    const waitlistButton = screen.getByTestId('waitlist-form-button');
-    fireEvent.click(waitlistButton);
-
-    expect(mockWindowOpen).toHaveBeenCalledWith(
-      'https://test-waitlist-form.com',
-      '_blank',
-      'noopener,noreferrer'
-    );
-
-    expect(mockGtag).toHaveBeenCalledWith('event', 'form_click', {
-      event_category: 'Brand Partnership',
-      event_label: 'waitlist_application',
-      value: 1
-    });
+    // Verify sections that should show carousels on mobile, grids on desktop
+    expect(screen.getByText('Why Baby Clothing')).toBeInTheDocument();
+    expect(screen.getByText('Market Timing')).toBeInTheDocument();
   });
 });

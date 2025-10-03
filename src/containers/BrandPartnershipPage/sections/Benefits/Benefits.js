@@ -120,6 +120,24 @@ const Benefits = () => {
         {/* Mobile: Swipeable cards */}
         <div className={css.mobileCarousel}>
           <div className={css.carouselContainer}>
+            {/* Navigation Arrows */}
+            <button
+              className={css.navButton}
+              onClick={prevCard}
+              disabled={activeCard === 0}
+              aria-label="Previous benefit"
+            >
+              ←
+            </button>
+            <button
+              className={css.navButton}
+              onClick={nextCard}
+              disabled={activeCard === benefits.length - 1}
+              aria-label="Next benefit"
+            >
+              →
+            </button>
+
             <div
               className={css.carouselTrack}
               style={{ transform: `translateX(-${activeCard * 100}%)` }}
@@ -145,31 +163,16 @@ const Benefits = () => {
             </div>
           </div>
 
-          {/* Navigation */}
-          <div className={css.carouselNav}>
-            <button
-              className={css.navButton}
-              onClick={prevCard}
-              disabled={activeCard === 0}
-            >
-              ←
-            </button>
-            <div className={css.indicators}>
-              {benefits.map((_, index) => (
-                <button
-                  key={index}
-                  className={`${css.indicator} ${index === activeCard ? css.active : ''}`}
-                  onClick={() => setActiveCard(index)}
-                />
-              ))}
-            </div>
-            <button
-              className={css.navButton}
-              onClick={nextCard}
-              disabled={activeCard === benefits.length - 1}
-            >
-              →
-            </button>
+          {/* Dots Navigation */}
+          <div className={css.indicators}>
+            {benefits.map((_, index) => (
+              <button
+                key={index}
+                className={`${css.indicator} ${index === activeCard ? css.active : ''}`}
+                onClick={() => setActiveCard(index)}
+                aria-label={`Go to benefit ${index + 1}`}
+              />
+            ))}
           </div>
 
         </div>

@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { Suspense, lazy, useEffect } from 'react';
 import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { useIntl } from '../../util/reactIntl';
 import { useConfiguration } from '../../context/configurationContext';
+import { initPerformanceMonitoring } from './utils/performanceMonitoring';
 
 import {
   Page,
@@ -10,27 +11,56 @@ import {
   H2,
   Button,
   ExternalLink,
+  NamedLink,
 } from '../../components';
 
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../FooterContainer/FooterContainer';
 
-// Import responsive landing page sections
+// Import above-the-fold sections immediately
 import Hero from './sections/Hero/Hero';
 import MarketOpportunity from './sections/MarketOpportunity/MarketOpportunity';
-import WhyClothing from './sections/WhyClothing/WhyClothing';
-import Benefits from './sections/Benefits/Benefits';
-import Process from './sections/Process/Process';
-import MarketTiming from './sections/MarketTiming/MarketTiming';
-import PartnershipPhilosophy from './sections/PartnershipPhilosophy/PartnershipPhilosophy';
-import SuccessStories from './sections/SuccessStories/SuccessStories';
-import FAQ from './sections/FAQ/FAQ';
+
+// Lazy load below-the-fold sections for better performance
+const WhyClothing = lazy(() => import('./sections/WhyClothing/WhyClothing'));
+const Benefits = lazy(() => import('./sections/Benefits/Benefits'));
+const Process = lazy(() => import('./sections/Process/Process'));
+const MarketTiming = lazy(() => import('./sections/MarketTiming/MarketTiming'));
+const PartnershipPhilosophy = lazy(() => import('./sections/PartnershipPhilosophy/PartnershipPhilosophy'));
+const SuccessStories = lazy(() => import('./sections/SuccessStories/SuccessStories'));
+const FAQ = lazy(() => import('./sections/FAQ/FAQ'));
 
 import css from './BrandPartnershipPage.module.css';
+
+// Loading fallback component for better UX
+const SectionLoader = () => (
+  <div style={{
+    height: '200px',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    background: 'linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%)',
+    backgroundSize: '400% 100%',
+    animation: 'shimmer 1.5s ease-in-out infinite'
+  }}>
+    <style>{`
+      @keyframes shimmer {
+        0% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+      }
+    `}</style>
+    Loading...
+  </div>
+);
 
 const BrandPartnershipPageComponent = () => {
   const intl = useIntl();
   const config = useConfiguration();
+
+  // Initialize performance monitoring
+  useEffect(() => {
+    initPerformanceMonitoring();
+  }, []);
 
   // Form URLs - these can be configured externally
   const clothingFormUrl = config.brandPartnership?.clothingFormUrl || 'https://forms.google.com/clothing-partnership';
@@ -142,26 +172,41 @@ const BrandPartnershipPageComponent = () => {
         {/* Market Opportunity Overview */}
         <MarketOpportunity />
 
-        {/* Why Baby Clothing Focus */}
-        <WhyClothing />
+        {/* Below-the-fold sections with lazy loading */}
+        <Suspense fallback={<SectionLoader />}>
+          {/* Why Baby Clothing Focus */}
+          <WhyClothing />
+        </Suspense>
 
-        {/* Benefits Overview */}
-        <Benefits />
+        <Suspense fallback={<SectionLoader />}>
+          {/* Benefits Overview */}
+          <Benefits />
+        </Suspense>
 
-        {/* Partnership Process */}
-        <Process />
+        <Suspense fallback={<SectionLoader />}>
+          {/* Partnership Process */}
+          <Process />
+        </Suspense>
 
-        {/* Market Timing Advantage */}
-        <MarketTiming />
+        <Suspense fallback={<SectionLoader />}>
+          {/* Market Timing Advantage */}
+          <MarketTiming />
+        </Suspense>
 
-        {/* Partnership Philosophy */}
-        <PartnershipPhilosophy />
+        <Suspense fallback={<SectionLoader />}>
+          {/* Partnership Philosophy */}
+          <PartnershipPhilosophy />
+        </Suspense>
 
-        {/* Success Stories */}
-        <SuccessStories />
+        <Suspense fallback={<SectionLoader />}>
+          {/* Success Stories */}
+          <SuccessStories />
+        </Suspense>
 
-        {/* FAQ */}
-        <FAQ />
+        <Suspense fallback={<SectionLoader />}>
+          {/* FAQ */}
+          <FAQ />
+        </Suspense>
 
         {/* Final CTA */}
         <section className={css.finalCta}>
@@ -171,18 +216,20 @@ const BrandPartnershipPageComponent = () => {
               Join our founding partnership program and start growing your brand in the US market with zero risk.
             </p>
             <div className={css.ctaButtons}>
-              <Button
+              <NamedLink
+                name="SignupForUserTypePage"
+                params={{ userType: 'provider' }}
                 className={css.primaryCtaButton}
-                onClick={() => handleFormClick(clothingFormUrl, 'clothing_application')}
               >
                 Sign Up to Export Baby Clothing
-              </Button>
-              <Button
+              </NamedLink>
+              <NamedLink
+                name="SignupForUserTypePage"
+                params={{ userType: 'provider' }}
                 className={css.secondaryCtaButton}
-                onClick={() => handleFormClick(waitlistFormUrl, 'waitlist_application')}
               >
                 Join Waitlist (Other Categories)
-              </Button>
+              </NamedLink>
             </div>
           </div>
         </section>

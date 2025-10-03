@@ -54,15 +54,15 @@
   margin-bottom: 1rem;
 
   @media (--viewportSmall) {
-    font-size: 2rem;
+    font-size: 1.875rem;
   }
 
   @media (--viewportMedium) {
-    font-size: 2.25rem;
+    font-size: 1.875rem;
   }
 
   @media (--viewportLarge) {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 }
 
@@ -77,7 +77,7 @@
   }
 
   @media (--viewportMedium) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
 }
 
@@ -91,18 +91,18 @@
 }
 
 .comparisonTitle {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--matterColor);
   text-align: center;
   margin-bottom: 1.5rem;
 
   @media (--viewportSmall) {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 
   @media (--viewportMedium) {
-    font-size: 1.5rem;
+    font-size: 1.375rem;
     margin-bottom: 2rem;
   }
 }
@@ -141,6 +141,10 @@
   padding: 1.25rem;
   cursor: pointer;
   text-align: left;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
 
   @media (--viewportSmall) {
     padding: 1.5rem;
@@ -148,6 +152,7 @@
 
   @media (--viewportMedium) {
     padding: 2rem;
+    gap: 1.5rem;
   }
 }
 
@@ -155,7 +160,8 @@
   display: flex;
   align-items: center;
   gap: 1rem;
-  margin-bottom: 0.5rem;
+  flex: 1;
+  min-width: 0;
 
   @media (--viewportMedium) {
     gap: 1.5rem;
@@ -239,7 +245,7 @@
   color: white;
   font-size: 1rem;
   font-weight: 700;
-  margin-left: auto;
+  flex-shrink: 0;
 
   @media (--viewportMedium) {
     width: 28px;
@@ -288,17 +294,17 @@
 }
 
 .commitmentTitle {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   color: var(--matterColor);
   margin-bottom: 1rem;
 
   @media (--viewportSmall) {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 
   @media (--viewportMedium) {
-    font-size: 1.5rem;
+    font-size: 1.375rem;
   }
 }
 
@@ -458,7 +464,7 @@
   margin-bottom: 0.25rem;
 
   @media (--viewportMedium) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
 }
 

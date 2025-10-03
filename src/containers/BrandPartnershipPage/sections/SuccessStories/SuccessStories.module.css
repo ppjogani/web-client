@@ -54,15 +54,15 @@
   margin-bottom: 1rem;
 
   @media (--viewportSmall) {
-    font-size: 2rem;
+    font-size: 1.875rem;
   }
 
   @media (--viewportMedium) {
-    font-size: 2.25rem;
+    font-size: 1.875rem;
   }
 
   @media (--viewportLarge) {
-    font-size: 2.5rem;
+    font-size: 2rem;
   }
 }
 
@@ -77,7 +77,7 @@
   }
 
   @media (--viewportMedium) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
   }
 }
 
@@ -117,18 +117,18 @@
 }
 
 .storyTitle {
-  font-size: 1.375rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: #262261;
   margin-bottom: 1rem;
   line-height: 1.3;
 
   @media (--viewportSmall) {
-    font-size: 1.5rem;
+    font-size: 1.375rem;
   }
 
   @media (--viewportMedium) {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     margin-bottom: 1.5rem;
   }
 }
@@ -233,7 +233,7 @@
   line-height: 1.3;
 
   @media (--viewportMedium) {
-    font-size: 1.125rem;
+    font-size: 1rem;
     margin-bottom: 1rem;
   }
 }
@@ -277,17 +277,17 @@
 }
 
 .ctaTitle {
-  font-size: 1.25rem;
+  font-size: 1.125rem;
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.3;
 
   @media (--viewportSmall) {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 
   @media (--viewportMedium) {
-    font-size: 1.5rem;
+    font-size: 1.375rem;
     margin-bottom: 1.5rem;
   }
 }

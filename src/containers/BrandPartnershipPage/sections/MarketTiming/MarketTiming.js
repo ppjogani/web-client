@@ -81,27 +81,10 @@ const MarketTiming = () => {
         <div className={css.advantageSection}>
           <H3 className={css.advantageTitle}>Strategic Advantages of Starting Now</H3>
 
-          <div className={css.advantageCarousel}>
-
-            <div className={css.advantageCard}>
-              <div className={css.advantageIcon}>
-                {advantagePoints[activeAdvantage].icon}
-              </div>
-              <H3 className={css.cardTitle}>
-                {advantagePoints[activeAdvantage].title}
-              </H3>
-              <p className={css.cardDescription}>
-                {advantagePoints[activeAdvantage].description}
-              </p>
-              <div className={css.benefit}>
-                <span className={css.benefitLabel}>Key Benefit:</span>
-                <span className={css.benefitText}>
-                  {advantagePoints[activeAdvantage].benefit}
-                </span>
-              </div>
-            </div>
-
-            <div className={css.advantageNavigation}>
+          {/* Mobile Carousel */}
+          <div className={css.mobileCarousel}>
+            <div className={css.carouselContainer}>
+              {/* Navigation Arrows */}
               <button
                 className={css.navButton}
                 onClick={prevAdvantage}
@@ -118,8 +101,34 @@ const MarketTiming = () => {
               >
                 →
               </button>
+
+              <div
+                className={css.carouselTrack}
+                style={{ transform: `translateX(-${activeAdvantage * 100}%)` }}
+              >
+                {advantagePoints.map((advantage, index) => (
+                  <div key={index} className={css.advantageCard}>
+                    <div className={css.advantageIcon}>
+                      {advantage.icon}
+                    </div>
+                    <H3 className={css.cardTitle}>
+                      {advantage.title}
+                    </H3>
+                    <p className={css.cardDescription}>
+                      {advantage.description}
+                    </p>
+                    <div className={css.benefit}>
+                      <span className={css.benefitLabel}>Key Benefit:</span>
+                      <span className={css.benefitText}>
+                        {advantage.benefit}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
 
+            {/* Dots Navigation - Mobile Only */}
             <div className={css.advantageIndicators}>
               {advantagePoints.map((_, index) => (
                 <button
@@ -130,6 +139,29 @@ const MarketTiming = () => {
                 />
               ))}
             </div>
+          </div>
+
+          {/* Desktop Grid - 2x2 for 4 advantage cards */}
+          <div className={css.desktopGrid}>
+            {advantagePoints.map((advantage, index) => (
+              <div key={index} className={css.desktopCard}>
+                <div className={css.advantageIcon}>
+                  {advantage.icon}
+                </div>
+                <H3 className={css.cardTitle}>
+                  {advantage.title}
+                </H3>
+                <p className={css.cardDescription}>
+                  {advantage.description}
+                </p>
+                <div className={css.benefit}>
+                  <span className={css.benefitLabel}>Key Benefit:</span>
+                  <span className={css.benefitText}>
+                    {advantage.benefit}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 

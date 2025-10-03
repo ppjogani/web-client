@@ -13,6 +13,7 @@ import { NamedRedirect } from '../components';
 const pageDataLoadingAPI = getPageDataLoadingAPI();
 
 const AuthenticationPage = loadable(() => import(/* webpackChunkName: "AuthenticationPage" */ '../containers/AuthenticationPage/AuthenticationPage'));
+const EnhancedSignupPage = loadable(() => import(/* webpackChunkName: "EnhancedSignupPage" */ '../containers/EnhancedSignupPage/EnhancedSignupPage'));
 const BrandPartnershipPage = loadable(() => import(/* webpackChunkName: "BrandPartnershipPage" */ '../containers/BrandPartnershipPage/BrandPartnershipPage'));
 const CheckoutPage = loadable(() => import(/* webpackChunkName: "CheckoutPage" */ '../containers/CheckoutPage/CheckoutPage'));
 const CMSPage = loadable(() => import(/* webpackChunkName: "CMSPage" */ '../containers/CMSPage/CMSPage'));
@@ -229,15 +230,13 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
     {
       path: '/signup',
       name: 'SignupPage',
-      component: AuthenticationPage,
-      extraProps: { tab: 'signup' },
+      component: EnhancedSignupPage,
       loadData: pageDataLoadingAPI.AuthenticationPage.loadData,
     },
     {
       path: '/signup/:userType',
       name: 'SignupForUserTypePage',
-      component: AuthenticationPage,
-      extraProps: { tab: 'signup' },
+      component: EnhancedSignupPage,
       loadData: pageDataLoadingAPI.AuthenticationPage.loadData,
     },
     {

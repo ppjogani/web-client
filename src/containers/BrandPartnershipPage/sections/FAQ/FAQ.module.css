@@ -55,19 +55,19 @@
 
   /* Small screens */
   @media (--viewportSmall) {
-    font-size: 2rem;
+    font-size: 1.875rem;
     margin-bottom: 3rem;
   }
 
   /* Tablet and up */
   @media (--viewportMedium) {
-    font-size: 2.25rem;
+    font-size: 1.875rem;
     margin-bottom: 3.5rem;
   }
 
   /* Desktop */
   @media (--viewportLarge) {
-    font-size: 2.5rem;
+    font-size: 2rem;
     margin-bottom: 4rem;
   }
 }
@@ -180,13 +180,13 @@
 
   /* Tablet and up */
   @media (--viewportMedium) {
-    font-size: 1.25rem;
+    font-size: 1.125rem;
     margin-bottom: 1.25rem;
   }
 
   /* Desktop */
   @media (--viewportLarge) {
-    font-size: 1.375rem;
+    font-size: 1.25rem;
   }
 }
 
@@ -212,7 +212,7 @@
 
   /* Tablet and up */
   @media (--viewportMedium) {
-    font-size: 1.125rem;
+    font-size: 1rem;
     line-height: 1.7;
   }
 }

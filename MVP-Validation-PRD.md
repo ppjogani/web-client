@@ -238,6 +238,7 @@ Convert 5-10 brands from affiliate relationships to direct partnerships using va
 - **API Layer**: RESTful APIs for product data and analytics
 - **Frontend**: Existing Sharetribe customization with enhanced product pages
 - **Analytics**: Google Analytics 4 + custom event tracking
+- **Performance Monitoring**: Web Vitals tracking with real-time alerts
 - **CDN**: Cloudflare for performance and scraping protection
 
 ### **Database Schema Extensions**
@@ -307,3 +308,30 @@ The following 10 critical features have been integrated across all phases to ens
 Referenced community discussion: https://www.reddit.com/r/ABCDesis/comments/1elrm38/the_rise_of_indian_textile_focussed_brands_run_by/ demonstrates active engagement around Indian brand authenticity and cultural connection needs.
 
 This PRD prioritizes rapid market validation while building toward sustainable brand partnerships, using data-driven proof of concept to convince Indian brands that export markets represent significant growth opportunities.
+
+---
+
+## Performance Monitoring & Production Alerts
+
+### **Setup**
+```bash
+# Production environment variables
+REACT_APP_PERFORMANCE_ALERTS_ENABLED=true
+REACT_APP_SLACK_WEBHOOK_URL=https://hooks.slack.com/services/YOUR/WEBHOOK
+REACT_APP_ALERT_EMAIL_ENDPOINT=https://your-email-service.com/send
+```
+
+### **Alert Types**
+- **Performance Issues**: LCP > 2.5s, FID > 100ms, CLS > 0.1
+- **Resource Bottlenecks**: Slow assets (>3s), large files (>1MB), too many resources (>100)
+
+### **Notification Channels**
+- **Slack**: Real-time alerts with severity levels and context
+- **Google Analytics**: Performance tracking and trend analysis
+- **Email**: Critical issues and weekly summaries
+
+### **Benefits**
+- Early performance regression detection
+- Real user metrics for optimization priorities
+- Automated monitoring reduces manual oversight
+- Performance data supports brand partnership discussions
