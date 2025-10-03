@@ -4,7 +4,7 @@ import '@testing-library/jest-dom';
 import { renderWithProviders as render, testingLibrary } from '../../util/testHelpers';
 import { fakeIntl } from '../../util/testData';
 
-import { EnhancedSignupPageComponent } from './EnhancedSignupPage';
+import { SignupPageComponent } from './SignupPage';
 
 const { screen, waitFor, userEvent, fireEvent } = testingLibrary;
 
@@ -53,7 +53,7 @@ const TestWrapper = ({ children, config = mockConfig }) => (
   </div>
 );
 
-describe('EnhancedSignupPage', () => {
+describe('SignupPage', () => {
   beforeEach(() => {
     window.scrollTo = jest.fn();
     jest.clearAllMocks();
@@ -67,7 +67,7 @@ describe('EnhancedSignupPage', () => {
     it('renders customer signup by default', () => {
       render(
         <TestWrapper>
-          <EnhancedSignupPageComponent {...mockProps} />
+          <SignupPageComponent {...mockProps} />
         </TestWrapper>
       );
 
@@ -86,7 +86,7 @@ describe('EnhancedSignupPage', () => {
     it('shows "Start Saving Favorites" button for customers', () => {
       render(
         <TestWrapper>
-          <EnhancedSignupPageComponent {...mockProps} />
+          <SignupPageComponent {...mockProps} />
         </TestWrapper>
       );
 
@@ -100,7 +100,7 @@ describe('EnhancedSignupPage', () => {
 
       render(
         <TestWrapper>
-          <EnhancedSignupPageComponent {...mockProps} />
+          <SignupPageComponent {...mockProps} />
         </TestWrapper>
       );
 
@@ -282,7 +282,7 @@ describe('EnhancedSignupPage', () => {
     it('renders trust indicators', () => {
       render(
         <TestWrapper>
-          <EnhancedSignupPageComponent {...mockProps} />
+          <SignupPageComponent {...mockProps} />
         </TestWrapper>
       );
 
@@ -300,7 +300,7 @@ describe('EnhancedSignupPage', () => {
 
       render(
         <TestWrapper>
-          <EnhancedSignupPageComponent {...mockProps} />
+          <SignupPageComponent {...mockProps} />
         </TestWrapper>
       );
 
@@ -313,7 +313,7 @@ describe('EnhancedSignupPage', () => {
     it('shows "Already have an account?" text', () => {
       render(
         <TestWrapper>
-          <EnhancedSignupPageComponent {...mockProps} />
+          <SignupPageComponent {...mockProps} />
         </TestWrapper>
       );
 
