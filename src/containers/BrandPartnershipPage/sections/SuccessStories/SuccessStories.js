@@ -56,12 +56,26 @@ const SuccessStories = () => {
         </div>
 
         <div className={css.ctaSection}>
-          <div className={css.ctaIcon}>✨</div>
-          <h3 className={css.ctaTitle}>Be Our Next Success Story</h3>
+          <div className={css.ctaIcon}>🎯</div>
+          <h3 className={css.ctaTitle}>Become a Founding Partner Success Story</h3>
           <p className={css.ctaDescription}>
-            Join our founding partners and let's build your success story together.
-            Apply now to be featured in our growth journey.
+            Shape the platform, capture first-mover advantage, and build lasting brand presence
+            in the lucrative US Indian diaspora market.
           </p>
+          <div className={css.ctaBenefits}>
+            <div className={css.ctaBenefit}>
+              <span className={css.benefitIcon}>🥇</span>
+              <span>First-mover advantage</span>
+            </div>
+            <div className={css.ctaBenefit}>
+              <span className={css.benefitIcon}>📈</span>
+              <span>Platform influence</span>
+            </div>
+            <div className={css.ctaBenefit}>
+              <span className={css.benefitIcon}>⭐</span>
+              <span>Featured prominence</span>
+            </div>
+          </div>
         </div>
       </div>
     </section>

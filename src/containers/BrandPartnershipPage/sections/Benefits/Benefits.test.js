@@ -21,9 +21,9 @@ describe('Benefits', () => {
   it('renders mobile carousel by default', () => {
     render(<Benefits />);
 
-    // Should show the first benefit card
-    expect(screen.getByText('Zero Risk Start')).toBeInTheDocument();
-    expect(screen.getByText('No upfront costs')).toBeInTheDocument();
+    // Should show the first benefit card (updated content)
+    expect(screen.getByText('Performance-Based Model')).toBeInTheDocument();
+    expect(screen.getByText('Pay only for success')).toBeInTheDocument();
     expect(screen.getByText(/Start selling with zero investment/)).toBeInTheDocument();
   });
 

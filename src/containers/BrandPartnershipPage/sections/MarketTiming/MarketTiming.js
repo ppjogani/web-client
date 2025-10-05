@@ -88,7 +88,6 @@ const MarketTiming = () => {
               <button
                 className={css.navButton}
                 onClick={prevAdvantage}
-                disabled={activeAdvantage === 0}
                 aria-label="Previous advantage"
               >
                 ←
@@ -96,7 +95,6 @@ const MarketTiming = () => {
               <button
                 className={css.navButton}
                 onClick={nextAdvantage}
-                disabled={activeAdvantage === advantagePoints.length - 1}
                 aria-label="Next advantage"
               >
                 →

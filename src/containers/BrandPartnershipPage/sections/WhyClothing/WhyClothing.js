@@ -88,7 +88,6 @@ const WhyClothing = () => {
               <button
                 className={css.navButton}
                 onClick={prevPillar}
-                disabled={activePillar === 0}
                 aria-label="Previous pillar"
               >
                 ←
@@ -96,7 +95,6 @@ const WhyClothing = () => {
               <button
                 className={css.navButton}
                 onClick={nextPillar}
-                disabled={activePillar === pillars.length - 1}
                 aria-label="Next pillar"
               >
                 →
@@ -187,15 +185,10 @@ const WhyClothing = () => {
           </div>
         </div>
 
-        {/* Key Stats */}
+        {/* Market Insight */}
         <div className={css.statsSection}>
-          <H3 className={css.statsTitle}>Baby Clothing Market Facts</H3>
+          <H3 className={css.statsTitle}>Why This Category Works</H3>
           <div className={css.statsGrid}>
-            <div className={css.statCard}>
-              <div className={css.statIcon}>👶</div>
-              <div className={css.statNumber}>200K+</div>
-              <div className={css.statLabel}>Indian babies born in US annually</div>
-            </div>
             <div className={css.statCard}>
               <div className={css.statIcon}>🔍</div>
               <div className={css.statNumber}>#1</div>
@@ -203,8 +196,13 @@ const WhyClothing = () => {
             </div>
             <div className={css.statCard}>
               <div className={css.statIcon}>🏪</div>
-              <div className={css.statNumber}>0</div>
-              <div className={css.statLabel}>Indian specialty retailers in US</div>
+              <div className={css.statNumber}>Limited</div>
+              <div className={css.statLabel}>Specialized retailers in US</div>
+            </div>
+            <div className={css.statCard}>
+              <div className={css.statIcon}>📦</div>
+              <div className={css.statNumber}>Easy</div>
+              <div className={css.statLabel}>International shipping category</div>
             </div>
           </div>
         </div>

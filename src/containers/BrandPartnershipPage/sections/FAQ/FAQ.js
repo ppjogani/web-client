@@ -33,7 +33,7 @@ const FAQ = () => {
     },
     {
       question: 'Why should we start now instead of waiting for better times?',
-      answer: 'Warren Buffett said it best: "Be fearful when others are greedy, and greedy when others are fearful." While competitors hesitate, you can capture mindshare and build customer loyalty in the US diaspora market with minimal competition.'
+      answer: 'While competitors hesitate due to uncertainty, this creates a unique window for forward-thinking brands. You can establish market presence, build customer relationships, and capture first-mover advantages with minimal competition. Early market entry often yields the highest returns.'
     }
   ];
 

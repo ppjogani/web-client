@@ -174,18 +174,13 @@ const BrandPartnershipPageComponent = () => {
 
         {/* Below-the-fold sections with lazy loading */}
         <Suspense fallback={<SectionLoader />}>
-          {/* Why Baby Clothing Focus */}
-          <WhyClothing />
-        </Suspense>
-
-        <Suspense fallback={<SectionLoader />}>
           {/* Benefits Overview */}
           <Benefits />
         </Suspense>
 
         <Suspense fallback={<SectionLoader />}>
-          {/* Partnership Process */}
-          <Process />
+          {/* Why Baby Clothing Focus */}
+          <WhyClothing />
         </Suspense>
 
         <Suspense fallback={<SectionLoader />}>
@@ -206,6 +201,11 @@ const BrandPartnershipPageComponent = () => {
         <Suspense fallback={<SectionLoader />}>
           {/* FAQ */}
           <FAQ />
+        </Suspense>
+
+        <Suspense fallback={<SectionLoader />}>
+          {/* Partnership Process - Moved to bottom */}
+          <Process />
         </Suspense>
 
         {/* Final CTA */}

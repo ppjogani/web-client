@@ -130,16 +130,6 @@ const Process = () => {
           ))}
         </div>
 
-        {/* Trust builder */}
-        <div className={css.trustSection}>
-          <div className={css.trustBadge}>
-            <span className={css.trustIcon}>⚡</span>
-            <div className={css.trustText}>
-              <strong>Zero Risk Start</strong>
-              <span>No setup fees • No monthly costs • Performance-based only</span>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
   );

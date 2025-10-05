@@ -4,7 +4,6 @@ import css from './PartnershipPhilosophy.module.css';
 
 const PartnershipPhilosophy = () => {
   const [expandedComparison, setExpandedComparison] = useState(null);
-  const [showCommitments, setShowCommitments] = useState(false);
 
   const comparisons = [
     {
@@ -18,19 +17,9 @@ const PartnershipPhilosophy = () => {
       detail: 'Every major decision is made collaboratively with input from our brand partners.'
     },
     {
-      traditional: 'One-size-fits-all',
-      mela: 'Collaborative, customized approach',
-      detail: 'Each brand has unique needs. We customize our approach to maximize your specific strengths.'
-    },
-    {
       traditional: 'Brands compete on price',
       mela: 'Brands showcase unique value',
       detail: 'We help customers understand your unique value proposition, not just compare prices.'
-    },
-    {
-      traditional: 'Transactional relationship',
-      mela: 'Long-term partnership',
-      detail: 'We\'re building relationships that last decades, not just quick transactions.'
     },
     {
       traditional: 'Platform success ≠ Brand success',
@@ -129,46 +118,56 @@ const PartnershipPhilosophy = () => {
           </div>
         </div>
 
-        {/* Commitments Section */}
+        {/* Commitments Section - Simplified Always Visible */}
         <div className={css.commitmentSection}>
-          <div className={css.commitmentHeader}>
-            <H3 className={css.commitmentTitle}>
-              🤝 OUR COMMITMENT TO YOU
-            </H3>
-            <button
-              className={css.toggleButton}
-              onClick={() => setShowCommitments(!showCommitments)}
-              aria-expanded={showCommitments}
-            >
-              {showCommitments ? 'Hide Details' : 'See Our Commitments'}
-              <span className={css.toggleIcon}>
-                {showCommitments ? '↑' : '↓'}
-              </span>
-            </button>
-          </div>
-
-          {showCommitments && (
-            <div className={css.commitmentGrid}>
-              {commitments.map((commitment, index) => (
-                <div key={index} className={css.commitmentCard}>
-                  <div className={css.commitmentIcon}>{commitment.icon}</div>
-                  <div className={css.commitmentContent}>
-                    <h4 className={css.commitmentCardTitle}>{commitment.title}</h4>
-                    <p className={css.commitmentDescription}>{commitment.description}</p>
-                  </div>
+          <H3 className={css.commitmentTitle}>
+            🤝 Our Partnership Commitments
+          </H3>
+          <div className={css.commitmentGrid}>
+            {commitments.slice(0, 3).map((commitment, index) => (
+              <div key={index} className={css.commitmentCard}>
+                <div className={css.commitmentIcon}>{commitment.icon}</div>
+                <div className={css.commitmentContent}>
+                  <h4 className={css.commitmentCardTitle}>{commitment.title}</h4>
+                  <p className={css.commitmentDescription}>{commitment.description}</p>
                 </div>
-              ))}
-            </div>
-          )}
+              </div>
+            ))}
+          </div>
+          <div className={css.additionalCommitments}>
+            {commitments.slice(3).map((commitment, index) => (
+              <div key={index + 3} className={css.commitmentSummary}>
+                <span className={css.commitmentIcon}>{commitment.icon}</span>
+                <span className={css.commitmentText}>{commitment.title}</span>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {/* Trust Indicator */}
+        {/* Trust Indicators */}
         <div className={css.trustSection}>
-          <div className={css.trustBadge}>
-            <span className={css.trustIcon}>🛡️</span>
-            <div className={css.trustContent}>
-              <div className={css.trustTitle}>Partnership Guarantee</div>
-              <div className={css.trustText}>We succeed only when you succeed</div>
+          <H3 className={css.trustTitle}>Built on Trust & Transparency</H3>
+          <div className={css.trustGrid}>
+            <div className={css.trustBadge}>
+              <span className={css.trustIcon}>🛡️</span>
+              <div className={css.trustContent}>
+                <div className={css.trustBadgeTitle}>Partnership Guarantee</div>
+                <div className={css.trustText}>We succeed only when you succeed</div>
+              </div>
+            </div>
+            <div className={css.trustBadge}>
+              <span className={css.trustIcon}>📊</span>
+              <div className={css.trustContent}>
+                <div className={css.trustBadgeTitle}>Full Transparency</div>
+                <div className={css.trustText}>Complete access to all performance data</div>
+              </div>
+            </div>
+            <div className={css.trustBadge}>
+              <span className={css.trustIcon}>⚡</span>
+              <div className={css.trustContent}>
+                <div className={css.trustBadgeTitle}>Quick Start</div>
+                <div className={css.trustText}>No setup fees • No monthly costs</div>
+              </div>
             </div>
           </div>
         </div>

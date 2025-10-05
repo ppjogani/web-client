@@ -8,13 +8,12 @@ const Benefits = () => {
   const benefits = [
     {
       icon: "💰",
-      title: "Zero Risk Start",
-      headline: "No upfront costs",
+      title: "Performance-Based Model",
+      headline: "Pay only for success",
       description: "Start selling with zero investment. No listing fees, no monthly costs, no setup charges.",
       details: [
         "Performance-based fees only",
         "No hidden charges",
-        "Scale at your own pace",
         "Cancel anytime"
       ],
       color: "#10b981"
@@ -25,10 +24,9 @@ const Benefits = () => {
       headline: "Indian diaspora families",
       description: "Connect with Indian families in the USA who value authentic products for their children.",
       details: [
-        "4.5M Indian Americans",
-        "$126K median income",
-        "Strong cultural connection",
-        "Growing market demand"
+        "Premium market segment",
+        "High purchasing power",
+        "Strong cultural connection"
       ],
       color: "#3b82f6"
     },
@@ -38,23 +36,21 @@ const Benefits = () => {
       headline: "We drive the traffic",
       description: "Focus on your products while we handle customer acquisition and marketing campaigns.",
       details: [
-        "Targeted marketing",
+        "Targeted marketing campaigns",
         "Social media promotion",
-        "Influencer partnerships",
         "Community engagement"
       ],
       color: "#8b5cf6"
     },
     {
       icon: "🛡️",
-      title: "Risk-Free Start",
-      headline: "No upfront investment",
-      description: "Complete protection with our performance-based model. You only pay when you succeed.",
+      title: "Guaranteed Protection",
+      headline: "Your interests secured",
+      description: "Built-in safeguards protect your brand reputation and business interests throughout our partnership.",
       details: [
-        "Zero upfront costs",
-        "No monthly fees",
-        "Performance-based only",
-        "Cancel anytime"
+        "Brand quality standards",
+        "Transparent reporting",
+        "Partnership guarantees"
       ],
       color: "#10b981"
     },
@@ -66,7 +62,6 @@ const Benefits = () => {
       details: [
         "Multi-market access",
         "First-mover advantage",
-        "Reduced expansion risk",
         "Shared growth strategy"
       ],
       color: "#f59e0b"
@@ -79,7 +74,6 @@ const Benefits = () => {
       details: [
         "Sales analytics",
         "Customer insights",
-        "Market trends",
         "Growth recommendations"
       ],
       color: "#ef4444"
@@ -92,7 +86,6 @@ const Benefits = () => {
       details: [
         "Dedicated account manager",
         "Business consultation",
-        "Technical support",
         "Growth planning"
       ],
       color: "#06b6d4"
@@ -124,7 +117,6 @@ const Benefits = () => {
             <button
               className={css.navButton}
               onClick={prevCard}
-              disabled={activeCard === 0}
               aria-label="Previous benefit"
             >
               ←
@@ -132,7 +124,6 @@ const Benefits = () => {
             <button
               className={css.navButton}
               onClick={nextCard}
-              disabled={activeCard === benefits.length - 1}
               aria-label="Next benefit"
             >
               →
@@ -202,12 +193,16 @@ const Benefits = () => {
         {/* Call to action */}
         <div className={css.ctaSection}>
           <div className={css.ctaCard}>
-            <div className={css.ctaIcon}>⚡</div>
+            <div className={css.ctaIcon}>🚀</div>
             <div className={css.ctaContent}>
-              <H3 className={css.ctaTitle}>Ready to Start?</H3>
+              <H3 className={css.ctaTitle}>Start Selling in 48 Hours</H3>
               <p className={css.ctaDescription}>
-                Be among the founding partners building this marketplace together
+                Join Indian brands already building their US presence with zero upfront investment
               </p>
+              <div className={css.ctaUrgency}>
+                <span className={css.urgencyIcon}>⏰</span>
+                <span className={css.urgencyText}>Limited founding partner spots available</span>
+              </div>
             </div>
           </div>
         </div>
