@@ -102,7 +102,7 @@ export const fetchCategoryProducts = (categoryLevel, categoryName, config) => (d
     'fields.image': ['variants.listing-card', 'variants.listing-card-2x'],
     'imageVariant.listing-card': 'w:400;h:300;fit:crop', // Define listing-card variant
     'imageVariant.listing-card-2x': 'w:800;h:600;fit:crop', // Define listing-card-2x variant
-    'limit': 6, // Limit to 6 products for optimal UX and performance
+    perPage: 6, // Limit to 6 products for optimal UX and performance
     [`pub_${categoryLevel}`]: categoryName,
   };
 
