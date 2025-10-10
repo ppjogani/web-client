@@ -4,39 +4,38 @@ import { NamedLink, Button } from '../../../../components';
 
 import css from './HeroSection.module.css';
 
-// Mock product data - replace with actual product API calls
+// Mock product data - replace with actual product API calls highlighting Indian heritage
 const HERO_PRODUCTS = [
   {
     id: 1,
-    title: 'Organic Cotton Romper',
-    price: '$24.99',
-    image: '/static/images/hero-product-1.jpg',
+    title: 'Handwoven Cotton Romper',
+    price: '$28.99',
+    image: '/static/images/hero-product-1.svg',
     category: 'baby-clothing',
-    badge: 'GOTS Certified'
+    badge: 'Hand-crafted'
   },
   {
     id: 2,
-    title: 'Traditional Festive Outfit',
-    price: '$39.99',
-    image: '/static/images/hero-product-2.jpg',
+    title: 'Festive Kurta Set',
+    price: '$42.99',
+    image: '/static/images/hero-product-2.svg',
     category: 'toddler-fashion',
-    badge: 'Organic Cotton'
+    badge: 'Indian Heritage'
   },
   {
     id: 3,
-    title: 'Baby Essentials Set',
-    price: '$19.99',
-    image: '/static/images/hero-product-3.jpg',
+    title: 'Artisan Baby Essentials',
+    price: '$22.99',
+    image: '/static/images/hero-product-3.svg',
     category: 'accessories',
-    badge: 'Baby Safe'
+    badge: 'Artisan Made'
   }
 ];
 
 const TRUST_BADGES = [
   { icon: '🌱', text: 'GOTS Certified' },
   { icon: '👶', text: 'Baby Safe' },
-  { icon: '⭐', text: '4.8/5 Rating' },
-  { icon: '🚚', text: 'Free Shipping' }
+  { icon: '🇮🇳', text: 'Made in India' }
 ];
 
 const HeroSection = () => {
@@ -72,15 +71,15 @@ const HeroSection = () => {
           <div className={css.textContent}>
             <h1 className={css.headline}>
               <FormattedMessage
-                id="MelaHomePage.heroHeadline"
-                defaultMessage="Sustainable Baby Fashion with Global Design Diversity"
+                id="SectionMelaHero.heroHeadline"
+                defaultMessage="Sustainable Baby Fashion with Indian Design Heritage"
               />
             </h1>
 
             <p className={css.subheadline}>
               <FormattedMessage
-                id="MelaHomePage.heroSubheadline"
-                defaultMessage="Discover organic, ethically-made baby clothes from innovative designers worldwide. GOTS certified, premium quality, and sustainably crafted for your little one."
+                id="SectionMelaHero.heroSubheadline"
+                defaultMessage="Discover premium organic baby clothes from innovative designers in India. GOTS certified quality, traditional craftsmanship, delivered worldwide."
               />
             </p>
 
@@ -101,18 +100,17 @@ const HeroSection = () => {
                 className={css.primaryCta}
               >
                 <FormattedMessage
-                  id="MelaHomePage.shopNow"
+                  id="SectionMelaHero.shopNow"
                   defaultMessage="Shop Now"
                 />
               </NamedLink>
 
               <NamedLink
-                name="SearchPage"
-                params={{ pub_category: 'baby-clothing' }}
+                name="CategoriesPage"
                 className={css.secondaryCta}
               >
                 <FormattedMessage
-                  id="MelaHomePage.viewCategories"
+                  id="SectionMelaHero.viewCategories"
                   defaultMessage="View Categories"
                 />
               </NamedLink>
@@ -142,7 +140,7 @@ const HeroSection = () => {
                   className={css.productCta}
                 >
                   <FormattedMessage
-                    id="MelaHomePage.viewProduct"
+                    id="SectionMelaHero.viewProduct"
                     defaultMessage="View Product"
                   />
                 </NamedLink>
