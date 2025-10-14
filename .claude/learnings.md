@@ -39,14 +39,24 @@ describe('feature.duck', () => {
 const store = createStore(() => mockState);
 store.dispatch = jest.fn();
 
-// Full provider wrapper
-<Provider store={store}>
+// Complete test wrapper (prevents route/context failures)
+const TestWrapper = ({ children, config = mockConfig }) => (
   <MemoryRouter>
-    <IntlProvider><ConfigurationProvider>
-      <Component />
-    </ConfigurationProvider></IntlProvider>
+    <IntlProvider locale="en" messages={mockMessages}>
+      <ConfigurationProvider value={config}>
+        <RouteConfigurationProvider value={mockRoutes}>
+          {children}
+        </RouteConfigurationProvider>
+      </ConfigurationProvider>
+    </IntlProvider>
   </MemoryRouter>
-</Provider>
+);
+
+// Mock route configuration (required for NamedLink components)
+const mockRouteConfiguration = [
+  { path: '/signup', exact: true, name: 'SignupPage' },
+  { path: '/login', exact: true, name: 'LoginPage' }
+];
 ```
 
 ## Issues & Solutions
@@ -57,12 +67,29 @@ store.dispatch = jest.fn();
 - **Additional**: Increased products 6→9, exclude current listing from recommendations
 - **Key fix**: Used `currentListing?.id?.uuid` not `listing?.id?.uuid` in both ListingPage variants
 
+### Sharetribe Category Hierarchy
+- **3-level structure**: Top level (Baby Clothes & Accessories) → Level 2 (Clothing, Shoes) → Level 3 (Tops, Bottoms)
+- **Showcase pattern**: Use level 2 for main categories, level 3 for featured items
+- **Helper function**: `getShowcaseCategories` extracts subcategories from top-level config
+- **Dynamic mapping**: `formatCategoryForDisplay` converts category structure to UI data
+
+### Sharetribe Image Quality Optimization
+- **Predefined variants priority**: Use `landscape-crop6x` (2400px), `landscape-crop4x` (1600px) over custom variants
+- **Quality enhancement**: Set `q: 85, f: 'auto'` in `createImageVariantConfig` for better quality + WebP support
+- **ResponsiveImage pattern**: Always include fallback `src` attribute, not just `srcSet`
+- **Sizes optimization**: Use responsive sizes like `(max-width: 767px) 100vw, (max-width: 1024px) 80vw` for high-DPI
+- **Variant ordering**: List highest quality first: `['landscape-crop6x', 'landscape-crop4x', 'landscape-crop2x', 'scaled-xlarge']`
+- **Test updates**: Update duck tests to expect enhanced quality params: `'w:400;h:400;fit:crop;q:85;f:auto'`
+
 ### Common Test Issues & Solutions
 - **SDK import errors**: Use `../util/sdkLoader` not `sharetribe-sdk`
 - **Multiple elements**: Use `getAllByTestId` when elements share test IDs
 - **Redux connection**: Always wrap with Provider + mock store
+- **RouteConfiguration errors**: "reduce is not a function" = missing RouteConfigurationProvider array
 - **State shape**: Match exact Redux state structure in test mocks
+- **IntersectionObserver errors**: JSDOM limitation - mock needed for components using viewport detection
 
 ## Session Log
 2024-10-10: Fixed CategoryProducts to display proper category names + product filtering improvements
 2025-10-10: Implemented HeroProducts with real API integration, randomization, and comprehensive testing
+2025-10-13: Resolved image quality issues - switched to predefined high-res variants + enhanced quality settings
