@@ -81,6 +81,12 @@ const mockRouteConfiguration = [
 - **Variant ordering**: List highest quality first: `['landscape-crop6x', 'landscape-crop4x', 'landscape-crop2x', 'scaled-xlarge']`
 - **Test updates**: Update duck tests to expect enhanced quality params: `'w:400;h:400;fit:crop;q:85;f:auto'`
 
+### Sharetribe Listing Fields & Item Aspects Integration
+- **Listing Fields**: User-facing filters configured in Sharetribe Console with Name|Value pairs (e.g., "Organic Cotton|organic_cotton")
+- **Item Aspects**: Raw classified metadata from ML prompt_engine.py stored as semicolon-separated key-value pairs
+- **Integration**: Item Aspects feed into Listing Fields via name-to-value mapping for consistent filtering
+- **Configuration**: Use `/scrapper and classifiers/documentation/listing-fields-mapping.json` for field definitions
+
 ### Common Test Issues & Solutions
 - **SDK import errors**: Use `../util/sdkLoader` not `sharetribe-sdk`
 - **Multiple elements**: Use `getAllByTestId` when elements share test IDs
