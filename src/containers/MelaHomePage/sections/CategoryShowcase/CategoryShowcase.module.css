@@ -77,6 +77,94 @@
   }
 }
 
+/* Age-Based Navigation - SEO Critical */
+.ageNavigation {
+  margin-bottom: 3rem;
+  padding: 2rem 0;
+  border-bottom: 1px solid #e2e8f0;
+
+  @media (min-width: 768px) {
+    margin-bottom: 4rem;
+  }
+}
+
+.ageNavigationTitle {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #1a202c;
+  margin: 0 0 1.5rem;
+  text-align: center;
+
+  @media (min-width: 640px) {
+    font-size: 1.5rem;
+  }
+}
+
+.ageFilters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  justify-content: center;
+
+  @media (min-width: 640px) {
+    gap: 1rem;
+  }
+}
+
+.ageFilterButton {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1rem 1.5rem;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 12px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  min-width: 100px;
+  min-height: 48px; /* Touch-friendly minimum size */
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--marketplaceColor);
+    background: #f7fafc;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(45, 90, 74, 0.15);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+
+  @media (min-width: 640px) {
+    min-width: 120px;
+    padding: 1.25rem 1.75rem;
+  }
+}
+
+.ageIcon {
+  font-size: 1.5rem;
+  line-height: 1;
+
+  @media (min-width: 640px) {
+    font-size: 1.75rem;
+  }
+}
+
+.ageLabel {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #2d3748;
+  text-align: center;
+  line-height: 1.2;
+
+  @media (min-width: 640px) {
+    font-size: 0.9375rem;
+  }
+}
+
 /* Category Sections Container */
 .categorySections {
   display: flex;
@@ -157,11 +245,11 @@
   }
 }
 
-/* Product Grid */
+/* Product Grid - Mobile-First Responsive */
 .productGrid {
   display: grid;
-  grid-template-columns: 1fr;
-  gap: 1.5rem;
+  grid-template-columns: repeat(2, 1fr); /* 2 columns on mobile for better scanning */
+  gap: 1rem;
 
   @media (min-width: 640px) {
     grid-template-columns: repeat(2, 1fr);

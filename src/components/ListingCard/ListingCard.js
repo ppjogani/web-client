@@ -197,6 +197,23 @@ const ListingCardImage = props => {
   const prefixedVariants = availableVariants.filter(k => k.startsWith(variantPrefix));
   const variants = prefixedVariants.length > 0 ? prefixedVariants : availableVariants;
 
+  // Generate SEO-optimized alt text
+  const publicData = currentListing.attributes?.publicData || {};
+  const ageGroup = publicData.age_group || '';
+  const certifications = publicData.certification || [];
+  const hasGOTS = certifications.includes('gots_certified');
+
+  const altTextParts = [title];
+  if (ageGroup) {
+    const ageLabel = ageGroup.replace(/_/g, '-');
+    altTextParts.push(`for ${ageLabel}`);
+  }
+  if (hasGOTS) {
+    altTextParts.push('GOTS certified');
+  }
+  altTextParts.push('organic baby clothing');
+  const altText = altTextParts.join(' - ');
+
   // Render the listing image only if listing images are enabled in the listing type
   return showListingImage ? (
     <AspectRatioWrapper
@@ -207,7 +224,7 @@ const ListingCardImage = props => {
     >
       <LazyImage
         rootClassName={css.rootForImage}
-        alt={title}
+        alt={altText}
         image={firstImage}
         variants={variants}
         sizes={renderSizes}

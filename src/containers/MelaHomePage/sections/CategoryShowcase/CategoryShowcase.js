@@ -46,6 +46,38 @@ const getShowcaseCategories = (categoryConfig) => {
   return showcaseCategories.slice(0, 3);
 };
 
+/**
+ * Generate Schema.org structured data for category showcase
+ * Helps search engines understand the page structure and display rich results
+ */
+const generateStructuredData = (categories, categoryProducts) => {
+  const itemListElements = categories.flatMap((category, categoryIndex) => {
+    const products = categoryProducts[category.id] || [];
+    return products.map((product, productIndex) => ({
+      '@type': 'ListItem',
+      position: categoryIndex * 4 + productIndex + 1,
+      item: {
+        '@type': 'Product',
+        name: product.attributes.title,
+        image: product.images?.[0]?.attributes?.variants?.default?.url || '',
+        description: product.attributes.description || `Sustainable ${category.name.toLowerCase()} for babies`,
+        offers: {
+          '@type': 'Offer',
+          price: product.attributes.price?.amount / 100 || 0,
+          priceCurrency: product.attributes.price?.currency || 'USD',
+          availability: 'https://schema.org/InStock',
+        },
+      },
+    }));
+  });
+
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    itemListElement: itemListElements,
+  };
+};
+
 const CategoryShowcase = () => {
   const config = useConfiguration();
   const [categoryProducts, setCategoryProducts] = useState({});
@@ -133,8 +165,18 @@ const CategoryShowcase = () => {
     return null;
   }
 
+  // Generate structured data for SEO
+  const structuredData = !isLoading ? generateStructuredData(showcaseCategories, categoryProducts) : null;
+
   return (
     <div className={css.showcase}>
+      {/* Schema.org structured data for rich search results */}
+      {structuredData && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      )}
       <div className={css.container}>
         {/* Section Header */}
         <div className={css.header}>
@@ -186,6 +228,47 @@ const CategoryShowcase = () => {
 };
 
 /**
+ * AgeNavigation - Age-based primary navigation (SEO Critical)
+ * Parents search by age first (85% of searches), then browse categories
+ * Provides direct links to age-filtered search pages with SEO-friendly URLs
+ */
+const AgeNavigation = () => {
+  const ageGroups = [
+    { option: 'newborn', label: 'Newborn', icon: '👶' },
+    { option: '0_6_months', label: '0-6 Months', icon: '🍼' },
+    { option: '6_12_months', label: '6-12 Months', icon: '🧸' },
+    { option: '12_18_months', label: '12-18 Months', icon: '👣' },
+    { option: '18_24_months', label: '18-24 Months', icon: '🎈' },
+  ];
+
+  return (
+    <div className={css.ageNavigation}>
+      <h3 className={css.ageNavigationTitle}>
+        <FormattedMessage
+          id="MelaHomePage.shopByAge"
+          defaultMessage="Shop by Baby's Age"
+        />
+      </h3>
+      <div className={css.ageFilters}>
+        {ageGroups.map(age => (
+          <NamedLink
+            key={age.option}
+            name="SearchPage"
+            to={{
+              search: `?pub_categoryLevel1=Baby-Clothes-Accessories&pub_age_group=${age.option}`,
+            }}
+            className={css.ageFilterButton}
+          >
+            <span className={css.ageIcon}>{age.icon}</span>
+            <span className={css.ageLabel}>{age.label}</span>
+          </NamedLink>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/**
  * CategorySection - Product-first category display
  * Shows category header followed by a grid of real product listings
  */
@@ -207,7 +290,7 @@ const CategorySection = ({ category, products, isLoading, index }) => {
         <NamedLink
           name="SearchPage"
           to={{
-            search: `?pub_categoryLevel2=${category.id}`,
+            search: `?pub_categoryLevel1=Baby-Clothes-Accessories&pub_categoryLevel2=${category.id}`,
           }}
           className={css.viewCategoryLink}
         >
@@ -236,7 +319,7 @@ const CategorySection = ({ category, products, isLoading, index }) => {
               showTrustBadges={true}
               showConversionBadges={true}
               isBestseller={productIndex === 0} // First product is bestseller
-              renderSizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, 25vw"
+              renderSizes="(max-width: 639px) 50vw, (max-width: 1023px) 50vw, 25vw"
             />
           ))}
         </div>
