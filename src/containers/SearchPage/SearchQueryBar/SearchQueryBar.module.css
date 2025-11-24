@@ -1,0 +1,84 @@
+@import '../../../styles/customMediaQueries.css';
+
+.root {
+  /* Only visible on mobile */
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px;
+  background: white;
+  border-bottom: 1px solid var(--colorGrey100);
+
+  /* Static positioning - scrolls with content */
+
+  @media (min-width: 768px) {
+    /* Hide on desktop - query visible in topbar search */
+    display: none;
+  }
+}
+
+.queryButton {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: var(--colorGrey50);
+  border: 1px solid var(--colorGrey200);
+  border-radius: 24px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 0; /* Allow flex shrinking */
+
+  &:hover {
+    background: var(--colorGrey100);
+    border-color: var(--colorGrey300);
+  }
+
+  &:focus {
+    outline: 2px solid var(--marketplaceColor);
+    outline-offset: 2px;
+  }
+}
+
+.searchIcon {
+  flex-shrink: 0;
+  color: var(--colorGrey500);
+  width: 16px;
+  height: 16px;
+}
+
+.queryText {
+  composes: marketplaceBodyFontStyles from global;
+  font-weight: var(--fontWeightMedium);
+  flex: 1;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--colorGrey700);
+}
+
+.clearButton {
+  flex-shrink: 0;
+  padding: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--colorGrey400);
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &:hover {
+    color: var(--colorGrey700);
+    background: var(--colorGrey100);
+  }
+
+  &:focus {
+    outline: 2px solid var(--marketplaceColor);
+    outline-offset: 2px;
+  }
+}

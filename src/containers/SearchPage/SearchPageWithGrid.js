@@ -56,9 +56,11 @@ import {
 import FilterComponent from './FilterComponent';
 import MainPanelHeader from './MainPanelHeader/MainPanelHeader';
 import SearchFiltersMobile from './SearchFiltersMobile/SearchFiltersMobile';
+import SearchQueryBar from './SearchQueryBar/SearchQueryBar';
 import SortBy from './SortBy/SortBy';
 import SearchResultsPanel from './SearchResultsPanel/SearchResultsPanel';
 import NoSearchResultsMaybe from './NoSearchResultsMaybe/NoSearchResultsMaybe';
+import ActiveFiltersBar from './ActiveFiltersBar/ActiveFiltersBar';
 
 import css from './SearchPage.module.css';
 
@@ -75,6 +77,7 @@ export class SearchPageComponent extends Component {
     this.state = {
       isMobileModalOpen: false,
       currentQueryParams: validUrlQueryParamsFromProps(props),
+      scrollPosition: 0, // Track scroll position for restoration
     };
 
     this.onOpenMobileModal = this.onOpenMobileModal.bind(this);
@@ -82,10 +85,77 @@ export class SearchPageComponent extends Component {
 
     // Filter functions
     this.resetAll = this.resetAll.bind(this);
+    this.removeFilter = this.removeFilter.bind(this);
     this.getHandleChangedValueFn = this.getHandleChangedValueFn.bind(this);
 
     // SortBy
     this.handleSortBy = this.handleSortBy.bind(this);
+
+    // SearchQueryBar
+    this.handleEditSearch = this.handleEditSearch.bind(this);
+    this.handleClearSearch = this.handleClearSearch.bind(this);
+  }
+
+  componentDidMount() {
+    const { location, history, routeConfiguration, config } = this.props;
+    const urlParams = parse(location.search);
+    const pathname = location.pathname;
+
+    // Auto-select first category if on /categories with no category selected
+    if (pathname === '/categories' && !urlParams.pub_categoryLevel1) {
+      const categories = config.categoryConfiguration.categories;
+
+      if (categories && categories.length > 0) {
+        const firstCategory = categories[0];
+        const { routeName, pathParams } = getSearchPageResourceLocatorStringParams(
+          routeConfiguration,
+          location
+        );
+
+        history.replace(
+          createResourceLocatorString(routeName, routeConfiguration, pathParams, {
+            ...urlParams,
+            pub_categoryLevel1: firstCategory.id,
+          })
+        );
+      }
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { searchInProgress, listings } = this.props;
+    const { scrollPosition } = this.state;
+
+    // Restore scroll when search completes and listings have loaded
+    if (prevProps.searchInProgress && !searchInProgress && listings.length > 0 && scrollPosition > 0) {
+      // Use setTimeout to ensure DOM has updated
+      setTimeout(() => {
+        window.scrollTo(0, scrollPosition);
+        // Reset scroll position state
+        this.setState({ scrollPosition: 0 });
+      }, 100);
+    }
+  }
+
+  // Remove a specific filter
+  removeFilter(filterKey) {
+    const { history, routeConfiguration, location } = this.props;
+    const urlQueryParams = validUrlQueryParamsFromProps(this.props);
+
+    // Save scroll position before filter change
+    this.setState({ scrollPosition: window.pageYOffset });
+
+    // Remove the specific filter key from query params
+    const queryParams = omit(urlQueryParams, filterKey);
+
+    const { routeName, pathParams } = getSearchPageResourceLocatorStringParams(
+      routeConfiguration,
+      location
+    );
+
+    history.push(
+      createResourceLocatorString(routeName, routeConfiguration, pathParams, queryParams)
+    );
   }
 
   // Invoked when a modal is opened from a child component,
@@ -175,6 +245,9 @@ export class SearchPageComponent extends Component {
 
       const callback = () => {
         if (useHistoryPush) {
+          // Save scroll position before filter change
+          this.setState({ scrollPosition: window.pageYOffset });
+
           const searchParams = this.state.currentQueryParams;
           const search = cleanSearchFromConflictingParams(searchParams, filterConfigs, sortConfig);
 
@@ -200,6 +273,44 @@ export class SearchPageComponent extends Component {
     const queryParams = values
       ? { ...urlQueryParams, [urlParam]: values }
       : omit(urlQueryParams, urlParam);
+
+    const { routeName, pathParams } = getSearchPageResourceLocatorStringParams(
+      routeConfiguration,
+      location
+    );
+
+    history.push(
+      createResourceLocatorString(routeName, routeConfiguration, pathParams, queryParams)
+    );
+  }
+
+  // Open search modal for editing (triggered by SearchQueryBar)
+  handleEditSearch() {
+    // On mobile, this would typically open the TopbarSearchForm modal
+    // For now, we'll scroll to top where the search is in the topbar
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+
+    // Focus the search input in topbar
+    setTimeout(() => {
+      const searchInput = document.querySelector('input[name="location"], input[name="keywords"]');
+      if (searchInput) {
+        searchInput.focus();
+      }
+    }, 300);
+  }
+
+  // Clear search query
+  handleClearSearch() {
+    const { history, routeConfiguration, location, config } = this.props;
+    const urlQueryParams = validUrlQueryParamsFromProps(this.props);
+    const isKeywordSearch = isMainSearchTypeKeywords(config);
+
+    // Remove keywords or address/bounds
+    const paramsToRemove = isKeywordSearch
+      ? ['keywords']
+      : ['address', 'bounds', 'origin'];
+
+    const queryParams = omit(urlQueryParams, paramsToRemove);
 
     const { routeName, pathParams } = getSearchPageResourceLocatorStringParams(
       routeConfiguration,
@@ -381,6 +492,13 @@ export class SearchPageComponent extends Component {
         schema={schema}
       >
         <TopbarContainer rootClassName={topbarClasses} currentSearchParams={validQueryParams} />
+        <SearchQueryBar
+          keywords={validQueryParams.keywords}
+          address={validQueryParams.address}
+          onEdit={this.handleEditSearch}
+          onClear={this.handleClearSearch}
+          config={config}
+        />
         <div className={css.layoutWrapperContainer}>
           <aside className={css.layoutWrapperFilterColumn} data-testid="filterColumnAside">
             <div className={css.filterColumnContent}>
@@ -463,6 +581,12 @@ export class SearchPageComponent extends Component {
                 searchInProgress={searchInProgress}
                 searchListingsError={searchListingsError}
                 noResultsInfo={noResultsInfo}
+              />
+              <ActiveFiltersBar
+                activeFilters={selectedFilters}
+                filterConfigs={availableFilters}
+                onRemoveFilter={this.removeFilter}
+                onClearAll={this.resetAll}
               />
               <div
                 className={classNames(css.listingsForGridVariant, {
