@@ -19,6 +19,7 @@ import {
   NO_ACCESS_PAGE_USER_PENDING_APPROVAL,
   NO_ACCESS_PAGE_VIEW_LISTINGS,
   parse,
+  stringify,
 } from '../../util/urlHelpers';
 import { createResourceLocatorString } from '../../util/routes';
 import { propTypes } from '../../util/types';
@@ -286,17 +287,29 @@ export class SearchPageComponent extends Component {
 
   // Open search modal for editing (triggered by SearchQueryBar)
   handleEditSearch() {
-    // On mobile, this would typically open the TopbarSearchForm modal
-    // For now, we'll scroll to top where the search is in the topbar
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    const { history, location } = this.props;
+    const { pathname, search, state } = location;
 
-    // Focus the search input in topbar
-    setTimeout(() => {
-      const searchInput = document.querySelector('input[name="location"], input[name="keywords"]');
-      if (searchInput) {
-        searchInput.focus();
-      }
-    }, 300);
+    // Check if mobile layout (same logic as Topbar)
+    const hasMatchMedia = typeof window !== 'undefined' && window?.matchMedia;
+    const isMobileLayout = hasMatchMedia
+      ? window.matchMedia('(max-width: 1024px)')?.matches
+      : true;
+
+    if (isMobileLayout) {
+      // Open mobile search modal by adding mobilesearch=open to URL
+      const searchString = `?${stringify({ mobilesearch: 'open', ...parse(search) })}`;
+      history.push(`${pathname}${searchString}`, state);
+    } else {
+      // On desktop, scroll to top and focus search input
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      setTimeout(() => {
+        const searchInput = document.querySelector('input[name="location"], input[name="keywords"]');
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }, 300);
+    }
   }
 
   // Clear search query
