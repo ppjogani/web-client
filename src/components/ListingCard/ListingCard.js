@@ -205,8 +205,17 @@ const ListingCardImage = props => {
 
   const altTextParts = [title];
   if (ageGroup) {
-    const ageLabel = ageGroup.replace(/_/g, '-');
-    altTextParts.push(`for ${ageLabel}`);
+    if (typeof ageGroup === 'string') {
+      const ageLabel = ageGroup.replace(/_/g, '-');
+      altTextParts.push(`for ${ageLabel}`);
+    } else {
+      console.warn('ListingCard: ageGroup is not a string', {
+        listingId: currentListing.id?.uuid,
+        ageGroup,
+        ageGroupType: typeof ageGroup,
+        publicData
+      });
+    }
   }
   if (hasGOTS) {
     altTextParts.push('GOTS certified');
