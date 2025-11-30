@@ -92,4 +92,32 @@ describe('ListingImage', () => {
     // Should still render with fallback to available variants
     expect(container.querySelector('img')).toBeInTheDocument();
   });
+
+  it('passes rootClassName to inner image component', () => {
+    const customRootClass = 'custom-root-image';
+    const { container } = render(
+      <ListingImage listing={mockListing} rootClassName={customRootClass} />
+    );
+    const img = container.querySelector('img');
+    expect(img?.parentElement).toHaveClass(customRootClass);
+  });
+
+  it('supports mouse event handlers for map integration', () => {
+    const onMouseEnter = jest.fn();
+    const onMouseLeave = jest.fn();
+    const { container } = render(
+      <ListingImage
+        listing={mockListing}
+        onMouseEnter={onMouseEnter}
+        onMouseLeave={onMouseLeave}
+      />
+    );
+
+    const wrapper = container.firstChild;
+    wrapper.dispatchEvent(new MouseEvent('mouseenter', { bubbles: true }));
+    expect(onMouseEnter).toHaveBeenCalled();
+
+    wrapper.dispatchEvent(new MouseEvent('mouseleave', { bubbles: true }));
+    expect(onMouseLeave).toHaveBeenCalled();
+  });
 });

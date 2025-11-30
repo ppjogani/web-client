@@ -17,8 +17,11 @@ const LazyImage = lazyLoadWithDimensions(ResponsiveImage, {
  * @param {boolean} props.lazy - Whether to use lazy loading (default: true)
  * @param {number} props.aspectWidth - Aspect ratio width (default: 1)
  * @param {number} props.aspectHeight - Aspect ratio height (default: 1)
- * @param {string} props.className - Additional CSS class for wrapper
+ * @param {string} props.className - Additional CSS class for AspectRatioWrapper
+ * @param {string} props.rootClassName - CSS class for the image element itself
  * @param {string} props.alt - Custom alt text (auto-generated if not provided)
+ * @param {Object} props.onMouseEnter - Mouse enter handler (for map integration)
+ * @param {Object} props.onMouseLeave - Mouse leave handler (for map integration)
  */
 export const ListingImage = ({
   listing,
@@ -28,7 +31,10 @@ export const ListingImage = ({
   aspectWidth = 1,
   aspectHeight = 1,
   className,
+  rootClassName,
   alt,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   const firstImage =
     listing.images && listing.images.length > 0 ? listing.images[0] : null;
@@ -47,9 +53,24 @@ export const ListingImage = ({
   // Generate alt text if not provided
   const altText = alt || `${listing.attributes.title} - organic baby product`;
 
+  // Build props for AspectRatioWrapper, including optional mouse handlers
+  const wrapperProps = {
+    className,
+    width: aspectWidth,
+    height: aspectHeight,
+  };
+  if (onMouseEnter) wrapperProps.onMouseEnter = onMouseEnter;
+  if (onMouseLeave) wrapperProps.onMouseLeave = onMouseLeave;
+
   return (
-    <AspectRatioWrapper className={className} width={aspectWidth} height={aspectHeight}>
-      <ImageComponent alt={altText} image={firstImage} variants={variants} sizes={sizes} />
+    <AspectRatioWrapper {...wrapperProps}>
+      <ImageComponent
+        rootClassName={rootClassName}
+        alt={altText}
+        image={firstImage}
+        variants={variants}
+        sizes={sizes}
+      />
     </AspectRatioWrapper>
   );
 };
