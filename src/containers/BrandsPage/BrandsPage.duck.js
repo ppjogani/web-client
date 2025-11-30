@@ -1,6 +1,11 @@
 import { storableError } from '../../util/errors';
 import { addMarketplaceEntities } from '../../ducks/marketplaceData.duck';
-import { getFeaturedBrandIds, getPaginatedBrandIds } from '../../config/configBrands';
+import {
+  getFeaturedBrandIds,
+  getPaginatedBrandIds,
+  getFeaturedProductIds,
+  getBrandConfiguration,
+} from '../../config/configBrands';
 import { denormalisedEntities } from '../../util/data';
 
 // ================ Action types ================ //
@@ -117,6 +122,7 @@ export const fetchFeaturedBrandsError = error => ({
 /**
  * Fetch brand details from Marketplace API
  * Uses the user show endpoint for each brand ID
+ * Also batch-fetches featured products for all brands in one query (performance optimization)
  */
 export const fetchBrands = (params = {}) => (dispatch, getState, sdk) => {
   dispatch(fetchBrandsRequest());
@@ -163,10 +169,36 @@ export const fetchBrands = (params = {}) => (dispatch, getState, sdk) => {
       })
   );
 
-  return Promise.all(brandPromises)
-    .then(responses => {
-      // Filter out failed requests
-      const validResponses = responses.filter(r => r !== null);
+  // Batch fetch ALL featured products for these brands in ONE query (performance optimization)
+  const allProductIds = getFeaturedProductIds(brandIds);
+  const productsPromise =
+    allProductIds.length > 0
+      ? sdk.listings
+          .query({
+            ids: allProductIds,
+            include: ['images'],
+            'fields.listing': ['title', 'price', 'publicData'],
+            'fields.image': ['variants.square-small', 'variants.square-small2x'],
+            perPage: 100, // Fetch up to 100 products (4 per brand * 24 brands = 96 max)
+          })
+          .then(response => {
+            if (response && response.data) {
+              return response.data;
+            }
+            console.warn('Invalid response for products');
+            return { data: [], included: [] };
+          })
+          .catch(error => {
+            console.error('Failed to fetch featured products:', error);
+            return { data: [], included: [] };
+          })
+      : Promise.resolve({ data: [], included: [] });
+
+  // Wait for both brands and products to fetch in parallel
+  return Promise.all([Promise.all(brandPromises), productsPromise])
+    .then(([brandResponses, productsResponse]) => {
+      // Filter out failed brand requests
+      const validResponses = brandResponses.filter(r => r !== null);
 
       // Combine all responses and filter out any invalid user objects
       const users = validResponses
@@ -227,12 +259,39 @@ export const fetchBrands = (params = {}) => (dispatch, getState, sdk) => {
 
       const validIncluded = included.filter(e => e !== undefined && e !== null);
 
+      // Process products response
+      const products = productsResponse.data || [];
+      const productImages = productsResponse.included || [];
+
+      // Filter valid products
+      const validProducts = products.filter(
+        listing =>
+          listing &&
+          typeof listing === 'object' &&
+          listing.id &&
+          listing.id.uuid &&
+          listing.type === 'listing'
+      );
+
+      const validProductImages = productImages.filter(
+        entity =>
+          entity &&
+          typeof entity === 'object' &&
+          entity.id &&
+          entity.id.uuid &&
+          entity.type === 'image'
+      );
+
+      // Combine all entities (users + products + images)
+      const allEntities = [...validUsers, ...validProducts];
+      const allIncluded = [...validIncluded, ...validProductImages];
+
       // Only dispatch if we have valid data
-      if (validUsers.length > 0 || validIncluded.length > 0) {
+      if (allEntities.length > 0 || allIncluded.length > 0) {
         // Build entity payload
-        const entityPayload = { data: validUsers };
-        if (validIncluded.length > 0) {
-          entityPayload.included = validIncluded;
+        const entityPayload = { data: allEntities };
+        if (allIncluded.length > 0) {
+          entityPayload.included = allIncluded;
         }
 
         // Wrap in sdkResponse format that addMarketplaceEntities expects
@@ -414,6 +473,39 @@ export const getBrands = state => {
   return denormalisedEntities(entities, entityRefs, throwIfNotFound);
 };
 
+/**
+ * Get brands with their featured products
+ * Returns array of { brand, products } objects
+ */
+export const getBrandsWithProducts = state => {
+  const { brandIds } = state.BrandsPage;
+  const { entities } = state.marketplaceData;
+
+  // Get denormalized brands
+  const brands = denormalisedEntities(
+    entities,
+    brandIds.map(id => ({ id: { uuid: id }, type: 'user' })),
+    false
+  );
+
+  // Attach products to each brand
+  return brands.map(brand => {
+    const brandConfig = getBrandConfiguration(brand.id.uuid);
+    const productIds = brandConfig?.featuredProductIds || [];
+
+    const products = denormalisedEntities(
+      entities,
+      productIds.map(id => ({ id: { uuid: id }, type: 'listing' })),
+      false
+    );
+
+    return {
+      brand,
+      products,
+    };
+  });
+};
+
 export const getFeaturedBrands = state => {
   const { featuredBrandIds } = state.BrandsPage;
   const { entities } = state.marketplaceData;
@@ -424,6 +516,39 @@ export const getFeaturedBrands = state => {
   // Denormalize to include profileImage relationships
   const throwIfNotFound = false;
   return denormalisedEntities(entities, entityRefs, throwIfNotFound);
+};
+
+/**
+ * Get featured brands with their featured products
+ * Returns array of { brand, products } objects
+ */
+export const getFeaturedBrandsWithProducts = state => {
+  const { featuredBrandIds } = state.BrandsPage;
+  const { entities } = state.marketplaceData;
+
+  // Get denormalized brands
+  const brands = denormalisedEntities(
+    entities,
+    featuredBrandIds.map(id => ({ id: { uuid: id }, type: 'user' })),
+    false
+  );
+
+  // Attach products to each brand
+  return brands.map(brand => {
+    const brandConfig = getBrandConfiguration(brand.id.uuid);
+    const productIds = brandConfig?.featuredProductIds || [];
+
+    const products = denormalisedEntities(
+      entities,
+      productIds.map(id => ({ id: { uuid: id }, type: 'listing' })),
+      false
+    );
+
+    return {
+      brand,
+      products,
+    };
+  });
 };
 
 export const getBrandsPagination = state => state.BrandsPage.pagination;
