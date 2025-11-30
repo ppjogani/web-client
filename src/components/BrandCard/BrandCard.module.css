@@ -1,0 +1,155 @@
+@import '../../styles/customMediaQueries.css';
+
+.root {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  padding: 24px;
+  border-radius: 12px;
+  background: var(--colorWhite);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+
+  &:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    transform: translateY(-4px);
+  }
+}
+
+.imageWrapper {
+  position: relative;
+  margin-bottom: 16px;
+}
+
+.logoContainer {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--colorGrey50);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.logo {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.logoPlaceholder {
+  width: 100%;
+  aspect-ratio: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--marketplaceColor) 0%, var(--marketplaceColorDark) 100%);
+  border-radius: 8px;
+}
+
+.logoInitial {
+  font-size: 64px;
+  font-weight: var(--fontWeightBold);
+  color: var(--colorWhite);
+  text-transform: uppercase;
+}
+
+/* Certification badge (top-left) */
+.certificationBadge {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  background: var(--colorWhite);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorGrey700);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+/* Featured badge (top-right) */
+.featuredBadge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: var(--marketplaceColor);
+  color: var(--colorWhite);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: var(--fontWeightSemiBold);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  z-index: 1;
+}
+
+.info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.brandName {
+  font-size: 18px;
+  font-weight: var(--fontWeightSemiBold);
+  line-height: 24px;
+  color: var(--colorGrey700);
+  margin: 0;
+  text-align: center;
+
+  /* Truncate if too long */
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.tagline {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--colorGrey300);
+  margin: 0;
+  text-align: center;
+  min-height: 40px;
+
+  /* Show max 2 lines */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 4px;
+  padding-top: 12px;
+  border-top: 1px solid var(--colorGrey100);
+}
+
+.productCount {
+  font-size: 13px;
+  color: var(--colorGrey300);
+  font-weight: var(--fontWeightMedium);
+}
+
+/* Responsive adjustments */
+@media (--viewportMedium) {
+  .root {
+    padding: 20px;
+  }
+
+  .brandName {
+    font-size: 20px;
+  }
+
+  .logoInitial {
+    font-size: 72px;
+  }
+}
