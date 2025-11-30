@@ -1370,6 +1370,18 @@
   "BrandCard.shopAll": "Shop All Products",
   "BrandCard.noProduct": "Coming Soon",
 
+  "BrandCardHome.verifiedPartner": "Verified Partner",
+  "BrandCardHome.customerCount": "{count, plural, one {# customer} other {# customers}}",
+
+  "PartnerCTACard.title": "Become a Partner",
+  "PartnerCTACard.description": "Join our network of trusted brands and reach thousands of parents across the US",
+  "PartnerCTACard.cta": "Apply Now",
+
+  "FeaturedBrandPartners.title": "Trusted by Parents, Verified by Us",
+  "FeaturedBrandPartners.subtitle": "Discover premium brands that meet our strict quality and safety standards",
+  "FeaturedBrandPartners.loading": "Loading trusted brands...",
+  "FeaturedBrandPartners.error": "Unable to load brands. Please try again later.",
+
   "BrandProfilePage.title": "{brandName} - {tagline} | Authentic Indian Baby Products | Mela",
   "BrandProfilePage.description": "{brandName} - {bio}. {certification}. Shop {productCount}+ authentic products on Mela.",
   "BrandProfilePage.tabProducts": "Products",
