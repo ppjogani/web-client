@@ -17,6 +17,8 @@ import {
   loadData,
   getBrands,
   getFeaturedBrands,
+  getBrandsWithProducts,
+  getFeaturedBrandsWithProducts,
   getBrandsInProgress,
   getBrandsPagination,
 } from './BrandsPage.duck';
@@ -24,10 +26,10 @@ import css from './BrandsPage.module.css';
 
 const BrandsPageComponent = props => {
   const {
-    brands = [],
+    brandsWithProducts = [],
+    featuredBrandsWithProducts = [],
     brandsInProgress,
     pagination = null,
-    featuredBrands = [],
     scrollingDisabled,
     history,
     location,
@@ -105,16 +107,27 @@ const BrandsPageComponent = props => {
     />
   );
 
+  // Favorite handler
+  const handleFavorite = listingId => {
+    // TODO: Implement favorite functionality
+    console.log('Favorite clicked:', listingId);
+  };
+
   // Featured brands section
-  const hasFeaturedBrands = featuredBrands && featuredBrands.length > 0;
+  const hasFeaturedBrands = featuredBrandsWithProducts && featuredBrandsWithProducts.length > 0;
   const featuredBrandsSection = hasFeaturedBrands && (
     <div className={css.featuredSection}>
       <h2 className={css.sectionTitle}>
         <FormattedMessage id="BrandsPage.featuredBrandsTitle" />
       </h2>
       <div className={css.featuredBrandGrid}>
-        {featuredBrands.map(brand => (
-          <BrandCard key={brand.id.uuid} brand={brand} />
+        {featuredBrandsWithProducts.map(({ brand, products }) => (
+          <BrandCard
+            key={brand.id.uuid}
+            brand={brand}
+            products={products}
+            onFavorite={handleFavorite}
+          />
         ))}
       </div>
     </div>
@@ -130,8 +143,13 @@ const BrandsPageComponent = props => {
   // Brand grid
   const brandGrid = (
     <div className={css.brandGrid}>
-      {brands.map(brand => (
-        <BrandCard key={brand.id.uuid} brand={brand} />
+      {brandsWithProducts.map(({ brand, products }) => (
+        <BrandCard
+          key={brand.id.uuid}
+          brand={brand}
+          products={products}
+          onFavorite={handleFavorite}
+        />
       ))}
     </div>
   );
@@ -175,7 +193,7 @@ const BrandsPageComponent = props => {
         <FormattedMessage
           id="BrandsPage.showingCount"
           values={{
-            showing: brands.length,
+            showing: brandsWithProducts.length,
             total: pagination?.totalItems || 0,
           }}
         />
@@ -184,7 +202,7 @@ const BrandsPageComponent = props => {
   );
 
   // Main content
-  const hasNoBrands = !brandsInProgress && brands.length === 0;
+  const hasNoBrands = !brandsInProgress && brandsWithProducts.length === 0;
   const content = brandsInProgress && currentPage === 1
     ? loadingContent
     : hasNoBrands
@@ -230,10 +248,10 @@ const BrandsPageComponent = props => {
 
 const mapStateToProps = state => {
   return {
-    brands: getBrands(state),
+    brandsWithProducts: getBrandsWithProducts(state),
+    featuredBrandsWithProducts: getFeaturedBrandsWithProducts(state),
     brandsInProgress: getBrandsInProgress(state),
     pagination: getBrandsPagination(state),
-    featuredBrands: getFeaturedBrands(state),
     scrollingDisabled: isScrollingDisabled(state),
   };
 };

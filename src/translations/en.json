@@ -1367,6 +1367,8 @@
   "BrandCard.ctaViewProfile": "View Profile",
   "BrandCard.featuredBadge": "Featured",
   "BrandCard.ariaLabel": "View {brandName} profile. {certificationCount} certifications. {productCount} products available.",
+  "BrandCard.shopAll": "Shop All Products",
+  "BrandCard.noProduct": "Coming Soon",
 
   "BrandProfilePage.title": "{brandName} - {tagline} | Authentic Indian Baby Products | Mela",
   "BrandProfilePage.description": "{brandName} - {bio}. {certification}. Shop {productCount}+ authentic products on Mela.",

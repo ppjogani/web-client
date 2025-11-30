@@ -4,152 +4,159 @@
   position: relative;
   display: flex;
   flex-direction: column;
-  padding: 24px;
-  border-radius: 12px;
+  border-radius: 16px;
   background: var(--colorWhite);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
   transition: all 0.3s ease;
-  text-decoration: none;
-  color: inherit;
-  cursor: pointer;
 
   &:hover {
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
-    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
   }
 }
 
-.imageWrapper {
-  position: relative;
-  margin-bottom: 16px;
+/* Header with small logo + name */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--colorGrey100);
+  background: var(--colorWhite);
 }
 
-.logoContainer {
-  width: 100%;
-  aspect-ratio: 1;
+.brandInfo {
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: var(--colorGrey50);
-  border-radius: 8px;
-  overflow: hidden;
+  gap: 10px;
 }
 
-.logo {
-  width: 100%;
-  height: 100%;
+.smallLogo {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
   object-fit: cover;
-  object-position: center;
 }
 
 .logoPlaceholder {
-  width: 100%;
-  aspect-ratio: 1;
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  background: linear-gradient(
+    135deg,
+    var(--marketplaceColor),
+    var(--marketplaceColorDark)
+  );
+  color: var(--colorWhite);
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, var(--marketplaceColor) 0%, var(--marketplaceColorDark) 100%);
-  border-radius: 8px;
-}
-
-.logoInitial {
-  font-size: 64px;
   font-weight: var(--fontWeightBold);
-  color: var(--colorWhite);
-  text-transform: uppercase;
-}
-
-/* Certification badge (top-left) */
-.certificationBadge {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  background: var(--colorWhite);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: var(--fontWeightSemiBold);
-  color: var(--colorGrey700);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  z-index: 1;
-}
-
-/* Featured badge (top-right) */
-.featuredBadge {
-  position: absolute;
-  top: 8px;
-  right: 8px;
-  background: var(--marketplaceColor);
-  color: var(--colorWhite);
-  padding: 4px 10px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: var(--fontWeightSemiBold);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  z-index: 1;
-}
-
-.info {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+  font-size: 16px;
 }
 
 .brandName {
-  font-size: 18px;
+  font-size: 16px;
   font-weight: var(--fontWeightSemiBold);
-  line-height: 24px;
-  color: var(--colorGrey700);
   margin: 0;
-  text-align: center;
+  color: var(--colorGrey700);
 
   /* Truncate if too long */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  max-width: 200px;
 }
 
-.tagline {
-  font-size: 14px;
-  line-height: 20px;
+.menuButton {
+  background: none;
+  border: none;
+  font-size: 20px;
   color: var(--colorGrey300);
-  margin: 0;
-  text-align: center;
-  min-height: 40px;
-
-  /* Show max 2 lines */
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  cursor: pointer;
+  padding: 4px;
 }
 
-.footer {
+/* Certification badge (absolute) */
+.certBadge {
+  position: absolute;
+  top: 60px;
+  right: 12px;
+  background: var(--colorWhite);
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: var(--fontWeightSemiBold);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  z-index: 2;
+  text-transform: uppercase;
+  color: var(--colorGrey700);
+}
+
+/* Product Grid (2x2) */
+.productGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 12px;
+  background: var(--colorGrey50);
+}
+
+.productPlaceholder {
+  aspect-ratio: 1;
+  background: var(--colorWhite);
+  border: 2px dashed var(--colorGrey100);
+  border-radius: 8px;
   display: flex;
-  justify-content: center;
   align-items: center;
-  margin-top: 4px;
-  padding-top: 12px;
-  border-top: 1px solid var(--colorGrey100);
+  justify-content: center;
+  font-size: 12px;
+  color: var(--colorGrey300);
+  text-align: center;
+  padding: 8px;
 }
 
-.productCount {
-  font-size: 13px;
-  color: var(--colorGrey300);
-  font-weight: var(--fontWeightMedium);
+/* Shop All CTA */
+.cta {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--marketplaceColor);
+  color: var(--colorWhite);
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.2s ease;
+
+  &:hover {
+    background: var(--marketplaceColorDark);
+  }
+}
+
+.ctaText {
+  font-size: 15px;
+  font-weight: var(--fontWeightSemiBold);
+}
+
+.ctaArrow {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.cta:hover .ctaArrow {
+  transform: translateX(4px);
 }
 
 /* Responsive adjustments */
 @media (--viewportMedium) {
-  .root {
-    padding: 20px;
-  }
-
   .brandName {
-    font-size: 20px;
+    font-size: 17px;
+    max-width: 240px;
   }
 
-  .logoInitial {
-    font-size: 72px;
+  .productGrid {
+    gap: 10px;
+    padding: 14px;
   }
 }
