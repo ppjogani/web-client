@@ -3,7 +3,7 @@ import { bool, func, arrayOf, shape, string } from 'prop-types';
 import classNames from 'classnames';
 
 import { FormattedMessage } from '../../../../util/reactIntl';
-import { BrandCardHome, PartnerCTACard } from '../../../../components';
+import { BrandCardHome, PartnerCTACard, NamedLink } from '../../../../components';
 
 import css from './FeaturedBrandPartners.module.css';
 
@@ -90,23 +90,7 @@ const FeaturedBrandPartners = props => {
 
   // Limit to 6 brands maximum (4-6 per user preference)
   const displayBrands = brandsWithProducts.slice(0, 6);
-
-  // Mock trust data (TODO: Replace with real data from backend)
-  // In production, this would come from brand analytics/reviews
-  const brandTrustData = {
-    '68ebd6d5-ffce-4cb9-9605-3b69f2b67152': {
-      // Masilo
-      rating: 4.8,
-      reviewCount: 124,
-      customerCount: 2500,
-    },
-    '68e42d68-8838-48b5-8299-8e01f46280f2': {
-      // Baby Forest
-      rating: 4.7,
-      reviewCount: 98,
-      customerCount: 1800,
-    },
-  };
+  const totalBrandCount = brandsWithProducts.length;
 
   return (
     <div className={classes}>
@@ -123,24 +107,27 @@ const FeaturedBrandPartners = props => {
 
         {/* Brand Grid */}
         <div className={css.grid}>
-          {displayBrands.map(({ brand, products }) => {
-            const brandId = brand.id.uuid;
-            const trustData = brandTrustData[brandId] || {};
-
-            return (
-              <BrandCardHome
-                key={brandId}
-                brand={brand}
-                products={products}
-                rating={trustData.rating}
-                reviewCount={trustData.reviewCount}
-                customerCount={trustData.customerCount}
-              />
-            );
-          })}
+          {displayBrands.map(({ brand, products }) => (
+            <BrandCardHome key={brand.id.uuid} brand={brand} products={products} />
+          ))}
 
           {/* Partner CTA Card */}
           <PartnerCTACard partnerUrl="/partner" />
+        </div>
+
+        {/* View All Brands CTA */}
+        <div className={css.viewAllBrands}>
+          <NamedLink name="BrandsPage" className={css.viewAllButton}>
+            {totalBrandCount > 0 ? (
+              <FormattedMessage
+                id="FeaturedBrandPartners.viewAllBrandsCount"
+                values={{ count: totalBrandCount }}
+              />
+            ) : (
+              <FormattedMessage id="FeaturedBrandPartners.viewAllBrands" />
+            )}
+            <span className={css.ctaArrow}>→</span>
+          </NamedLink>
         </div>
       </div>
     </div>

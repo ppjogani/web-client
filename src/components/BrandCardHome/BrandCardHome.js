@@ -1,24 +1,29 @@
 import React from 'react';
-import { string, arrayOf, shape, func, number } from 'prop-types';
+import { string, arrayOf, shape, func } from 'prop-types';
 import classNames from 'classnames';
 
 import { FormattedMessage } from '../../util/reactIntl';
 import { NamedLink } from '../../components';
 import { ListingCardMini } from '../ListingCardMini/ListingCardMini';
+import CertificationBadge from '../CertificationBadge/CertificationBadge';
 
 import css from './BrandCardHome.module.css';
 
 /**
- * BrandCardHome - Enhanced BrandCard for homepage with trust indicators
- * Extends the Shop-style BrandCard with verification badges, ratings, and taglines
+ * BrandCardHome - Enhanced BrandCard for homepage with authentic trust signals
+ * Extends the Shop-style BrandCard with certifications, brand origin, and establishment year
+ *
+ * Trust signals are extracted from brand.attributes.profile.publicData:
+ * - certifications: Array of certification types (displays all with icons)
+ * - brandOrigin: "City, Country" or separate brandCity/brandCountry fields
+ * - establishedYear: Year brand was founded
+ *
+ * Shows placeholder text when data is missing to prompt brand onboarding.
  *
  * @param {Object} props
  * @param {Object} props.brand - Brand user entity
  * @param {Array} props.products - Array of listing entities (up to 4)
  * @param {Function} props.onFavorite - Callback when favorite button clicked
- * @param {number} props.rating - Brand rating (optional)
- * @param {number} props.reviewCount - Number of reviews (optional)
- * @param {number} props.customerCount - Number of customers (optional)
  * @param {string} props.className - Additional CSS class
  * @param {string} props.rootClassName - Root CSS class override
  */
@@ -27,9 +32,6 @@ const BrandCardHome = props => {
     brand,
     products = [],
     onFavorite,
-    rating,
-    reviewCount,
-    customerCount,
     className = null,
     rootClassName = null,
   } = props;
@@ -49,10 +51,27 @@ const BrandCardHome = props => {
 
   const logoInitial = displayName?.charAt(0) || 'B';
 
-  // Extract first sentence from bio as tagline (max 60 chars)
-  const tagline = bio
-    ? bio.split('.')[0].substring(0, 60) + (bio.split('.')[0].length > 60 ? '...' : '')
+  // Extract first sentence from bio as tagline (max 80 chars)
+  const firstSentence = bio ? bio.split('.')[0].trim() : '';
+  const tagline = firstSentence
+    ? firstSentence.substring(0, 80) + (firstSentence.length > 80 ? '...' : '')
     : null;
+
+  // Extract brand origin (city, country)
+  const brandOrigin =
+    publicData?.brandOrigin ||
+    (publicData?.brandCity && publicData?.brandCountry
+      ? `${publicData.brandCity}, ${publicData.brandCountry}`
+      : publicData?.brandCountry || null);
+
+  // Extract establishment year
+  const establishedYear = publicData?.establishedYear || publicData?.foundedYear || null;
+
+  // Format brand info display
+  const brandInfoParts = [brandOrigin, establishedYear && `Est. ${establishedYear}`].filter(
+    Boolean
+  );
+  const brandInfo = brandInfoParts.length > 0 ? brandInfoParts.join(' · ') : null;
 
   // Show up to 4 products in 2x2 grid
   const featuredProducts = products.slice(0, 4);
@@ -63,9 +82,6 @@ const BrandCardHome = props => {
     gridProducts.push(null); // Placeholder
   }
 
-  // Determine if we have trust indicators
-  const hasTrustIndicators = rating || customerCount;
-
   return (
     <div className={classes}>
       {/* Header */}
@@ -74,44 +90,50 @@ const BrandCardHome = props => {
           {logoSrc ? (
             <img src={logoSrc} alt={displayName} className={css.smallLogo} />
           ) : (
-            <div className={css.logoPlaceholder}>{logoInitial}</div>
+            <div className={css.logoPlaceholder}>
+              {logoInitial}
+              <span className={css.logoMissingIcon}>📸</span>
+            </div>
           )}
           <div className={css.brandText}>
             <h3 className={css.brandName}>{displayName}</h3>
-            {tagline && <p className={css.tagline}>{tagline}</p>}
+
+            {/* Tagline */}
+            {tagline ? (
+              <p className={css.tagline}>{tagline}</p>
+            ) : (
+              <p className={css.taglinePlaceholder}>
+                <FormattedMessage id="BrandCardHome.addDescription" />
+              </p>
+            )}
+
+            {/* Brand Origin & Established Year */}
+            {brandInfo ? (
+              <p className={css.brandOrigin}>{brandInfo}</p>
+            ) : (
+              <p className={css.brandOriginPlaceholder}>
+                <FormattedMessage id="BrandCardHome.addOriginYear" />
+              </p>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Certification Badge */}
-      {certifications.length > 0 && (
-        <div className={css.certBadge}>
-          {certifications[0] === 'gots_certified' ? 'GOTS' : certifications[0]}
+      {/* Certifications */}
+      {certifications.length > 0 ? (
+        <div className={css.certBadges}>
+          {certifications.map(cert => (
+            <CertificationBadge
+              key={cert}
+              certification={cert}
+              variant="compact"
+              size={14}
+            />
+          ))}
         </div>
-      )}
-
-      {/* Trust Indicators */}
-      {hasTrustIndicators && (
-        <div className={css.trustIndicators}>
-          <div className={css.verifiedBadge}>
-            <FormattedMessage id="BrandCardHome.verifiedPartner" />
-          </div>
-          <div className={css.trustStats}>
-            {rating && (
-              <span className={css.rating}>
-                ⭐ {rating.toFixed(1)}
-                {reviewCount && ` (${reviewCount})`}
-              </span>
-            )}
-            {customerCount && (
-              <span className={css.customers}>
-                <FormattedMessage
-                  id="BrandCardHome.customerCount"
-                  values={{ count: customerCount }}
-                />
-              </span>
-            )}
-          </div>
+      ) : (
+        <div className={css.certPlaceholder}>
+          <FormattedMessage id="BrandCardHome.addCertifications" />
         </div>
       )}
 
@@ -158,9 +180,6 @@ BrandCardHome.propTypes = {
     })
   ),
   onFavorite: func,
-  rating: number,
-  reviewCount: number,
-  customerCount: number,
   className: string,
   rootClassName: string,
 };
@@ -170,6 +189,6 @@ export default React.memo(BrandCardHome, (prevProps, nextProps) => {
   return (
     prevProps.brand.id.uuid === nextProps.brand.id.uuid &&
     prevProps.products.length === nextProps.products.length &&
-    prevProps.rating === nextProps.rating
+    prevProps.brand.attributes?.profile?.publicData === nextProps.brand.attributes?.profile?.publicData
   );
 });

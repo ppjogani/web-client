@@ -60,6 +60,9 @@ const mockMessages = {
   'BrandCard.noProduct': 'Coming Soon',
   'BrandCardHome.verifiedPartner': '✓ Verified Partner',
   'BrandCardHome.customerCount': '{count, plural, one {# customer} other {# customers}}',
+  'BrandCardHome.addDescription': '✏️ Add description',
+  'BrandCardHome.addOriginYear': '📍 Add location & year',
+  'BrandCardHome.addCertifications': '🏆 Add certifications',
 };
 
 const TestWrapper = ({ children }) => (
@@ -94,14 +97,14 @@ describe('BrandCardHome', () => {
     expect(screen.getByText('Premium organic baby clothing from India')).toBeInTheDocument();
   });
 
-  it('truncates long tagline with ellipsis', () => {
+  it('truncates long tagline with ellipsis at 80 chars', () => {
     const longBioBrand = {
       ...mockBrand,
       attributes: {
         ...mockBrand.attributes,
         profile: {
           ...mockBrand.attributes.profile,
-          bio: 'This is a very long bio that should be truncated because it exceeds sixty characters in length and we want to keep it concise.',
+          bio: 'This is a very long bio that should be truncated because it exceeds eighty characters in length and we want to keep it concise for better readability.',
         },
       },
     };
@@ -114,59 +117,121 @@ describe('BrandCardHome', () => {
 
     const tagline = screen.getByText(/This is a very long bio/);
     expect(tagline.textContent).toContain('...');
-    expect(tagline.textContent.length).toBeLessThanOrEqual(63); // 60 chars + "..."
+    expect(tagline.textContent.length).toBeLessThanOrEqual(83); // 80 chars + "..."
   });
 
-  it('renders verified badge when trust indicators present', () => {
+  it('renders brand origin when provided', () => {
+    const brandWithOrigin = {
+      ...mockBrand,
+      attributes: {
+        ...mockBrand.attributes,
+        profile: {
+          ...mockBrand.attributes.profile,
+          publicData: {
+            ...mockBrand.attributes.profile.publicData,
+            brandOrigin: 'Bangalore, India',
+            establishedYear: 2018,
+          },
+        },
+      },
+    };
+
     render(
       <TestWrapper>
-        <BrandCardHome brand={mockBrand} products={mockProducts} rating={4.8} />
+        <BrandCardHome brand={brandWithOrigin} products={mockProducts} />
       </TestWrapper>
     );
 
-    expect(screen.getByText('✓ Verified Partner')).toBeInTheDocument();
+    expect(screen.getByText('Bangalore, India · Est. 2018')).toBeInTheDocument();
   });
 
-  it('displays rating and review count', () => {
+  it('shows placeholder when brand origin missing', () => {
+    const brandNoOrigin = {
+      ...mockBrand,
+      attributes: {
+        ...mockBrand.attributes,
+        profile: {
+          displayName: 'TestBrand',
+          publicData: {},
+        },
+      },
+    };
+
     render(
       <TestWrapper>
-        <BrandCardHome brand={mockBrand} products={mockProducts} rating={4.8} reviewCount={124} />
+        <BrandCardHome brand={brandNoOrigin} products={[]} />
       </TestWrapper>
     );
 
-    expect(screen.getByText(/4.8/)).toBeInTheDocument();
-    expect(screen.getByText(/124/)).toBeInTheDocument();
+    expect(screen.getByText('📍 Add location & year')).toBeInTheDocument();
   });
 
-  it('displays customer count', () => {
+  it('shows placeholder when tagline/bio missing', () => {
+    const brandNoBio = {
+      ...mockBrand,
+      attributes: {
+        ...mockBrand.attributes,
+        profile: {
+          displayName: 'TestBrand',
+          publicData: {},
+        },
+      },
+    };
+
     render(
       <TestWrapper>
-        <BrandCardHome brand={mockBrand} products={mockProducts} customerCount={2500} />
+        <BrandCardHome brand={brandNoBio} products={[]} />
       </TestWrapper>
     );
 
-    expect(screen.getByText('2500 customers')).toBeInTheDocument();
+    expect(screen.getByText('✏️ Add description')).toBeInTheDocument();
   });
 
-  it('hides trust indicators when no rating or customer count', () => {
+  it('shows placeholder when certifications missing', () => {
+    const brandNoCerts = {
+      ...mockBrand,
+      attributes: {
+        ...mockBrand.attributes,
+        profile: {
+          displayName: 'TestBrand',
+          publicData: {},
+        },
+      },
+    };
+
+    render(
+      <TestWrapper>
+        <BrandCardHome brand={brandNoCerts} products={[]} />
+      </TestWrapper>
+    );
+
+    expect(screen.getByText('🏆 Add certifications')).toBeInTheDocument();
+  });
+
+  it('renders all certification badges with icons', () => {
+    const brandWithMultipleCerts = {
+      ...mockBrand,
+      attributes: {
+        ...mockBrand.attributes,
+        profile: {
+          ...mockBrand.attributes.profile,
+          publicData: {
+            ...mockBrand.attributes.profile.publicData,
+            certifications: ['gots_certified', 'non_toxic_dyes', 'fair_trade'],
+          },
+        },
+      },
+    };
+
     const { container } = render(
       <TestWrapper>
-        <BrandCardHome brand={mockBrand} products={mockProducts} />
+        <BrandCardHome brand={brandWithMultipleCerts} products={mockProducts} />
       </TestWrapper>
     );
 
-    const trustIndicators = container.querySelector('.trustIndicators');
-    expect(trustIndicators).not.toBeInTheDocument();
-  });
-
-  it('renders certification badge', () => {
-    render(
-      <TestWrapper>
-        <BrandCardHome brand={mockBrand} products={mockProducts} />
-      </TestWrapper>
-    );
-
-    expect(screen.getByText('GOTS')).toBeInTheDocument();
+    // Should render CertificationBadge components
+    const badges = container.querySelectorAll('[data-certification]');
+    expect(badges.length).toBe(3);
   });
 
   it('renders 2x2 product grid with placeholders', () => {
@@ -224,16 +289,16 @@ describe('BrandCardHome', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('memoizes correctly based on brand, products, and rating', () => {
+  it('memoizes correctly based on brand and products', () => {
     const { rerender } = render(
       <TestWrapper>
-        <BrandCardHome brand={mockBrand} products={mockProducts} rating={4.8} />
+        <BrandCardHome brand={mockBrand} products={mockProducts} />
       </TestWrapper>
     );
 
     rerender(
       <TestWrapper>
-        <BrandCardHome brand={mockBrand} products={mockProducts} rating={4.8} />
+        <BrandCardHome brand={mockBrand} products={mockProducts} />
       </TestWrapper>
     );
 

@@ -42,6 +42,7 @@
 }
 
 .logoPlaceholder {
+  position: relative;
   width: 40px;
   height: 40px;
   border-radius: 8px;
@@ -57,6 +58,20 @@
   font-weight: var(--fontWeightBold);
   font-size: 18px;
   flex-shrink: 0;
+}
+
+.logoMissingIcon {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  font-size: 12px;
+  background: var(--colorWhite);
+  border-radius: 50%;
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .brandText {
@@ -81,7 +96,7 @@
   font-size: 13px;
   line-height: 1.3;
   color: var(--colorGrey300);
-  margin: 0;
+  margin: 0 0 4px 0;
 
   /* Truncate to 1 line */
   overflow: hidden;
@@ -89,63 +104,56 @@
   white-space: nowrap;
 }
 
-/* Certification badge (absolute) */
-.certBadge {
-  position: absolute;
-  top: 84px;
-  right: 12px;
-  background: var(--colorWhite);
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 10px;
-  font-weight: var(--fontWeightSemiBold);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
-  z-index: 2;
-  text-transform: uppercase;
-  color: var(--colorGrey700);
+.taglinePlaceholder {
+  font-size: 11px;
+  color: var(--colorAlert);
+  background: #FFF3E0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px dashed var(--colorAlert);
+  margin: 0 0 4px 0;
+  font-style: italic;
+  display: inline-block;
 }
 
-/* Trust Indicators Section */
-.trustIndicators {
+.brandOrigin {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--colorGrey300);
+  margin: 0;
+  font-weight: var(--fontWeightMedium);
+}
+
+.brandOriginPlaceholder {
+  font-size: 11px;
+  color: var(--colorAlert);
+  background: #FFF3E0;
+  padding: 2px 6px;
+  border-radius: 3px;
+  border: 1px dashed var(--colorAlert);
+  margin: 0;
+  font-style: italic;
+  display: inline-block;
+}
+
+/* Certification Badges Section */
+.certBadges {
   display: flex;
-  flex-direction: column;
+  flex-wrap: wrap;
   gap: 6px;
   padding: 12px 16px;
   background: var(--colorGrey50);
   border-bottom: 1px solid var(--colorGrey100);
 }
 
-.verifiedBadge {
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  font-size: 12px;
-  font-weight: var(--fontWeightSemiBold);
-  color: var(--marketplaceColor);
-
-  &::before {
-    content: '✓';
-    font-size: 14px;
-    font-weight: var(--fontWeightBold);
-  }
-}
-
-.trustStats {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 12px;
-  color: var(--colorGrey300);
-  flex-wrap: wrap;
-}
-
-.rating {
-  font-weight: var(--fontWeightMedium);
-  color: var(--colorGrey700);
-}
-
-.customers {
-  font-weight: var(--fontWeightMedium);
+.certPlaceholder {
+  padding: 12px 16px;
+  background: #FFF3E0;
+  border-bottom: 1px dashed var(--colorAlert);
+  font-size: 11px;
+  color: var(--colorAlert);
+  font-style: italic;
+  text-align: center;
 }
 
 /* Product Grid (2x2) */
@@ -202,7 +210,67 @@
   transform: translateX(4px);
 }
 
-/* Responsive adjustments */
+/* Mobile optimizations */
+@media (max-width: 640px) {
+  .header {
+    padding: 14px;
+  }
+
+  .smallLogo,
+  .logoPlaceholder {
+    width: 36px;
+    height: 36px;
+  }
+
+  .logoMissingIcon {
+    width: 14px;
+    height: 14px;
+    font-size: 11px;
+  }
+
+  .brandName {
+    font-size: 15px;
+  }
+
+  .tagline {
+    font-size: 12px;
+  }
+
+  .taglinePlaceholder,
+  .brandOriginPlaceholder {
+    font-size: 10px;
+    padding: 2px 4px;
+  }
+
+  .brandOrigin {
+    font-size: 11px;
+  }
+
+  .certBadges {
+    padding: 10px 14px;
+    gap: 4px;
+  }
+
+  .certPlaceholder {
+    padding: 10px 14px;
+    font-size: 10px;
+  }
+
+  .productGrid {
+    gap: 6px;
+    padding: 10px;
+  }
+
+  .cta {
+    padding: 12px 14px;
+  }
+
+  .ctaText {
+    font-size: 14px;
+  }
+}
+
+/* Tablet and up */
 @media (--viewportMedium) {
   .header {
     padding: 18px;
@@ -219,9 +287,5 @@
   .productGrid {
     gap: 10px;
     padding: 14px;
-  }
-
-  .certBadge {
-    top: 92px;
   }
 }

@@ -87,10 +87,15 @@ const mockMessages = {
     'Discover premium brands that meet our strict quality and safety standards',
   'FeaturedBrandPartners.loading': 'Loading trusted brands...',
   'FeaturedBrandPartners.error': 'Unable to load brands. Please try again later.',
+  'FeaturedBrandPartners.viewAllBrands': 'Explore All Brands',
+  'FeaturedBrandPartners.viewAllBrandsCount': 'Explore All {count} Brands',
   'BrandCard.shopAll': 'Shop All Products',
   'BrandCard.noProduct': 'Coming Soon',
   'BrandCardHome.verifiedPartner': '✓ Verified Partner',
   'BrandCardHome.customerCount': '{count, plural, one {# customer} other {# customers}}',
+  'BrandCardHome.addDescription': '✏️ Add description',
+  'BrandCardHome.addOriginYear': '📍 Add location & year',
+  'BrandCardHome.addCertifications': '🏆 Add certifications',
   'PartnerCTACard.title': 'Become a Partner',
   'PartnerCTACard.description': 'Join our network of trusted brands.',
   'PartnerCTACard.cta': 'Apply Now',
@@ -283,16 +288,17 @@ describe('FeaturedBrandPartners', () => {
     expect(root).not.toHaveClass('root');
   });
 
-  it('passes trust data to BrandCardHome for Masilo', () => {
+  it('renders View All Brands CTA with brand count', () => {
     render(
       <TestWrapper>
         <FeaturedBrandPartners brandsWithProducts={mockBrandsWithProducts} />
       </TestWrapper>
     );
 
-    // Masilo should have trust indicators (4.8 rating, 2500 customers)
-    expect(screen.getByText(/4.8/)).toBeInTheDocument();
-    expect(screen.getByText('2500 customers')).toBeInTheDocument();
+    expect(screen.getByText('Explore All 2 Brands')).toBeInTheDocument();
+
+    const viewAllLink = screen.getByText('Explore All 2 Brands').closest('a');
+    expect(viewAllLink).toBeInTheDocument();
   });
 
   it('renders grid container', () => {

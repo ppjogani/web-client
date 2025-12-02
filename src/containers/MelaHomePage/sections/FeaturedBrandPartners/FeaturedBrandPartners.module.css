@@ -36,11 +36,18 @@
   margin-right: auto;
 }
 
-/* Brand Grid - Mobile first (2 columns) */
+/* Brand Grid - Mobile first (1 column on very small screens) */
 .grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: 1fr;
   gap: 16px;
+}
+
+/* Small mobile and up - 2 columns */
+@media (min-width: 480px) {
+  .grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 
 /* Loading & Error States */
@@ -54,6 +61,43 @@
 
 .error {
   color: var(--colorFail);
+}
+
+/* View All Brands CTA */
+.viewAllBrands {
+  margin-top: 32px;
+  text-align: center;
+}
+
+.viewAllButton {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 28px;
+  background: transparent;
+  border: 2px solid var(--marketplaceColor);
+  border-radius: 8px;
+  color: var(--marketplaceColor);
+  font-size: 16px;
+  font-weight: var(--fontWeightSemiBold);
+  text-decoration: none;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: var(--marketplaceColor);
+    color: var(--colorWhite);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+}
+
+.ctaArrow {
+  font-size: 18px;
+  transition: transform 0.2s ease;
+}
+
+.viewAllButton:hover .ctaArrow {
+  transform: translateX(4px);
 }
 
 /* Tablet - 3 columns */
