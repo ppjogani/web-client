@@ -312,7 +312,130 @@
 .certificationsList {
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+/* Individual Certification Detail Card */
+.certificationDetail {
+  background: var(--colorWhite);
+  border: 1px solid var(--colorGrey100);
+  border-radius: 8px;
+  padding: 20px;
+  transition: box-shadow 0.2s ease;
+}
+
+.certificationDetail:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.certificationHeader {
+  display: flex;
+  align-items: flex-start;
   gap: 12px;
+  margin-bottom: 16px;
+}
+
+.certificationHeaderText {
+  flex: 1;
+}
+
+.certificationName {
+  font-size: 16px;
+  font-weight: var(--fontWeightBold);
+  color: var(--colorGrey700);
+  margin: 0 0 4px 0;
+}
+
+.certificationTagline {
+  font-size: 14px;
+  color: var(--colorGrey500);
+  margin: 0;
+  font-style: italic;
+}
+
+.certificationBody {
+  margin-top: 12px;
+}
+
+.certificationBenefit {
+  font-size: 14px;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorGrey700);
+  margin: 0 0 8px 0;
+}
+
+.certificationFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px 0;
+}
+
+.certificationFeature {
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--colorGrey500);
+  padding: 6px 0 6px 20px;
+  position: relative;
+}
+
+.certificationFeature::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--marketplaceColor);
+  font-weight: var(--fontWeightBold);
+}
+
+.certificationProof {
+  padding: 12px;
+  background: var(--colorGrey50);
+  border-radius: 6px;
+  margin-bottom: 12px;
+}
+
+.certificationIssuer,
+.certificationValidity {
+  font-size: 13px;
+  color: var(--colorGrey500);
+  margin: 0 0 6px 0;
+}
+
+.certificationIssuer:last-child,
+.certificationValidity:last-child {
+  margin-bottom: 0;
+}
+
+.certificateLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--marketplaceColor);
+  text-decoration: none;
+  margin-top: 8px;
+}
+
+.certificateLink::after {
+  content: '↗';
+}
+
+.certificateLink:hover {
+  text-decoration: underline;
+}
+
+.learnMoreLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--colorGrey400);
+  text-decoration: none;
+}
+
+.learnMoreLink:hover {
+  color: var(--marketplaceColor);
+  text-decoration: underline;
 }
 
 /* ===============================================

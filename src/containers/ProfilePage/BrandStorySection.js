@@ -22,17 +22,17 @@ const MIN_LENGTH_FOR_LONG_WORDS = 20;
  * - "Read Less" vs "Show Less" (symmetric language)
  *
  * @param {Object} props
- * @param {string} props.bio - Full brand story text
+ * @param {string} props.brandStory - Full brand story text
  * @param {number} props.previewLength - Characters to show before truncation (default: 300)
  * @param {boolean} props.isOwnProfile - True if viewing own profile
  */
-const BrandStorySection = ({ bio, previewLength = 300, isOwnProfile }) => {
+const BrandStorySection = ({ brandStory, previewLength = 300, isOwnProfile }) => {
   const [isExpanded, setIsExpanded] = useState(false);
 
-  if (!bio) return null;
+  if (!brandStory) return null;
 
   // Calculate preview text
-  const shouldTruncate = bio.length > previewLength;
+  const shouldTruncate = brandStory.length > previewLength;
 
   // Smart truncation: Find last sentence break before previewLength
   const findLastSentence = (text, maxLength) => {
@@ -55,8 +55,8 @@ const BrandStorySection = ({ bio, previewLength = 300, isOwnProfile }) => {
     return text.substring(0, lastSpace > 0 ? lastSpace : maxLength).trim() + '...';
   };
 
-  const previewText = shouldTruncate ? findLastSentence(bio, previewLength) : bio;
-  const fullText = bio;
+  const previewText = shouldTruncate ? findLastSentence(brandStory, previewLength) : brandStory;
+  const fullText = brandStory;
 
   // Rich text formatting for display
   const displayText = isExpanded ? fullText : previewText;
@@ -95,12 +95,12 @@ const BrandStorySection = ({ bio, previewLength = 300, isOwnProfile }) => {
       )}
 
       {/* Helper for brand owners */}
-      {isOwnProfile && bio.length < 200 && (
+      {isOwnProfile && brandStory.length < 200 && (
         <div className={css.contentTip}>
           <span className={css.tipIcon}>💡</span>
           <FormattedMessage
             id="BrandStorefront.storyTip"
-            values={{ currentLength: bio.length, recommendedLength: 300 }}
+            values={{ currentLength: brandStory.length, recommendedLength: 300 }}
           />
         </div>
       )}

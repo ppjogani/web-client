@@ -14,6 +14,7 @@ import {
 } from '../../components';
 import CertificationBadge from '../../components/CertificationBadge/CertificationBadge';
 import BrandStorySection from './BrandStorySection';
+import { getCertification } from '../../config/certifications';
 
 import css from './BrandStorefront.module.css';
 
@@ -80,6 +81,95 @@ const BrandDataPlaceholder = ({ type, missingFields, isOwner }) => {
 };
 
 /**
+ * CertificationDetail - Shows certification badge + explanation + brand's proof
+ * Uses centralized certification definitions to ensure consistent explanations
+ */
+const CertificationDetail = ({ certificationData }) => {
+  // certificationData can be either:
+  // 1. String (legacy): 'gots_certified'
+  // 2. Object (new): { type: 'gots_certified', certificateUrl: '...', validThrough: '...' }
+
+  const certType = typeof certificationData === 'string' ? certificationData : certificationData?.type;
+  const certDefinition = getCertification(certType);
+
+  if (!certDefinition) return null;
+
+  const certificateUrl = typeof certificationData === 'object' ? certificationData.certificateUrl : null;
+  const validThrough = typeof certificationData === 'object' ? certificationData.validThrough : null;
+  const issuedBy = typeof certificationData === 'object' ? certificationData.issuedBy : null;
+
+  return (
+    <div className={css.certificationDetail}>
+      <div className={css.certificationHeader}>
+        <CertificationBadge
+          certification={certType}
+          variant="default"
+          size={24}
+          showTooltip={false}
+        />
+        <div className={css.certificationHeaderText}>
+          <h5 className={css.certificationName}>{certDefinition.name}</h5>
+          {certDefinition.tagline && (
+            <p className={css.certificationTagline}>{certDefinition.tagline}</p>
+          )}
+        </div>
+      </div>
+
+      <div className={css.certificationBody}>
+        {certDefinition.consumerBenefit && (
+          <p className={css.certificationBenefit}>{certDefinition.consumerBenefit}:</p>
+        )}
+        <ul className={css.certificationFeatures}>
+          {certDefinition.description.map((feature, index) => (
+            <li key={index} className={css.certificationFeature}>
+              {feature}
+            </li>
+          ))}
+        </ul>
+
+        {/* Brand-specific proof */}
+        {(certificateUrl || issuedBy || validThrough) && (
+          <div className={css.certificationProof}>
+            {issuedBy && (
+              <p className={css.certificationIssuer}>
+                <strong>Certified by:</strong> {issuedBy}
+              </p>
+            )}
+            {validThrough && (
+              <p className={css.certificationValidity}>
+                <strong>Valid through:</strong> {new Date(validThrough).toLocaleDateString()}
+              </p>
+            )}
+            {certificateUrl && (
+              <a
+                href={certificateUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={css.certificateLink}
+              >
+                View Certificate (PDF)
+              </a>
+            )}
+          </div>
+        )}
+
+        {/* Educational link */}
+        {certDefinition.learnMoreUrl && (
+          <a
+            href={certDefinition.learnMoreUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={css.learnMoreLink}
+          >
+            Learn more about {certDefinition.shortName}
+          </a>
+        )}
+      </div>
+    </div>
+  );
+};
+
+/**
  * BrandStorefront - Enhanced profile page layout for brand providers
  *
  * This component transforms the standard ProfilePage into a brand storefront with:
@@ -134,13 +224,15 @@ const BrandStorefront = props => {
   const { displayName, bio, publicData = {} } = user.attributes.profile;
   const {
     certifications = [],
+    brandTagline,
+    brandStory,
+    brandMission,
     brandLogoUrl,
     brandOrigin,
     brandCity,
     brandCountry,
     establishedYear,
     foundedYear,
-    brandMission,
   } = publicData;
 
   const profileImage = user?.profileImage;
@@ -154,18 +246,11 @@ const BrandStorefront = props => {
   // Format establishment year
   const yearEstablished = establishedYear || foundedYear;
 
-  // Extract tagline from bio (first sentence, max 120 chars)
-  const firstSentence = bio ? bio.split('.')[0].trim() : '';
-  const tagline = firstSentence
-    ? firstSentence.substring(0, 120) + (firstSentence.length > 120 ? '...' : '')
-    : null;
+  // Tagline: Use brandTagline if available, fallback to bio first sentence (legacy support)
+  const tagline = brandTagline || (bio ? bio.split('.')[0].trim().substring(0, 120) : null);
 
-  // Bio with rich text formatting for About section
-  const bioWithLinks = richText(bio, {
-    linkify: true,
-    longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
-    longWordClass: css.longWord,
-  });
+  // Story: Use brandStory if available, fallback to bio (legacy support)
+  const story = brandStory || bio;
 
   const hasListings = listings.length > 0;
   const hasCertifications = certifications.length > 0;
@@ -362,9 +447,9 @@ const BrandStorefront = props => {
           <div className={css.aboutSection}>
 
             {/* Brand Story with Read More */}
-            {bio && (
+            {story && (
               <BrandStorySection
-                bio={bio}
+                brandStory={story}
                 previewLength={isMobileLayout ? 150 : 300}
                 isOwnProfile={isOwnProfile}
               />
@@ -389,13 +474,10 @@ const BrandStorefront = props => {
                   <FormattedMessage id="BrandStorefront.certifications" />
                 </H4>
                 <div className={css.certificationsList}>
-                  {certifications.map(cert => (
-                    <CertificationBadge
-                      key={cert}
-                      certification={cert}
-                      variant="default"
-                      size={20}
-                      showTooltip={true}
+                  {certifications.map((cert, index) => (
+                    <CertificationDetail
+                      key={typeof cert === 'string' ? cert : cert.type}
+                      certificationData={cert}
                     />
                   ))}
                 </div>

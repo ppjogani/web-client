@@ -20,20 +20,20 @@ const TestWrapper = ({ children }) => (
 
 describe('BrandStorySection', () => {
   describe('Basic Rendering', () => {
-    it('renders nothing when bio is null', () => {
+    it('renders nothing when brandStory is null', () => {
       const { container } = render(
         <TestWrapper>
-          <BrandStorySection bio={null} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={null} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
       expect(container.firstChild).toBeNull();
     });
 
-    it('renders nothing when bio is undefined', () => {
+    it('renders nothing when brandStory is undefined', () => {
       const { container } = render(
         <TestWrapper>
-          <BrandStorySection bio={undefined} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={undefined} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -44,7 +44,7 @@ describe('BrandStorySection', () => {
       render(
         <TestWrapper>
           <BrandStorySection
-            bio="Short brand story."
+            brandStory="Short brand story."
             previewLength={300}
             isOwnProfile={false}
           />
@@ -54,11 +54,11 @@ describe('BrandStorySection', () => {
       expect(screen.getByText('Our Story')).toBeInTheDocument();
     });
 
-    it('renders bio content', () => {
+    it('renders brandStory content', () => {
       render(
         <TestWrapper>
           <BrandStorySection
-            bio="We make organic baby products."
+            brandStory="We make organic baby products."
             previewLength={300}
             isOwnProfile={false}
           />
@@ -70,28 +70,28 @@ describe('BrandStorySection', () => {
   });
 
   describe('Read More Expansion', () => {
-    const longBio =
+    const longBrandStory =
       'Founded in 2018 by two Mumbai mothers frustrated by harsh chemicals in baby bedding. ' +
       'Masilo partners with traditional weavers in Maharashtra to create GOTS-certified organic cotton. ' +
       'Every piece is hand-inspected, washed with natural plant-based soaps, and packaged in plastic-free materials. ' +
       'Today, Masilo serves over 10,000 families across the US and India while supporting 127 artisan families.';
 
-    it('shows "Read More" button when bio exceeds previewLength', () => {
+    it('shows "Read More" button when brandStory exceeds previewLength', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
       expect(screen.getByText('Read More')).toBeInTheDocument();
     });
 
-    it('does NOT show "Read More" button when bio is shorter than previewLength', () => {
-      const shortBio = 'We make organic baby products.';
+    it('does NOT show "Read More" button when brandStory is shorter than previewLength', () => {
+      const shortBrandStory = 'We make organic baby products.';
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={shortBio} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={shortBrandStory} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -101,7 +101,7 @@ describe('BrandStorySection', () => {
     it('toggles to "Read Less" when Read More is clicked', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -115,7 +115,7 @@ describe('BrandStorySection', () => {
     it('toggles back to "Read More" when Read Less is clicked', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -132,7 +132,7 @@ describe('BrandStorySection', () => {
     it('shows truncated preview when collapsed', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -146,7 +146,7 @@ describe('BrandStorySection', () => {
     it('shows full content when expanded', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -161,7 +161,7 @@ describe('BrandStorySection', () => {
     it('includes down arrow icon (↓) when collapsed', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -172,7 +172,7 @@ describe('BrandStorySection', () => {
     it('includes up arrow icon (↑) when expanded', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -186,12 +186,12 @@ describe('BrandStorySection', () => {
 
   describe('Smart Truncation Logic', () => {
     it('truncates at sentence boundary (period)', () => {
-      const bio =
+      const brandStory =
         'First sentence here. Second sentence here. Third sentence that is very long and exceeds the preview length by quite a bit.';
 
       const { container } = render(
         <TestWrapper>
-          <BrandStorySection bio={bio} previewLength={50} isOwnProfile={false} />
+          <BrandStorySection brandStory={bio} previewLength={50} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -206,12 +206,12 @@ describe('BrandStorySection', () => {
     });
 
     it('truncates at sentence boundary (exclamation mark)', () => {
-      const bio =
+      const brandStory =
         'Exciting first sentence! Second sentence here. Third sentence that continues on.';
 
       const { container } = render(
         <TestWrapper>
-          <BrandStorySection bio={bio} previewLength={50} isOwnProfile={false} />
+          <BrandStorySection brandStory={bio} previewLength={50} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -223,12 +223,12 @@ describe('BrandStorySection', () => {
     });
 
     it('truncates at sentence boundary (question mark)', () => {
-      const bio =
+      const brandStory =
         'Is this a question? Yes it is. This is another sentence that goes beyond the limit.';
 
       const { container } = render(
         <TestWrapper>
-          <BrandStorySection bio={bio} previewLength={50} isOwnProfile={false} />
+          <BrandStorySection brandStory={bio} previewLength={50} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -240,11 +240,11 @@ describe('BrandStorySection', () => {
     });
 
     it('falls back to word boundary when no sentence end found', () => {
-      const bio = 'This is a very long sentence without any punctuation marks at all just words';
+      const brandStory = 'This is a very long sentence without any punctuation marks at all just words';
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={bio} previewLength={30} isOwnProfile={false} />
+          <BrandStorySection brandStory={bio} previewLength={30} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -255,12 +255,12 @@ describe('BrandStorySection', () => {
 
     it('respects 70% threshold for sentence boundary', () => {
       // If sentence end is too early (< 70% of previewLength), use word boundary
-      const bio =
+      const brandStory =
         'Short. This is a much longer sentence that goes well beyond the preview length limit and should be shown.';
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={bio} previewLength={100} isOwnProfile={false} />
+          <BrandStorySection brandStory={bio} previewLength={100} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -270,12 +270,12 @@ describe('BrandStorySection', () => {
     });
 
     it('respects custom previewLength parameter', () => {
-      const bio =
+      const brandStory =
         'First sentence. Second sentence. Third sentence. Fourth sentence. Fifth sentence.';
 
       const { rerender } = render(
         <TestWrapper>
-          <BrandStorySection bio={bio} previewLength={20} isOwnProfile={false} />
+          <BrandStorySection brandStory={bio} previewLength={20} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -286,7 +286,7 @@ describe('BrandStorySection', () => {
       // Increase previewLength
       rerender(
         <TestWrapper>
-          <BrandStorySection bio={bio} previewLength={60} isOwnProfile={false} />
+          <BrandStorySection brandStory={bio} previewLength={60} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -299,7 +299,7 @@ describe('BrandStorySection', () => {
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={shortBio} isOwnProfile={false} />
+          <BrandStorySection brandStory={shortBio} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -314,7 +314,7 @@ describe('BrandStorySection', () => {
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={shortBio} previewLength={300} isOwnProfile={true} />
+          <BrandStorySection brandStory={shortBio} previewLength={300} isOwnProfile={true} />
         </TestWrapper>
       );
 
@@ -329,31 +329,31 @@ describe('BrandStorySection', () => {
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={shortBio} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={shortBio} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
       expect(screen.queryByText(/Tip/)).not.toBeInTheDocument();
     });
 
-    it('does NOT show tip when bio >= 200 chars', () => {
-      const longBio = 'A'.repeat(200); // Exactly 200 chars
+    it('does NOT show tip when brandStory >= 200 chars', () => {
+      const longBrandStory = 'A'.repeat(200); // Exactly 200 chars
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={300} isOwnProfile={true} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={300} isOwnProfile={true} />
         </TestWrapper>
       );
 
       expect(screen.queryByText(/Tip/)).not.toBeInTheDocument();
     });
 
-    it('shows tip when bio is 199 chars (just under threshold)', () => {
+    it('shows tip when brandStory is 199 chars (just under threshold)', () => {
       const almostLongBio = 'A'.repeat(199);
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={almostLongBio} previewLength={300} isOwnProfile={true} />
+          <BrandStorySection brandStory={almostLongBio} previewLength={300} isOwnProfile={true} />
         </TestWrapper>
       );
 
@@ -362,12 +362,12 @@ describe('BrandStorySection', () => {
   });
 
   describe('Accessibility', () => {
-    const longBio = 'A'.repeat(400);
+    const longBrandStory = 'A'.repeat(400);
 
     it('sets aria-expanded="false" when collapsed', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -378,7 +378,7 @@ describe('BrandStorySection', () => {
     it('sets aria-expanded="true" when expanded', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -391,7 +391,7 @@ describe('BrandStorySection', () => {
     it('arrow icon has aria-hidden="true"', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -403,7 +403,7 @@ describe('BrandStorySection', () => {
     it('button is keyboard accessible (can be focused and activated)', () => {
       render(
         <TestWrapper>
-          <BrandStorySection bio={longBio} previewLength={150} isOwnProfile={false} />
+          <BrandStorySection brandStory={longBrandStory} previewLength={150} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -423,7 +423,7 @@ describe('BrandStorySection', () => {
 
       const { container } = render(
         <TestWrapper>
-          <BrandStorySection bio={bioWithUrl} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={bioWithUrl} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -436,7 +436,7 @@ describe('BrandStorySection', () => {
 
       const { container } = render(
         <TestWrapper>
-          <BrandStorySection bio={bioWithLongWord} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={bioWithLongWord} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -452,7 +452,7 @@ describe('BrandStorySection', () => {
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={exactBio} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={exactBio} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -460,12 +460,12 @@ describe('BrandStorySection', () => {
       expect(screen.queryByText('Read More')).not.toBeInTheDocument();
     });
 
-    it('handles bio with only whitespace', () => {
+    it('handles brandStory with only whitespace', () => {
       const whitespaceBio = '   ';
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={whitespaceBio} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={whitespaceBio} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -473,12 +473,12 @@ describe('BrandStorySection', () => {
       expect(screen.queryByText('Read More')).not.toBeInTheDocument();
     });
 
-    it('handles bio with multiple consecutive sentence endings', () => {
-      const bio = 'Question?! Excitement!! More content here.';
+    it('handles brandStory with multiple consecutive sentence endings', () => {
+      const brandStory = 'Question?! Excitement!! More content here.';
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={bio} previewLength={20} isOwnProfile={false} />
+          <BrandStorySection brandStory={bio} previewLength={20} isOwnProfile={false} />
         </TestWrapper>
       );
 
@@ -493,16 +493,16 @@ describe('BrandStorySection', () => {
         </TestWrapper>
       );
 
-      // Empty bio is falsy, should render nothing
+      // Empty brandStory is falsy, should render nothing
       expect(container.firstChild).toBeNull();
     });
 
-    it('handles bio with newlines and formatting', () => {
+    it('handles brandStory with newlines and formatting', () => {
       const bioWithNewlines = 'First paragraph.\n\nSecond paragraph with more content.';
 
       render(
         <TestWrapper>
-          <BrandStorySection bio={bioWithNewlines} previewLength={300} isOwnProfile={false} />
+          <BrandStorySection brandStory={bioWithNewlines} previewLength={300} isOwnProfile={false} />
         </TestWrapper>
       );
 
