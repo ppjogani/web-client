@@ -12,6 +12,7 @@ import { useRouteConfiguration } from '../../context/routeConfigurationContext';
 // Utils
 import { FormattedMessage, useIntl } from '../../util/reactIntl';
 import { getAspectsForSchema } from '../../util/itemAspectsParser';
+import { getItemSpecificsAttributes, getItemAspectsForSEO } from '../../util/itemAspectsHelpers';
 import { LISTING_STATE_PENDING_APPROVAL, LISTING_STATE_CLOSED, propTypes } from '../../util/types';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import {
@@ -373,13 +374,12 @@ export const ListingPageComponent = props => {
   // https://developers.google.com/search/docs/advanced/structured-data/product
   const productURL = `${config.marketplaceRootURL}${location.pathname}${location.search}${location.hash}`;
   const currentStock = currentListing.currentStock?.attributes?.quantity || 0;
+  // Always provide availability - default to InStock if no stock tracking
   const schemaAvailability = !currentListing.currentStock
-    ? null
+    ? 'https://schema.org/InStock'
     : currentStock > 0
     ? 'https://schema.org/InStock'
     : 'https://schema.org/OutOfStock';
-
-  const availabilityMaybe = schemaAvailability ? { availability: schemaAvailability } : {};
 
   const handleViewPhotosClick = e => {
     // Stop event from bubbling up to prevent image click handler
@@ -450,7 +450,7 @@ export const ListingPageComponent = props => {
           '@type': 'Offer',
           url: productURL,
           ...priceForSchemaMaybe(price), // Price for Google Shopping/rich snippets
-          ...availabilityMaybe, // Stock status for search engines
+          availability: schemaAvailability, // Stock status for search engines (always required)
 
           // FIX #1: Add shipping details (calculated based on buyer's location)
           shippingDetails: {
@@ -535,18 +535,7 @@ export const ListingPageComponent = props => {
 
             {/* Item Specifics Section */}
             <ItemSpecifics
-              attributes={[
-                ...(publicData.brand ? [{ key: 'Brand', value: publicData.brand }] : []),
-                ...(publicData.sku ? [{ key: 'SKU', value: publicData.sku }] : []),
-                ...(publicData.material ? [{ key: 'Material', value: publicData.material }] : []),
-                ...(publicData.ageRange ? [{ key: 'Age Range', value: publicData.ageRange }] : []),
-                ...(publicData.color ? [{ key: 'Color', value: publicData.color }] : []),
-                ...(publicData.size ? [{ key: 'Size', value: publicData.size }] : []),
-                ...(publicData.weight ? [{ key: 'Weight', value: publicData.weight }] : []),
-                ...(publicData.dimensions ? [{ key: 'Dimensions', value: publicData.dimensions }] : []),
-                ...(publicData.origin ? [{ key: 'Origin', value: publicData.origin }] : []),
-                ...(publicData.certifications ? [{ key: 'Certifications', value: publicData.certifications }] : []),
-              ]}
+              attributes={getItemSpecificsAttributes(publicData)}
               categoryBreadcrumb={
                 (publicData.categoryLevel1 || publicData.categoryLevel2 || publicData.categoryLevel3) && (() => {
                   const categoryIds = {
