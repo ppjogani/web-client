@@ -9,6 +9,7 @@ import HeroSection from './sections/HeroSection/HeroSection';
 import CategoryShowcase from './sections/CategoryShowcase/CategoryShowcase';
 import FeaturedBrandPartnersContainer from './sections/FeaturedBrandPartners/FeaturedBrandPartnersContainer';
 import TrustAssurance from './sections/TrustAssurance/TrustAssurance';
+import WhyIndia from './sections/WhyIndia/WhyIndia';
 
 import css from './MelaHomePage.module.css';
 
@@ -16,10 +17,10 @@ const MelaHomePage = props => {
   const { currentPage } = props;
 
   // SEO-optimized meta title targeting primary keywords
-  const pageTitle = 'Organic Baby Clothes & Sustainable Baby Fashion | GOTS Certified | Mela';
+  const pageTitle = 'Sustainable Indian Design for Families | Baby, Fashion & More | Mela';
 
   // SEO-optimized meta description with target keywords
-  const pageDescription = 'Shop organic baby clothes for newborns, 0-6 months, 6-12 months & toddlers. GOTS certified sustainable baby clothing. Free shipping on orders $50+. Ethically made in India.';
+  const pageDescription = 'Discover GOTS certified organic baby clothes, Indian fashion, and home goods from innovative Indian designers. Ethically made, traditional craftsmanship, delivered worldwide.';
 
   // Social media sharing images
   const socialImage = 'https://sharetribe-assets.imgix.net/68ab648b-6d39-4b2b-bd2c-f99295eeb366/raw/06/5ce7d29d9cfbdfb391af7bc0a744511b9fc1c4?auto=format&fit=clip&h=800&w=800&s=f0fae1b6a833c943e3af463df9cbb484';
@@ -36,21 +37,37 @@ const MelaHomePage = props => {
         '@context': 'http://schema.org',
         '@type': 'WebPage',
         name: pageTitle,
-        description: 'Sustainable baby fashion marketplace featuring organic cotton baby clothes and accessories from trusted global brands',
+        description: 'Curated marketplace for sustainable Indian design — baby clothing, fashion, home goods, and gifts from trusted Indian brands',
         mainEntity: {
           '@type': 'Store',
           name: 'Mela',
-          description: 'Sustainable baby fashion marketplace',
+          description: 'Sustainable Indian design marketplace for families',
           hasOfferCatalog: {
             '@type': 'OfferCatalog',
-            name: 'Baby Clothing & Accessories',
+            name: 'Indian Design & Sustainable Fashion',
             itemListElement: [
               {
                 '@type': 'Offer',
                 itemOffered: {
                   '@type': 'Product',
                   name: 'Organic Baby Clothing',
-                  category: 'Baby Fashion'
+                  category: 'Baby & Kids'
+                }
+              },
+              {
+                '@type': 'Offer',
+                itemOffered: {
+                  '@type': 'Product',
+                  name: 'Indian Fashion',
+                  category: 'Fashion'
+                }
+              },
+              {
+                '@type': 'Offer',
+                itemOffered: {
+                  '@type': 'Product',
+                  name: 'Indian Home Goods',
+                  category: 'Home & Kitchen'
                 }
               }
             ]
@@ -70,9 +87,10 @@ const MelaHomePage = props => {
           <CategoryShowcase />
         </section>
 
-        {/* Featured Brand Partners - Trusted Brands with Social Proof */}
+        {/* Indian Brands — Featured Partners + Why Indian Design editorial */}
         <section className={css.brandsSection}>
           <FeaturedBrandPartnersContainer />
+          <WhyIndia />
         </section>
 
         {/* Trust & Quality Assurance - Certifications */}

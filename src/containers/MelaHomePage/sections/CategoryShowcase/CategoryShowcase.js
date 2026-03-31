@@ -53,22 +53,33 @@ const getShowcaseCategories = (categoryConfig) => {
 const generateStructuredData = (categories, categoryProducts) => {
   const itemListElements = categories.flatMap((category, categoryIndex) => {
     const products = categoryProducts[category.id] || [];
-    return products.map((product, productIndex) => ({
-      '@type': 'ListItem',
-      position: categoryIndex * 4 + productIndex + 1,
-      item: {
-        '@type': 'Product',
-        name: product.attributes.title,
-        image: product.images?.[0]?.attributes?.variants?.default?.url || '',
-        description: product.attributes.description || `Sustainable ${category.name.toLowerCase()} for babies`,
-        offers: {
-          '@type': 'Offer',
-          price: product.attributes.price?.amount / 100 || 0,
-          priceCurrency: product.attributes.price?.currency || 'USD',
-          availability: 'https://schema.org/InStock',
+    return products.map((product, productIndex) => {
+      // Check stock availability following schema.org standard
+      const currentStock = product.currentStock?.attributes?.quantity || 0;
+      // Always provide availability - default to InStock if no stock tracking
+      const schemaAvailability = !product.currentStock
+        ? 'https://schema.org/InStock'
+        : currentStock > 0
+        ? 'https://schema.org/InStock'
+        : 'https://schema.org/OutOfStock';
+
+      return {
+        '@type': 'ListItem',
+        position: categoryIndex * 4 + productIndex + 1,
+        item: {
+          '@type': 'Product',
+          name: product.attributes.title,
+          image: product.images?.[0]?.attributes?.variants?.default?.url || '',
+          description: product.attributes.description || `Sustainable ${category.name.toLowerCase()} for babies`,
+          offers: {
+            '@type': 'Offer',
+            price: product.attributes.price?.amount / 100 || 0,
+            priceCurrency: product.attributes.price?.currency || 'USD',
+            availability: schemaAvailability,
+          },
         },
-      },
-    }));
+      };
+    });
   });
 
   return {
@@ -102,7 +113,7 @@ const CategoryShowcase = () => {
             const response = await sdk.listings.query({
               pub_categoryLevel2: category.id,
               perPage: 4,
-              include: ['images', 'author'],
+              include: ['images', 'author', 'currentStock'],
             });
 
             // Get listing IDs from response
@@ -194,6 +205,9 @@ const CategoryShowcase = () => {
           </p>
         </div>
 
+        {/* Occasion-Based Navigation */}
+        <OccasionStrip />
+
         {/* Age-Based Navigation - SEO Critical */}
         <AgeNavigation />
 
@@ -228,6 +242,43 @@ const CategoryShowcase = () => {
 };
 
 /**
+ * OccasionStrip - Occasion-based navigation entry points
+ * Surfaces cultural and lifestyle occasions so non-baby shoppers find a path in
+ */
+const OccasionStrip = () => {
+  const occasions = [
+    { label: 'Diwali & Festivals', icon: '🪔', search: '?pub_occasion=diwali-festivals' },
+    { label: 'New Baby', icon: '🌸', search: '?pub_occasion=new-baby' },
+    { label: 'Everyday', icon: '☀️', search: '?pub_occasion=everyday' },
+    { label: 'Gifting', icon: '🎁', search: '?pub_occasion=gifting' },
+  ];
+
+  return (
+    <div className={css.occasionStrip}>
+      <h3 className={css.ageNavigationTitle}>
+        <FormattedMessage
+          id="MelaHomePage.shopByOccasion"
+          defaultMessage="Shop by Occasion"
+        />
+      </h3>
+      <div className={css.ageFilters}>
+        {occasions.map(occasion => (
+          <NamedLink
+            key={occasion.label}
+            name="SearchPage"
+            to={{ search: occasion.search }}
+            className={css.ageFilterButton}
+          >
+            <span className={css.ageIcon}>{occasion.icon}</span>
+            <span className={css.ageLabel}>{occasion.label}</span>
+          </NamedLink>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+/**
  * AgeNavigation - Age-based primary navigation (SEO Critical)
  * Parents search by age first (85% of searches), then browse categories
  * Provides direct links to age-filtered search pages with SEO-friendly URLs
@@ -246,7 +297,7 @@ const AgeNavigation = () => {
       <h3 className={css.ageNavigationTitle}>
         <FormattedMessage
           id="MelaHomePage.shopByAge"
-          defaultMessage="Shop by Baby's Age"
+          defaultMessage="Shop Baby by Age"
         />
       </h3>
       <div className={css.ageFilters}>

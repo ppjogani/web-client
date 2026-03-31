@@ -12,7 +12,7 @@ import css from './HeroSection.module.css';
 
 const TRUST_BADGES = [
   { icon: '🌱', text: 'GOTS Certified' },
-  { icon: '👶', text: 'Baby Safe' },
+  { icon: '✅', text: 'Quality Verified' },
   { icon: '🇮🇳', text: 'Made in India' }
 ];
 
@@ -209,38 +209,38 @@ const HeroSectionComponent = ({
         <div className={css.quickNav}>
           <NamedLink
             name="SearchPage"
-            params={{ pub_category: 'baby-clothing' }}
+            to={{ search: '?pub_categoryLevel1=Baby-Kids' }}
             className={css.quickNavItem}
           >
             <span className={css.quickNavIcon}>👶</span>
-            <span className={css.quickNavText}>Baby (0-24m)</span>
+            <span className={css.quickNavText}>Baby &amp; Kids</span>
           </NamedLink>
 
           <NamedLink
             name="SearchPage"
-            params={{ pub_category: 'toddler-fashion' }}
+            to={{ search: '?pub_categoryLevel1=Fashion' }}
             className={css.quickNavItem}
           >
-            <span className={css.quickNavIcon}>🧸</span>
-            <span className={css.quickNavText}>Toddler (2-5y)</span>
+            <span className={css.quickNavIcon}>👗</span>
+            <span className={css.quickNavText}>Fashion</span>
           </NamedLink>
 
           <NamedLink
             name="SearchPage"
-            params={{ pub_category: 'organic-essentials' }}
+            to={{ search: '?pub_categoryLevel1=Home-Kitchen' }}
             className={css.quickNavItem}
           >
-            <span className={css.quickNavIcon}>🌱</span>
-            <span className={css.quickNavText}>Organic</span>
+            <span className={css.quickNavIcon}>🏡</span>
+            <span className={css.quickNavText}>Home &amp; Kitchen</span>
           </NamedLink>
 
           <NamedLink
             name="SearchPage"
-            params={{ pub_category: 'accessories' }}
+            to={{ search: '?pub_categoryLevel1=Gifts' }}
             className={css.quickNavItem}
           >
-            <span className={css.quickNavIcon}>🎀</span>
-            <span className={css.quickNavText}>Accessories</span>
+            <span className={css.quickNavIcon}>🎁</span>
+            <span className={css.quickNavText}>Gifts</span>
           </NamedLink>
         </div>
       </div>

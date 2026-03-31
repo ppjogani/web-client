@@ -77,6 +77,16 @@
   }
 }
 
+/* Occasion Strip */
+.occasionStrip {
+  margin-bottom: 2rem;
+  padding: 2rem 0 0;
+
+  @media (min-width: 768px) {
+    margin-bottom: 2.5rem;
+  }
+}
+
 /* Age-Based Navigation - SEO Critical */
 .ageNavigation {
   margin-bottom: 3rem;

@@ -19,9 +19,9 @@ const CERTIFICATIONS = [
   },
   {
     id: 'safety',
-    name: 'Baby Safe',
+    name: 'Quality Verified',
     logo: '/static/images/cert-safety.png',
-    description: 'Child Safety Certified'
+    description: 'Independently Quality Tested'
   },
   {
     id: 'eco',
