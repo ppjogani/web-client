@@ -498,6 +498,43 @@ export const listingFields = [
   //     placeholderMessage: 'Some private note about this bike...',
   //   },
   // },
+
+  // Homepage feature flag — set to true to pin a listing in the hero carousel
+  // ⚠️ Requires Sharetribe CLI: sharetribe-cli search-schema/set --key pub_homepageFeature --type boolean
+  {
+    key: 'homepageFeature',
+    scope: 'public',
+    schemaType: 'boolean',
+    filterConfig: {
+      indexForSearch: true,
+      label: 'Homepage Feature',
+      group: 'secondary',
+    },
+    showConfig: { label: 'Featured on Homepage', isDetail: false },
+    saveConfig: { label: 'Feature on Homepage' },
+  },
+
+  // Occasion — for occasion-based product discovery on the homepage
+  // ⚠️ Requires Sharetribe CLI: sharetribe-cli search-schema/set --key pub_occasion --type multi-enum
+  {
+    key: 'occasion',
+    scope: 'public',
+    schemaType: 'multi-enum',
+    enumOptions: [
+      { option: 'diwali-festivals', label: 'Diwali & Festivals' },
+      { option: 'new-baby', label: 'New Baby' },
+      { option: 'everyday', label: 'Everyday' },
+      { option: 'gifting', label: 'Gifting' },
+    ],
+    filterConfig: {
+      indexForSearch: true,
+      label: 'Occasion',
+      group: 'secondary',
+      searchMode: 'has_any',
+    },
+    showConfig: { label: 'Occasion' },
+    saveConfig: { label: 'Occasion', placeholderMessage: 'Select occasion(s)…' },
+  },
 ];
 
 ///////////////////////////////////////////////////////////////////////

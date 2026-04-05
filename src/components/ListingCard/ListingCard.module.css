@@ -19,10 +19,18 @@
 
 .aspectRatioWrapper {
   transition: var(--transitionStyleButton);
-  background: var(--colorGrey100); /* Loading BG color */
+  /* Off-white background shows as letterbox when image doesn't fill the container */
+  background: #f7f5f2;
   border-radius: var(--borderRadiusMedium);
+  /* Compact portrait on mobile — shallow enough for narrow 3-col cards */
+  aspect-ratio: 4 / 5;
+  overflow: hidden;
 
   @media (--viewportMedium) {
+    /* Deeper portrait on desktop — wider cards can carry more height */
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+
     &:hover {
       transform: scale(1.02);
       box-shadow: var(--boxShadowListingCard);
@@ -35,6 +43,8 @@
   border-radius: var(--borderRadiusMedium);
   width: 100%;
   height: 100%;
+  /* Preserve original photo proportions — letterbox with container background */
+  object-fit: contain;
 }
 
 .info {

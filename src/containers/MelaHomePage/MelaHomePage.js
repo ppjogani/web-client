@@ -9,7 +9,6 @@ import HeroSection from './sections/HeroSection/HeroSection';
 import CategoryShowcase from './sections/CategoryShowcase/CategoryShowcase';
 import FeaturedBrandPartnersContainer from './sections/FeaturedBrandPartners/FeaturedBrandPartnersContainer';
 import TrustAssurance from './sections/TrustAssurance/TrustAssurance';
-import WhyIndia from './sections/WhyIndia/WhyIndia';
 
 import css from './MelaHomePage.module.css';
 
@@ -87,10 +86,9 @@ const MelaHomePage = props => {
           <CategoryShowcase />
         </section>
 
-        {/* Indian Brands — Featured Partners + Why Indian Design editorial */}
+        {/* Featured Brand Partners */}
         <section className={css.brandsSection}>
           <FeaturedBrandPartnersContainer />
-          <WhyIndia />
         </section>
 
         {/* Trust & Quality Assurance - Certifications */}

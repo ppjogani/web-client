@@ -205,11 +205,8 @@ const CategoryShowcase = () => {
           </p>
         </div>
 
-        {/* Occasion-Based Navigation */}
-        <OccasionStrip />
-
         {/* Age-Based Navigation - SEO Critical */}
-        <AgeNavigation />
+        <AgeNavigation config={config} />
 
         {/* Category Sections with Products */}
         <div className={css.categorySections}>
@@ -227,6 +224,9 @@ const CategoryShowcase = () => {
           })}
         </div>
 
+        {/* Occasion-Based Navigation — after main categories */}
+        <OccasionStrip config={config} />
+
         {/* View All Categories CTA */}
         <div className={css.viewAll}>
           <NamedLink name="SearchPage" className={css.viewAllButton}>
@@ -241,37 +241,139 @@ const CategoryShowcase = () => {
   );
 };
 
+const OCCASIONS = [
+  { option: 'diwali-festivals', label: 'Diwali & Festivals', icon: '🪔' },
+  { option: 'new-baby',        label: 'New Baby',            icon: '🌸' },
+  { option: 'everyday',        label: 'Everyday',            icon: '☀️' },
+  { option: 'gifting',         label: 'Gifting',             icon: '🎁' },
+];
+
+const TOP_AGE_GROUPS = [
+  { option: 'newborn',     label: 'Newborn',    icon: '👶' },
+  { option: '0_6_months',  label: '0-6 Months', icon: '🍼' },
+  { option: '6_12_months', label: '6-12 Months', icon: '🧸' },
+];
+
 /**
- * OccasionStrip - Occasion-based navigation entry points
- * Surfaces cultural and lifestyle occasions so non-baby shoppers find a path in
+ * ProductCarouselSection — reusable section with title, "View All" link, and
+ * a horizontally-swipeable product carousel (mobile) / 4-column grid (desktop).
+ * Only renders if products.length >= 2 (prevents empty sections on launch).
  */
-const OccasionStrip = () => {
-  const occasions = [
-    { label: 'Diwali & Festivals', icon: '🪔', search: '?pub_occasion=diwali-festivals' },
-    { label: 'New Baby', icon: '🌸', search: '?pub_occasion=new-baby' },
-    { label: 'Everyday', icon: '☀️', search: '?pub_occasion=everyday' },
-    { label: 'Gifting', icon: '🎁', search: '?pub_occasion=gifting' },
-  ];
+const ProductCarouselSection = ({ title, viewAllSearch, products, isLoading }) => {
+  const hasEnough = products && products.length >= 2;
+
+  if (!isLoading && !hasEnough) return null;
+
+  return (
+    <div className={css.categorySection}>
+      <div className={css.categorySectionHeader}>
+        <div className={css.categoryHeaderContent}>
+          <h3 className={css.sectionCategoryTitle}>{title}</h3>
+        </div>
+        <NamedLink
+          name="SearchPage"
+          to={{ search: viewAllSearch }}
+          className={css.viewCategoryLink}
+        >
+          <FormattedMessage id="MelaHomePage.viewAll" defaultMessage="View All" />
+          <span className={css.arrow}>→</span>
+        </NamedLink>
+      </div>
+
+      {isLoading ? (
+        <div className={css.productCarousel}>
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className={`${css.productSkeleton} ${css.carouselCard}`} />
+          ))}
+        </div>
+      ) : (
+        <div className={css.productCarousel}>
+          {products.map((listing, productIndex) => (
+            <div key={listing.id.uuid} className={css.carouselCard}>
+              <ListingCard
+                listing={listing}
+                showAuthorInfo={false}
+                showTrustBadges={true}
+                showConversionBadges={true}
+                isBestseller={productIndex === 0}
+                renderSizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
+              />
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+};
+
+/**
+ * OccasionStrip — occasion-based product carousels.
+ * Fetches products for each occasion in parallel; hides sections with < 2 products.
+ */
+const OccasionStrip = ({ sdk: sdkInstance, config }) => {
+  const [occasionProducts, setOccasionProducts] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const listingFields = config?.listing?.listingFields;
+    const sanitizeConfig = { listingFields };
+
+    const fetchOccasionProducts = async () => {
+      try {
+        const results = await Promise.all(
+          OCCASIONS.map(async ({ option }) => {
+            try {
+              const response = await sdk.listings.query({
+                pub_occasion: option,
+                perPage: 6,
+                include: ['images', 'currentStock'],
+              });
+              const listingIds = response.data.data.map(l => l.id);
+              return { option, listingIds, responseData: response.data };
+            } catch {
+              return { option, listingIds: [], responseData: null };
+            }
+          })
+        );
+
+        let allEntities = {};
+        results.forEach(r => {
+          if (r.responseData) {
+            allEntities = updatedEntities(allEntities, r.responseData, sanitizeConfig);
+          }
+        });
+
+        const productsMap = results.reduce((acc, { option, listingIds }) => {
+          const refs = listingIds.map(id => ({ id, type: 'listing' }));
+          acc[option] = denormalisedEntities(allEntities, refs, false);
+          return acc;
+        }, {});
+
+        setOccasionProducts(productsMap);
+      } catch {
+        // leave empty — sections with < 2 products won't render
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchOccasionProducts();
+  }, []);
 
   return (
     <div className={css.occasionStrip}>
       <h3 className={css.ageNavigationTitle}>
-        <FormattedMessage
-          id="MelaHomePage.shopByOccasion"
-          defaultMessage="Shop by Occasion"
-        />
+        <FormattedMessage id="MelaHomePage.shopByOccasion" defaultMessage="Shop by Occasion" />
       </h3>
-      <div className={css.ageFilters}>
-        {occasions.map(occasion => (
-          <NamedLink
-            key={occasion.label}
-            name="SearchPage"
-            to={{ search: occasion.search }}
-            className={css.ageFilterButton}
-          >
-            <span className={css.ageIcon}>{occasion.icon}</span>
-            <span className={css.ageLabel}>{occasion.label}</span>
-          </NamedLink>
+      <div className={css.categorySections}>
+        {OCCASIONS.map(({ option, label }) => (
+          <ProductCarouselSection
+            key={option}
+            title={label}
+            viewAllSearch={`?pub_occasion=${option}`}
+            products={occasionProducts[option] || []}
+            isLoading={isLoading}
+          />
         ))}
       </div>
     </div>
@@ -279,41 +381,83 @@ const OccasionStrip = () => {
 };
 
 /**
- * AgeNavigation - Age-based primary navigation (SEO Critical)
- * Parents search by age first (85% of searches), then browse categories
- * Provides direct links to age-filtered search pages with SEO-friendly URLs
+ * AgeNavigation — age-based product carousels (top 3 groups).
+ * Uses pub_age_group which is already indexed in Sharetribe.
  */
-const AgeNavigation = () => {
-  const ageGroups = [
-    { option: 'newborn', label: 'Newborn', icon: '👶' },
-    { option: '0_6_months', label: '0-6 Months', icon: '🍼' },
-    { option: '6_12_months', label: '6-12 Months', icon: '🧸' },
-    { option: '12_18_months', label: '12-18 Months', icon: '👣' },
-    { option: '18_24_months', label: '18-24 Months', icon: '🎈' },
-  ];
+const AgeNavigation = ({ config }) => {
+  const [ageProducts, setAgeProducts] = useState({});
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const listingFields = config?.listing?.listingFields;
+    const sanitizeConfig = { listingFields };
+
+    const fetchAgeProducts = async () => {
+      try {
+        const results = await Promise.all(
+          TOP_AGE_GROUPS.map(async ({ option }) => {
+            try {
+              const response = await sdk.listings.query({
+                pub_age_group: option,
+                perPage: 6,
+                include: ['images', 'currentStock'],
+              });
+              const listingIds = response.data.data.map(l => l.id);
+              return { option, listingIds, responseData: response.data };
+            } catch {
+              return { option, listingIds: [], responseData: null };
+            }
+          })
+        );
+
+        let allEntities = {};
+        results.forEach(r => {
+          if (r.responseData) {
+            allEntities = updatedEntities(allEntities, r.responseData, sanitizeConfig);
+          }
+        });
+
+        const productsMap = results.reduce((acc, { option, listingIds }) => {
+          const refs = listingIds.map(id => ({ id, type: 'listing' }));
+          acc[option] = denormalisedEntities(allEntities, refs, false);
+          return acc;
+        }, {});
+
+        setAgeProducts(productsMap);
+      } catch {
+        // leave empty
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchAgeProducts();
+  }, []);
 
   return (
     <div className={css.ageNavigation}>
       <h3 className={css.ageNavigationTitle}>
-        <FormattedMessage
-          id="MelaHomePage.shopByAge"
-          defaultMessage="Shop Baby by Age"
-        />
+        <FormattedMessage id="MelaHomePage.shopByAge" defaultMessage="Shop Baby by Age" />
       </h3>
-      <div className={css.ageFilters}>
-        {ageGroups.map(age => (
-          <NamedLink
-            key={age.option}
-            name="SearchPage"
-            to={{
-              search: `?pub_categoryLevel1=Baby-Clothes-Accessories&pub_age_group=${age.option}`,
-            }}
-            className={css.ageFilterButton}
-          >
-            <span className={css.ageIcon}>{age.icon}</span>
-            <span className={css.ageLabel}>{age.label}</span>
-          </NamedLink>
+      <div className={css.categorySections}>
+        {TOP_AGE_GROUPS.map(({ option, label }) => (
+          <ProductCarouselSection
+            key={option}
+            title={label}
+            viewAllSearch={`?pub_categoryLevel1=Baby-Clothes-Accessories&pub_age_group=${option}`}
+            products={ageProducts[option] || []}
+            isLoading={isLoading}
+          />
         ))}
+      </div>
+      <div className={css.viewAll}>
+        <NamedLink
+          name="SearchPage"
+          to={{ search: '?pub_categoryLevel1=Baby-Clothes-Accessories' }}
+          className={css.viewAllButton}
+        >
+          <FormattedMessage id="MelaHomePage.seeAllAges" defaultMessage="See all ages →" />
+        </NamedLink>
       </div>
     </div>
   );
@@ -353,25 +497,26 @@ const CategorySection = ({ category, products, isLoading, index }) => {
         </NamedLink>
       </div>
 
-      {/* Product Grid */}
+      {/* Product Carousel (mobile swipe) / Grid (desktop) */}
       {isLoading ? (
-        <div className={css.productGrid}>
+        <div className={css.productCarousel}>
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className={css.productSkeleton} />
+            <div key={i} className={`${css.productSkeleton} ${css.carouselCard}`} />
           ))}
         </div>
       ) : hasProducts ? (
-        <div className={css.productGrid}>
+        <div className={css.productCarousel}>
           {products.map((listing, productIndex) => (
+            <div key={listing.id.uuid} className={css.carouselCard}>
             <ListingCard
-              key={listing.id.uuid}
               listing={listing}
               showAuthorInfo={false}
               showTrustBadges={true}
               showConversionBadges={true}
-              isBestseller={productIndex === 0} // First product is bestseller
-              renderSizes="(max-width: 639px) 50vw, (max-width: 1023px) 50vw, 25vw"
+              isBestseller={productIndex === 0}
+              renderSizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
             />
+            </div>
           ))}
         </div>
       ) : (

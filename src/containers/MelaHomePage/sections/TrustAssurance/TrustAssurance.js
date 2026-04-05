@@ -1,75 +1,56 @@
 import React from 'react';
 import { FormattedMessage } from '../../../../util/reactIntl';
-import { NamedLink } from '../../../../components';
+import { NamedLink, CertificationBadge } from '../../../../components';
 
 import css from './TrustAssurance.module.css';
 
+// certification prop values match CertificationBadge / certificationIcons.js keys
 const CERTIFICATIONS = [
-  {
-    id: 'gots',
-    name: 'GOTS Certified',
-    logo: '/static/images/cert-gots.png',
-    description: 'Global Organic Textile Standard'
-  },
-  {
-    id: 'organic',
-    name: 'Organic Cotton',
-    logo: '/static/images/cert-organic.png',
-    description: 'Certified Organic Materials'
-  },
-  {
-    id: 'safety',
-    name: 'Quality Verified',
-    logo: '/static/images/cert-safety.png',
-    description: 'Independently Quality Tested'
-  },
-  {
-    id: 'eco',
-    name: 'Eco-Friendly',
-    logo: '/static/images/cert-eco.png',
-    description: 'Sustainable Manufacturing'
-  }
+  { id: 'gots_certified',  description: 'Global Organic Textile Standard' },
+  { id: 'organic_cotton',  description: 'Certified Organic Materials' },
+  { id: 'oeko_tex',        description: 'Tested for harmful substances' },
+  { id: 'eco_friendly',    description: 'Sustainable Manufacturing' },
 ];
 
 const SECURITY_FEATURES = [
   {
-    icon: '🔒',
-    title: 'Secure Payments',
-    description: 'SSL encrypted checkout with trusted payment partners'
+    icon: '🛍️',
+    title: 'Transact on Brand Sites',
+    description: "Purchase securely on each brand's own Shopify store — trusted payment infrastructure",
   },
   {
-    icon: '🚚',
-    title: 'Fast Shipping',
-    description: 'Free shipping on orders over $50 worldwide'
+    icon: '📦',
+    title: 'Direct from Brands',
+    description: 'Products ship directly from verified Indian brand partners to your door',
   },
   {
     icon: '↩️',
-    title: 'Easy Returns',
-    description: '30-day hassle-free return policy'
+    title: 'Brand Return Policies',
+    description: "Each partner brand's return policy applies — we help you navigate it",
   },
   {
-    icon: '💬',
-    title: '24/7 Support',
-    description: 'Expert customer service team always available'
-  }
+    icon: '✅',
+    title: 'Mela Curation Promise',
+    description: 'Every brand on Mela is hand-vetted for quality, authenticity, and values',
+  },
 ];
 
 const QUALITY_GUARANTEES = [
   {
     title: 'Premium Quality',
-    description: 'Every product undergoes rigorous quality testing',
-    icon: '✨'
+    description: 'Every product is hand-selected from brands with a proven quality track record',
+    icon: '✨',
   },
   {
-    title: 'Ethically Made',
-    description: 'Fair trade partnerships with verified suppliers',
-    icon: '🤝'
+    title: 'Trusted Indian Brands',
+    description: 'We partner only with verified Indian brands known for craftsmanship and integrity',
+    icon: '🤝',
   },
   {
-    title: 'Sustainable',
-    description: 'Eco-friendly materials and responsible production',
-    icon: '🌱'
-  }
+    title: 'Sustainably Made',
+    description: 'Eco-friendly materials, ethical production, and responsible supply chains',
+    icon: '🌱',
+  },
 ];
 
 const TrustAssurance = () => {
@@ -122,13 +103,14 @@ const TrustAssurance = () => {
           <div className={css.certGrid}>
             {CERTIFICATIONS.map((cert) => (
               <div key={cert.id} className={css.certCard}>
-                <img
-                  src={cert.logo}
-                  alt={cert.name}
+                <CertificationBadge
+                  certification={cert.id}
+                  variant="default"
+                  size={32}
+                  showTooltip={false}
                   className={css.certLogo}
                 />
                 <div className={css.certInfo}>
-                  <h4 className={css.certName}>{cert.name}</h4>
                   <p className={css.certDescription}>{cert.description}</p>
                 </div>
               </div>
