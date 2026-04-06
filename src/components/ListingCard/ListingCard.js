@@ -345,6 +345,11 @@ export const ListingCard = props => {
           intl={intl}
           listingTypeConfig={foundListingTypeConfig}
         />
+        {publicData?.variantCount > 1 && (
+          <div className={css.variantPill}>
+            {publicData.variantCount} variants
+          </div>
+        )}
         <div className={css.mainInfo}>
           {showListingImage && (
             <div className={css.title}>

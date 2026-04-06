@@ -85,6 +85,7 @@ import {
 } from './ListingPage.shared';
 import ActionBarMaybe from './ActionBarMaybe';
 import SectionTextMaybe from './SectionTextMaybe';
+import VariantDisplay from '../../components/VariantDisplay/VariantDisplay';
 import SectionReviews from './SectionReviews';
 import SectionAuthorMaybe from './SectionAuthorMaybe';
 import SectionMapMaybe from './SectionMapMaybe';
@@ -492,6 +493,8 @@ export const ListingPageComponent = props => {
                 })()
               }
             />
+
+            <VariantDisplay variantsString={publicData.variantsString} />
 
             <SectionTextMaybe text={description} showAsIngress />
 

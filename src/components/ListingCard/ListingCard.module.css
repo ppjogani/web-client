@@ -95,6 +95,18 @@
   }
 }
 
+.variantPill {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: var(--fontWeightSemiBold);
+  color: var(--colorGrey600);
+  background: var(--colorGrey100);
+  border-radius: 20px;
+  padding: 2px 8px;
+  margin-bottom: 4px;
+  width: fit-content;
+}
+
 .mainInfo {
   display: flex;
   flex-direction: column;
