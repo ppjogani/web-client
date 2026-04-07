@@ -127,6 +127,8 @@ export { default as ItemSpecifics } from './ItemSpecifics/ItemSpecifics';
 export { default as OrderBreakdown } from './OrderBreakdown/OrderBreakdown';
 export { default as OrderPanel } from './OrderPanel/OrderPanel';
 export { default as ListingCard } from './ListingCard/ListingCard';
+export { default as SavedListingButton } from './SavedListingButton/SavedListingButton';
+export { default as SavedItemsBanner } from './SavedItemsBanner/SavedItemsBanner';
 export { default as ListingCardMini } from './ListingCardMini/ListingCardMini';
 export { default as ListingImage } from './ListingImage/ListingImage';
 export { default as BrandCard } from './BrandCard/BrandCard';

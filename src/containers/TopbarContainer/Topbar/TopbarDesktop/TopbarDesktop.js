@@ -169,6 +169,14 @@ const TopbarDesktop = props => {
   const giveSpaceForSearch = customLinks == null || customLinks?.length === 0;
   const classes = classNames(rootClassName || css.root, className);
 
+  const savedLinkMaybe = authenticatedOnClientSide ? (
+    <NamedLink name="SavedPage" className={css.topbarLink}>
+      <span className={css.topbarLinkLabel}>
+        ❤ <FormattedMessage id="TopbarDesktop.savedItemsLink" />
+      </span>
+    </NamedLink>
+  ) : null;
+
   const inboxLinkMaybe = authenticatedOnClientSide ? (
     <InboxLink notificationCount={notificationCount} inboxTab={inboxTab} />
   ) : null;
@@ -225,6 +233,7 @@ const TopbarDesktop = props => {
         currentUser={currentUser}
       />
 
+      {savedLinkMaybe}
       {inboxLinkMaybe}
       {profileMenuMaybe}
       {signInLinkMaybe}

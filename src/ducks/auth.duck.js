@@ -1,6 +1,7 @@
 import * as log from '../util/log';
 import { storableError } from '../util/errors';
 import { clearCurrentUser, fetchCurrentUser } from './user.duck';
+import { migrateLocalSavesToProfile } from './savedListings.duck';
 import { createUserWithIdp } from '../util/api';
 
 const authenticated = authInfo => authInfo?.isAnonymous === false;
@@ -180,6 +181,7 @@ export const login = (username, password) => (dispatch, getState, sdk) => {
   return sdk
     .login({ username, password })
     .then(() => dispatch(fetchCurrentUser({ afterLogin: true })))
+    .then(() => dispatch(migrateLocalSavesToProfile()))
     .then(() => dispatch(loginSuccess()))
     .catch(e => dispatch(loginError(storableError(e))));
 };
@@ -234,6 +236,7 @@ export const signupWithIdp = params => (dispatch, getState, sdk) => {
       return dispatch(confirmSuccess());
     })
     .then(() => dispatch(fetchCurrentUser()))
+    .then(() => dispatch(migrateLocalSavesToProfile()))
     .catch(e => {
       log.error(e, 'create-user-with-idp-failed', { params });
       return dispatch(confirmError(storableError(e)));

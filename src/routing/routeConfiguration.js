@@ -43,6 +43,7 @@ const NoAccessPage = loadable(() => import(/* webpackChunkName: "NoAccessPage" *
 
 // Styleguide helps you to review current components and develop new ones
 const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ '../containers/StyleguidePage/StyleguidePage'));
+const SavedPage = loadable(() => import(/* webpackChunkName: "SavedPage" */ '../containers/SavedPage/SavedPage'));
 
 export const ACCOUNT_SETTINGS_PAGES = [
   'ContactDetailsPage',
@@ -220,6 +221,13 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       auth: true,
       authPage: 'LoginPage',
       component: ProfileSettingsPage,
+    },
+    {
+      path: '/saved',
+      name: 'SavedPage',
+      auth: true,
+      authPage: 'LoginPage',
+      component: SavedPage,
     },
 
     // Note: authenticating with IdP (e.g. Facebook) expects that /login path exists

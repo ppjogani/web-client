@@ -19,6 +19,7 @@ import {
   NamedLink,
   ListingCardThumbnail,
   ListingImage,
+  SavedListingButton,
 } from '../../components';
 
 import css from './ListingCard.module.css';
@@ -317,63 +318,81 @@ export const ListingCard = props => {
       }
     : null;
 
+  // Extract the first image URL for anon localStorage saves
+  const firstImage = currentListing.images?.[0];
+  const imageUrl = firstImage?.attributes?.variants?.['listing-card']?.url || '';
+  const listingData = { title, imageUrl };
+
   return (
-    <NamedLink className={classes} name="ListingPage" params={{ id, slug }}>
-      <div className={css.imageContainer}>
-        <ListingCardImage
-          renderSizes={renderSizes}
-          title={title}
-          currentListing={currentListing}
-          config={config}
-          setActivePropsMaybe={setActivePropsMaybe}
-          aspectWidth={aspectWidth}
-          aspectHeight={aspectHeight}
-          variantPrefix={variantPrefix}
-          style={cardStyle}
-          showListingImage={showListingImage}
-        />
-        {showTrustBadges && <TrustBadges certifications={certifications} />}
-        {showConversionBadges && (
-          <ConversionBadges isBestseller={isBestseller} stockCount={stockCount} isNew={isNew} />
-        )}
-      </div>
-      <div className={css.info}>
-        <PriceMaybe
-          price={price}
-          publicData={publicData}
-          config={config}
-          intl={intl}
-          listingTypeConfig={foundListingTypeConfig}
-        />
-        {publicData?.variantCount > 1 && (
-          <div className={css.variantPill}>
-            {publicData.variantCount} variants
+    <div className={classes}>
+      {/* imageWrapper gives the save button a shared positioning parent with the image */}
+      <div className={css.imageWrapper}>
+        <NamedLink className={css.imageLink} name="ListingPage" params={{ id, slug }}>
+          <div className={css.imageContainer}>
+            <ListingCardImage
+              renderSizes={renderSizes}
+              title={title}
+              currentListing={currentListing}
+              config={config}
+              setActivePropsMaybe={setActivePropsMaybe}
+              aspectWidth={aspectWidth}
+              aspectHeight={aspectHeight}
+              variantPrefix={variantPrefix}
+              style={cardStyle}
+              showListingImage={showListingImage}
+            />
+            {showTrustBadges && <TrustBadges certifications={certifications} />}
+            {showConversionBadges && (
+              <ConversionBadges isBestseller={isBestseller} stockCount={stockCount} isNew={isNew} />
+            )}
           </div>
-        )}
-        <div className={css.mainInfo}>
-          {showListingImage && (
-            <div className={css.title}>
-              {richText(title, {
-                longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
-                longWordClass: css.longWord,
-              })}
+        </NamedLink>
+        <SavedListingButton
+          listingId={id}
+          listingData={listingData}
+          variant="icon"
+          className={css.saveButton}
+        />
+      </div>
+      <NamedLink className={css.infoLink} name="ListingPage" params={{ id, slug }}>
+        <div className={css.info}>
+          <PriceMaybe
+            price={price}
+            publicData={publicData}
+            config={config}
+            intl={intl}
+            listingTypeConfig={foundListingTypeConfig}
+          />
+          {publicData?.variantCount > 1 && (
+            <div className={css.variantPill}>
+              {publicData.variantCount} variants
             </div>
           )}
-          {showAuthorInfo ? (
-            <div className={css.authorInfo}>
-              {brand && (
-                <div className={css.brandName}>
-                  <FormattedMessage id="ListingCard.brand" values={{ brandName: brand }} />
-                </div>
-              )}
-              <div className={css.author}>
-                <FormattedMessage id="ListingCard.author" values={{ authorName }} />
+          <div className={css.mainInfo}>
+            {showListingImage && (
+              <div className={css.title}>
+                {richText(title, {
+                  longWordMinLength: MIN_LENGTH_FOR_LONG_WORDS,
+                  longWordClass: css.longWord,
+                })}
               </div>
-            </div>
-          ) : null}
+            )}
+            {showAuthorInfo ? (
+              <div className={css.authorInfo}>
+                {brand && (
+                  <div className={css.brandName}>
+                    <FormattedMessage id="ListingCard.brand" values={{ brandName: brand }} />
+                  </div>
+                )}
+                <div className={css.author}>
+                  <FormattedMessage id="ListingCard.author" values={{ authorName }} />
+                </div>
+              </div>
+            ) : null}
+          </div>
         </div>
-      </div>
-    </NamedLink>
+      </NamedLink>
+    </div>
   );
 };
 

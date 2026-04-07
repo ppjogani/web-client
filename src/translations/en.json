@@ -1453,5 +1453,34 @@
   "BrandBadgeTooltip.women_owned": "Owned and operated by women entrepreneurs",
   "BrandBadgeTooltip.fair_trade": "Fair wages, safe working conditions, and community development verified",
   "BrandBadgeTooltip.bis_approved": "Meets Bureau of Indian Standards safety requirements for baby products",
-  "BrandBadgeTooltip.non_toxic_dyes": "Natural or non-toxic synthetic dyes, free from harmful chemicals"
+  "BrandBadgeTooltip.non_toxic_dyes": "Natural or non-toxic synthetic dyes, free from harmful chemicals",
+
+  "SavedListingButton.save": "Save",
+  "SavedListingButton.saved": "Saved",
+  "SavedListingButton.saveAriaLabel": "Save this item",
+  "SavedListingButton.savedAriaLabel": "Remove from saved items",
+  "SavedListingButton.signUpToSave": "Sign up to save your favourites",
+  "SavedListingButton.capReached": "You've saved 200 items — the maximum. Remove one to save another.",
+
+  "SavedItemsBanner.message": "You have {count, plural, one {# saved item} other {# saved items}} waiting — {signUpLink} to keep them.",
+  "SavedItemsBanner.signUpLink": "sign up",
+  "SavedItemsBanner.dismiss": "Dismiss",
+
+  "SavedPage.title": "Saved",
+  "SavedPage.subheading": "Your personal Mela collection — meri pasand ❤️",
+  "SavedPage.emptyHeading": "Nothing saved yet",
+  "SavedPage.emptySubheading": "your meri pasand waits ❤️",
+  "SavedPage.emptyBrowseCta": "Browse products",
+  "SavedPage.loading": "Loading your saved items…",
+  "SavedPage.error": "Could not load saved items. Please try again.",
+  "SavedPage.schemaTitle": "Saved Items | Mela",
+  "SavedPage.schemaDescription": "Your saved items on Mela — Indian baby brands curated for you.",
+
+  "SavedItemsModule.heading": "Your Saved Items",
+  "SavedItemsModule.subheading": "— meri pasand",
+  "SavedItemsModule.seeAll": "See all saved items",
+
+  "TopbarDesktop.savedItemsLink": "Saved",
+
+  "TopbarMobileMenu.savedItemsLink": "Saved items"
 }

@@ -17,6 +17,7 @@ import heroProducts from './heroProducts.duck';
 import stripe from './stripe.duck';
 import stripeConnectAccount from './stripeConnectAccount.duck';
 import user from './user.duck';
+import savedListings from './savedListings.duck';
 
 export {
   auth,
@@ -32,4 +33,5 @@ export {
   stripe,
   stripeConnectAccount,
   user,
+  savedListings,
 };

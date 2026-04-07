@@ -9,6 +9,7 @@ import { propTypes } from '../../util/types';
 import { sendVerificationEmail, hasCurrentUserErrors } from '../../ducks/user.duck';
 import { logout, authenticationInProgress } from '../../ducks/auth.duck';
 import { manageDisableScrolling } from '../../ducks/ui.duck';
+import { SavedItemsBanner } from '../../components';
 
 const Topbar = loadable(() => import(/* webpackChunkName: "Topbar" */ './Topbar/Topbar'));
 
@@ -29,7 +30,10 @@ export const TopbarContainerComponent = props => {
   const { notificationCount = 0, hasGenericError, ...rest } = props;
 
   return (
-    <Topbar notificationCount={notificationCount} showGenericError={hasGenericError} {...rest} />
+    <>
+      <Topbar notificationCount={notificationCount} showGenericError={hasGenericError} {...rest} />
+      <SavedItemsBanner />
+    </>
   );
 };
 

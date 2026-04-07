@@ -9,6 +9,7 @@ import HeroSection from './sections/HeroSection/HeroSection';
 import CategoryShowcase from './sections/CategoryShowcase/CategoryShowcase';
 import FeaturedBrandPartnersContainer from './sections/FeaturedBrandPartners/FeaturedBrandPartnersContainer';
 import TrustAssurance from './sections/TrustAssurance/TrustAssurance';
+import SavedItemsModule from './sections/SavedItems/SavedItemsModule';
 
 import css from './MelaHomePage.module.css';
 
@@ -80,6 +81,9 @@ const MelaHomePage = props => {
         <section className={css.heroSection}>
           <HeroSection />
         </section>
+
+        {/* Saved Items Module — shows only for authenticated users with saves */}
+        <SavedItemsModule />
 
         {/* Category Showcase - Clear Product Navigation */}
         <section className={css.categorySection}>

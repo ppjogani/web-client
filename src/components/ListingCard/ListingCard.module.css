@@ -4,11 +4,36 @@
   /* Layout */
   display: flex;
   flex-direction: column;
+}
 
-  /* Remove link's hover effect */
+/* Shared positioning parent for the image link and the save button */
+.imageWrapper {
+  position: relative;
+}
+
+/* Link that wraps only the image area */
+.imageLink {
+  display: block;
+
   &:hover {
     text-decoration: none;
   }
+}
+
+/* Link that wraps only the info area */
+.infoLink {
+  display: block;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+/* Heart save button — bottom-right corner of the image */
+.saveButton {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
 }
 
 .imageContainer {
