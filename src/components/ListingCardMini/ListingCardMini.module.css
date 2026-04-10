@@ -57,8 +57,19 @@
 
 .priceWrapper {
   padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.usdPrice {
   font-size: 14px;
   font-weight: var(--fontWeightSemiBold);
   color: var(--colorGrey700);
-  text-align: left;
+}
+
+.inrPrice {
+  font-size: 11px;
+  color: var(--colorGrey500);
+  font-weight: var(--fontWeightRegular);
 }

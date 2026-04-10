@@ -3,7 +3,7 @@ import { string, bool, object } from 'prop-types';
 import classNames from 'classnames';
 
 import { useIntl } from '../../util/reactIntl';
-import { formatMoney } from '../../util/currency';
+import { formatMoney, formatCurrencyMajorUnit } from '../../util/currency';
 import { ensureListing } from '../../util/data';
 import { createSlug } from '../../util/urlHelpers';
 import { NamedLink } from '../../components';
@@ -27,13 +27,16 @@ export const ListingCardMini = props => {
   const intl = useIntl();
   const currentListing = ensureListing(listing);
   const { id, attributes } = currentListing;
-  const { title, price } = attributes;
+  const { title, price, publicData } = attributes;
   const slug = createSlug(title);
 
   const classes = classNames(css.root, className);
 
   // Format price
   const formattedPrice = price ? formatMoney(intl, price) : null;
+  const inrPrice = publicData?.priceInINR;
+  const formattedINRPrice =
+    inrPrice && price ? formatCurrencyMajorUnit(intl, 'INR', inrPrice) : null;
 
   const firstImage = currentListing.images?.[0];
   const imageUrl = firstImage?.attributes?.variants?.['square-small']?.url || '';
@@ -52,7 +55,12 @@ export const ListingCardMini = props => {
             className={css.image}
           />
         </div>
-        {formattedPrice && <div className={css.priceWrapper}>{formattedPrice}</div>}
+        {(formattedPrice || formattedINRPrice) && (
+          <div className={css.priceWrapper}>
+            {formattedPrice && <span className={css.usdPrice}>{formattedPrice}</span>}
+            {formattedINRPrice && <span className={css.inrPrice}>~{formattedINRPrice}</span>}
+          </div>
+        )}
       </NamedLink>
       {showSave && (
         <SavedListingButton

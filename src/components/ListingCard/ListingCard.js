@@ -9,7 +9,7 @@ import {
   isPriceVariationsEnabled,
   requireListingImage,
 } from '../../util/configHelpers';
-import { formatMoney } from '../../util/currency';
+import { formatMoney, formatCurrencyMajorUnit } from '../../util/currency';
 import { ensureListing, ensureUser } from '../../util/data';
 import { richText } from '../../util/richText';
 import { createSlug } from '../../util/urlHelpers';
@@ -140,6 +140,10 @@ const PriceMaybe = props => {
     ''
   );
 
+  const inrPrice = publicData?.priceInINR;
+  const formattedINRPrice =
+    inrPrice && formattedPrice ? formatCurrencyMajorUnit(intl, 'INR', inrPrice) : null;
+
   return (
     <div className={css.price} title={priceTitle}>
       {hasMultiplePriceVariants ? (
@@ -149,6 +153,11 @@ const PriceMaybe = props => {
         />
       ) : (
         <FormattedMessage id="ListingCard.price" values={{ priceValue, pricePerUnit }} />
+      )}
+      {formattedINRPrice && (
+        <span className={css.inrPrice}>
+          <FormattedMessage id="ListingCard.inrEquivalent" values={{ inrPrice: formattedINRPrice }} />
+        </span>
       )}
     </div>
   );
