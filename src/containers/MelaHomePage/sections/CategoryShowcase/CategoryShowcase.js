@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import { FormattedMessage } from '../../../../util/reactIntl';
 import { NamedLink, ListingCard } from '../../../../components';
 import { useConfiguration } from '../../../../context/configurationContext';
@@ -229,12 +230,12 @@ const CategoryShowcase = () => {
 
         {/* View All Categories CTA */}
         <div className={css.viewAll}>
-          <NamedLink name="SearchPage" className={css.viewAllButton}>
+          <Link to="/categories/Baby-Clothes-Accessories" className={css.viewAllButton}>
             <FormattedMessage
               id="MelaHomePage.viewAllCategories"
               defaultMessage="View All Categories"
             />
-          </NamedLink>
+          </Link>
         </div>
       </div>
     </div>
@@ -451,13 +452,9 @@ const AgeNavigation = ({ config }) => {
         ))}
       </div>
       <div className={css.viewAll}>
-        <NamedLink
-          name="SearchPage"
-          to={{ search: '?pub_categoryLevel1=Baby-Clothes-Accessories' }}
-          className={css.viewAllButton}
-        >
+        <Link to="/categories/Baby-Clothes-Accessories" className={css.viewAllButton}>
           <FormattedMessage id="MelaHomePage.seeAllAges" defaultMessage="See all ages →" />
-        </NamedLink>
+        </Link>
       </div>
     </div>
   );
@@ -482,11 +479,8 @@ const CategorySection = ({ category, products, isLoading, index }) => {
               : `Explore our ${category.name.toLowerCase()} collection`}
           </p>
         </div>
-        <NamedLink
-          name="SearchPage"
-          to={{
-            search: `?pub_categoryLevel1=Baby-Kids&pub_categoryLevel2=${category.id}`,
-          }}
+        <Link
+          to={`/categories/Baby-Kids/${category.id}`}
           className={css.viewCategoryLink}
         >
           <FormattedMessage
@@ -494,7 +488,7 @@ const CategorySection = ({ category, products, isLoading, index }) => {
             defaultMessage="View All"
           />
           <span className={css.arrow}>→</span>
-        </NamedLink>
+        </Link>
       </div>
 
       {/* Product Carousel (mobile swipe) / Grid (desktop) */}

@@ -5,6 +5,7 @@ import { PROFILE_PAGE_PENDING_APPROVAL_VARIANT } from '../../util/urlHelpers';
 import { denormalisedResponseEntities } from '../../util/data';
 import { storableError } from '../../util/errors';
 import { hasPermissionToViewData, isUserAuthorized } from '../../util/userHelpers';
+import { getBrandIdBySlug } from '../../config/configBrands';
 
 const { UUID } = sdkTypes;
 
@@ -206,8 +207,8 @@ export const showUser = (userId, config) => (dispatch, getState, sdk) => {
 
 const isCurrentUser = (userId, cu) => userId?.uuid === cu?.id?.uuid;
 
-export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
-  const userId = new UUID(params.id);
+// Shared fetch logic used by both /u/:id and /brands/:brandSlug routes
+const loadProfileByUserId = (userId, params, config) => (dispatch, getState, sdk) => {
   const isPreviewForCurrentUser = params.variant === PROFILE_PAGE_PENDING_APPROVAL_VARIANT;
   const currentUser = getState()?.user?.currentUser;
   const fetchCurrentUserOptions = {
@@ -215,23 +216,17 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     updateNotifications: false,
   };
 
-  // Clear state so that previously loaded data is not visible
-  // in case this page load fails.
   dispatch(setInitialState());
 
   if (isPreviewForCurrentUser) {
     return dispatch(fetchCurrentUser(fetchCurrentUserOptions)).then(() => {
       if (isCurrentUser(userId, currentUser) && isUserAuthorized(currentUser)) {
-        // Scenario: 'active' user somehow tries to open a link for "variant" profile
         return Promise.all([
           dispatch(showUser(userId, config)),
           dispatch(queryUserListings(userId, config)),
           dispatch(queryUserReviews(userId)),
         ]);
       } else if (isCurrentUser(userId, currentUser)) {
-        // Handle a scenario, where user (in pending-approval state)
-        // tries to see their own profile page.
-        // => just set userId to state
         return dispatch(showUserRequest(userId));
       } else {
         return Promise.resolve({});
@@ -239,15 +234,10 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     });
   }
 
-  // Fetch data for plain profile page.
-  // Note 1: returns 404s if user is not 'active'.
-  // Note 2: In private marketplace mode, this page won't fetch data if the user is unauthorized
   const isAuthorized = currentUser && isUserAuthorized(currentUser);
   const isPrivateMarketplace = config.accessControl.marketplace.private === true;
   const hasNoViewingRights = currentUser && !hasPermissionToViewData(currentUser);
   const canFetchData = !isPrivateMarketplace || (isPrivateMarketplace && isAuthorized);
-  // On a private marketplace, show active (approved) current user's own page
-  // even if they don't have viewing rights
   const canFetchOwnProfileOnly =
     isPrivateMarketplace &&
     isAuthorized &&
@@ -270,4 +260,22 @@ export const loadData = (params, search, config) => (dispatch, getState, sdk) =>
     dispatch(queryUserListings(userId, config)),
     dispatch(queryUserReviews(userId)),
   ]);
+};
+
+export const loadData = (params, search, config) => (dispatch, getState, sdk) => {
+  // /brands/:brandSlug route — resolve slug to UUID via config, then load normally
+  if (params.brandSlug) {
+    const uuidString = getBrandIdBySlug(params.brandSlug);
+    if (!uuidString) {
+      // Slug not found — dispatch error so ProfilePage renders NotFoundPage
+      dispatch(setInitialState());
+      dispatch(showUserError(storableError({ status: 404 })));
+      return Promise.resolve();
+    }
+    const userId = new UUID(uuidString);
+    return dispatch(loadProfileByUserId(userId, params, config));
+  }
+
+  const userId = new UUID(params.id);
+  return dispatch(loadProfileByUserId(userId, params, config));
 };

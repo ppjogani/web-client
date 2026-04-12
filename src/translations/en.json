@@ -1373,6 +1373,15 @@
   "ItemSpecifics.modalTitle": "All Item Specifics",
   "CategoryBreadcrumb.home": "Home",
 
+  "CategoryPage.title": "{categoryName} — Authentic Indian Baby Products | {marketplaceName}",
+  "CategoryPage.description": "Discover authentic Indian {categoryName} products for your baby. Curated brands with GOTS certified, organic, and handcrafted options — trusted by diaspora families.",
+  "CategoryPage.home": "Home",
+  "CategoryPage.loadingProducts": "Loading products…",
+  "CategoryPage.noProducts": "No products in {categoryName} yet.",
+  "CategoryPage.browseBrands": "Browse all brands",
+  "CategoryPage.browseCategory": "Browse →",
+  "CategoryPage.allCategories": "All Categories",
+
   "BrandsPage.title": "Indian Organic Baby Brands | {brandCount}+ GOTS Certified Brands | Mela",
   "BrandsPage.description": "Discover {brandCount}+ verified Indian organic baby brands. Shop GOTS certified clothing, natural care products, and handcrafted toys. Trusted by 10,000+ parents.",
   "BrandsPage.heroTitle": "Discover India's Most Trusted Organic Baby Brands",

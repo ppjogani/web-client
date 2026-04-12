@@ -199,6 +199,42 @@ results.forEach(r => allEntities = updatedEntities(allEntities, r.responseData, 
 - **Example**: BrandStorySection expects `brandStory` prop, not `bio` (even though parent has `bio`)
 - **Pattern**: Read component implementation to verify exact prop names, don't assume
 
+### path-to-regexp v8 Incompatibility with React Router v5 Optional Params
+- **Issue**: `createResourceLocatorString` and `NamedLink` call `compile()` from path-to-regexp v8, which doesn't support the `?` optional param syntax (e.g., `/:level2?`). React Router v5 uses its own bundled path-to-regexp v1 for matching which does support `?`.
+- **Impact**: Routes with optional params (like `/categories/:level1/:level2?/:level3?`) will throw at link-building time, not at match time.
+- **Solution**: Build paths manually for routes with optional params instead of using `createResourceLocatorString`:
+```javascript
+const categoryPath = (level1, level2, level3) => {
+  let path = `/categories/${level1}`;
+  if (level2) path += `/${level2}`;
+  if (level3) path += `/${level3}`;
+  return path;
+};
+// Use <Link to={categoryPath(l1, l2)}> instead of <NamedLink name="CategoryPage" params={...}>
+```
+- **Applies to**: Any container that generates links to routes with `?` optional params.
+
+### Canonical URL Override on Page Component
+- **Pattern**: `Page` accepts a `canonicalURL` prop that overrides the auto-generated canonical.
+- **Use case**: Brand pages at `/u/:uuid` should canonicalize to `/brands/:slug`. Category pages should canonicalize to the clean path (no query params).
+- **Implementation**: `<Page canonicalURL={brandCanonicalUrl}>` — if `null`/`undefined`, falls back to normal behavior.
+
+### Brand Slug ↔ UUID Resolution
+- **Pattern**: `getBrandSlugById(uuid)` and `getBrandIdBySlug(slug)` in `src/config/configBrands.js`.
+- **Used in**: `ProfilePage.js` (canonical URL), `ProfilePage.duck.js` (loadData for /brands/:brandSlug route), `BrandCard.js`, `BrandCardHome.js` (link routing).
+- **Duck**: `loadData` branches on `params.brandSlug` — resolves slug → UUID, then calls shared `loadProfileByUserId`. Returns 404 error if slug not found.
+
+### CategoryPage Reuses SearchPage Duck
+- **No new duck needed**: CategoryPage connects to `state.SearchPage` (currentPageResultIds, searchInProgress).
+- **loadData**: Points to `pageDataLoadingAPI.SearchPage.loadData` in routeConfiguration.
+- **Category filtering**: Handled by `convertCategoryPathParamsToQueryParams` in SearchPage.shared.js — the URL params are automatically converted to search filters.
+
+### Testing Connected Pages (with Page/Helmet)
+- **Requires HelmetProvider** from `react-helmet-async` wrapping the render tree.
+- **Mock TopbarContainer and FooterContainer** to avoid deep dependency chain in unit tests.
+- **Required mock state shape**: `{ SearchPage: { currentPageResultIds: [], searchInProgress: false }, marketplaceData: { entities: {} }, ui: { disableScrollRequests: [] } }`.
+- `ui.scrollingDisabled: false` is WRONG — the actual key is `ui.disableScrollRequests: []` (array).
+
 ## Session Log
 2024-10-10: Fixed CategoryProducts to display proper category names + product filtering improvements
 2025-10-10: Implemented HeroProducts with real API integration, randomization, and comprehensive testing

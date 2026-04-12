@@ -44,6 +44,7 @@ const NoAccessPage = loadable(() => import(/* webpackChunkName: "NoAccessPage" *
 // Styleguide helps you to review current components and develop new ones
 const StyleguidePage = loadable(() => import(/* webpackChunkName: "StyleguidePage" */ '../containers/StyleguidePage/StyleguidePage'));
 const SavedPage = loadable(() => import(/* webpackChunkName: "SavedPage" */ '../containers/SavedPage/SavedPage'));
+const CategoryPage = loadable(() => import(/* webpackChunkName: "CategoryPage" */ '../containers/CategoryPage/CategoryPage'));
 
 export const ACCOUNT_SETTINGS_PAGES = [
   'ContactDetailsPage',
@@ -115,15 +116,15 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       path: '/categories',
       name: 'CategoriesPage',
       ...authForPrivateMarketplace,
-      component: SearchPage,
-      loadData: pageDataLoadingAPI.SearchPage.loadData,
+      component: CategoryPage,
+      loadData: null,
     },
     {
       path: '/categories/:level1/:level2?/:level3?',
       name: 'CategoryPage',
       ...authForPrivateMarketplace,
-      component: SearchPage,
-      loadData: pageDataLoadingAPI.SearchPage.loadData,
+      component: CategoryPage,
+      loadData: pageDataLoadingAPI.CategoryPage.loadData,
     },
     {
       path: '/brands',
@@ -136,8 +137,8 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
       path: '/brands/:brandSlug',
       name: 'BrandPage',
       ...authForPrivateMarketplace,
-      component: SearchPage,
-      loadData: pageDataLoadingAPI.SearchPage.loadData,
+      component: ProfilePage,
+      loadData: pageDataLoadingAPI.ProfilePage.loadData,
     },
     {
       path: '/l',

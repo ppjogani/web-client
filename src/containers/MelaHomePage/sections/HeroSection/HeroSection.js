@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { Link } from 'react-router-dom';
 import { FormattedMessage, useIntl } from '../../../../util/reactIntl';
 import { NamedLink, Button, ResponsiveImage } from '../../../../components';
 import { formatMoney } from '../../../../util/currency';
@@ -207,41 +208,25 @@ const HeroSectionComponent = ({
 
         {/* Quick Category Navigation */}
         <div className={css.quickNav}>
-          <NamedLink
-            name="SearchPage"
-            to={{ search: '?pub_categoryLevel1=Baby-Kids' }}
-            className={css.quickNavItem}
-          >
+          <Link to="/categories/Baby-Kids" className={css.quickNavItem}>
             <span className={css.quickNavIcon}>👶</span>
             <span className={css.quickNavText}>Baby &amp; Kids</span>
-          </NamedLink>
+          </Link>
 
-          <NamedLink
-            name="SearchPage"
-            to={{ search: '?pub_categoryLevel1=Fashion' }}
-            className={css.quickNavItem}
-          >
+          <Link to="/categories/Fashion" className={css.quickNavItem}>
             <span className={css.quickNavIcon}>👗</span>
             <span className={css.quickNavText}>Fashion</span>
-          </NamedLink>
+          </Link>
 
-          <NamedLink
-            name="SearchPage"
-            to={{ search: '?pub_categoryLevel1=Home-Kitchen' }}
-            className={css.quickNavItem}
-          >
+          <Link to="/categories/Home-Kitchen" className={css.quickNavItem}>
             <span className={css.quickNavIcon}>🏡</span>
             <span className={css.quickNavText}>Home &amp; Kitchen</span>
-          </NamedLink>
+          </Link>
 
-          <NamedLink
-            name="SearchPage"
-            to={{ search: '?pub_categoryLevel1=Gifts' }}
-            className={css.quickNavItem}
-          >
+          <Link to="/categories/Gifts" className={css.quickNavItem}>
             <span className={css.quickNavIcon}>🎁</span>
             <span className={css.quickNavText}>Gifts</span>
-          </NamedLink>
+          </Link>
         </div>
       </div>
     </div>

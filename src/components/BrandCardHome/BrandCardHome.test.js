@@ -52,6 +52,7 @@ const mockConfig = {
 
 const mockRoutes = [
   { path: '/u/:id', name: 'ProfilePage' },
+  { path: '/brands/:brandSlug', name: 'BrandPage' },
   { path: '/l/:slug/:id', name: 'ListingPage' },
 ];
 

@@ -52,6 +52,8 @@ import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
 import NotFoundPage from '../../containers/NotFoundPage/NotFoundPage';
 
+import { getBrandSlugById } from '../../config/configBrands';
+
 import css from './ProfilePage.module.css';
 import SectionDetailsMaybe from './SectionDetailsMaybe';
 import SectionTextMaybe from './SectionTextMaybe';
@@ -354,8 +356,11 @@ export const ProfilePageComponent = props => {
     return <NamedRedirect name="LandingPage" />;
   }
 
-  const isCurrentUser = currentUser?.id && currentUser?.id?.uuid === pathParams.id;
   const profileUser = useCurrentUser ? currentUser : user;
+  // Compare against the loaded user's UUID, not the URL param.
+  // This handles both /u/:id (pathParams.id) and /brands/:brandSlug (no pathParams.id).
+  const isCurrentUser =
+    currentUser?.id != null && currentUser.id.uuid === profileUser?.id?.uuid;
   const { bio, displayName, publicData, metadata } = profileUser?.attributes?.profile || {};
   const { userFields } = config.user;
   const isPrivateMarketplace = config.accessControl.marketplace.private === true;
@@ -379,14 +384,25 @@ export const ProfilePageComponent = props => {
   const schemaTitleVars = { name: displayName, marketplaceName: config.marketplaceName };
   const schemaTitle = intl.formatMessage({ id: 'ProfilePage.schemaTitle' }, schemaTitleVars);
 
+  // Resolve the canonical brand URL: prefer /brands/:slug over /u/:uuid
+  const profileUserId = profileUser?.id?.uuid;
+  const brandSlug = isProvider
+    ? (pathParams.brandSlug || getBrandSlugById(profileUserId))
+    : null;
+  const brandCanonicalUrl = brandSlug
+    ? `${config.marketplaceRootURL}/brands/${brandSlug}`
+    : null;
+  // Used for schema @id and url — always point to the canonical slug URL when available
+  const brandPageUrl = brandCanonicalUrl || `${config.marketplaceRootURL}/u/${profileUserId}`;
+
   // Construct Schema.org markup based on profile type
   const schemaMarkup = isProvider
     ? {
         '@context': 'http://schema.org',
         '@type': 'Organization',
-        '@id': `${config.marketplaceRootURL}/u/${pathParams.id}`,
+        '@id': brandPageUrl,
         name: displayName,
-        url: `${config.marketplaceRootURL}/u/${pathParams.id}`,
+        url: brandPageUrl,
         ...(publicData?.brandLogoUrl && {
           logo: {
             '@type': 'ImageObject',
@@ -469,6 +485,7 @@ export const ProfilePageComponent = props => {
       scrollingDisabled={scrollingDisabled}
       title={schemaTitle}
       schema={schemaMarkup}
+      canonicalURL={brandCanonicalUrl}
     >
       {isProvider ? (
         // Brand Storefront: Full-width layout without sidebar
