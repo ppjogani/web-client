@@ -13,6 +13,7 @@ import { getListingsById } from '../../ducks/marketplaceData.duck';
 import { Page, LayoutSingleColumn, NamedLink, ListingCard } from '../../components';
 import TopbarContainer from '../TopbarContainer/TopbarContainer';
 import FooterContainer from '../FooterContainer/FooterContainer';
+import { OccasionStrip } from '../MelaHomePage/sections/CategoryShowcase/CategoryShowcase';
 
 import css from './CategoryPage.module.css';
 
@@ -294,6 +295,13 @@ const CategoryPageComponent = props => {
   // Subcategories of the current level — used for navigation pills
   const subcategories = currentCategory?.subcategories || [];
 
+  // Occasion strip: scope to deepest available category level so results stay relevant
+  const occasionCategoryParams = level3
+    ? { pub_categoryLevel3: level3 }
+    : level2
+    ? { pub_categoryLevel2: level2 }
+    : { pub_categoryLevel1: level1 };
+
   if (!currentCategory) {
     // Unknown category slug — let it fall through to 404 via NotFoundPage
     return null;
@@ -388,6 +396,11 @@ const CategoryPageComponent = props => {
               ))}
             </div>
           )}
+
+          {/* Occasion strip — occasion products scoped to this category */}
+          <div className={css.occasionSection}>
+            <OccasionStrip config={config} additionalQueryParams={occasionCategoryParams} />
+          </div>
 
           {/* Product grid */}
           <section className={css.productsSection}>

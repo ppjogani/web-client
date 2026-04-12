@@ -522,8 +522,6 @@ export const listingFields = [
     schemaType: 'multi-enum',
     enumOptions: [
       { option: 'diwali-festivals', label: 'Diwali & Festivals' },
-      { option: 'new-baby', label: 'New Baby' },
-      { option: 'everyday', label: 'Everyday' },
       { option: 'gifting', label: 'Gifting' },
     ],
     filterConfig: {

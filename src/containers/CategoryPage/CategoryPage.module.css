@@ -78,6 +78,11 @@
   border-color: var(--colorBorderHover, #d1d5db);
 }
 
+/* ── Occasion strip wrapper ── */
+.occasionSection {
+  margin-bottom: 32px;
+}
+
 /* ── Products ── */
 .productsSection {
   margin-top: 4px;
