@@ -133,12 +133,12 @@ const HeroSectionComponent = ({
             {/* Primary CTA */}
             <div className={css.ctaButtons}>
               <NamedLink
-                name="SearchPage"
+                name="BrandsPage"
                 className={css.primaryCta}
               >
                 <FormattedMessage
                   id="SectionMelaHero.shopNow"
-                  defaultMessage="Shop Now"
+                  defaultMessage="Explore Brands"
                 />
               </NamedLink>
 

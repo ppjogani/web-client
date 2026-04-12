@@ -10,6 +10,7 @@ import CategoryShowcase from './sections/CategoryShowcase/CategoryShowcase';
 import FeaturedBrandPartnersContainer from './sections/FeaturedBrandPartners/FeaturedBrandPartnersContainer';
 import TrustAssurance from './sections/TrustAssurance/TrustAssurance';
 import SavedItemsModule from './sections/SavedItems/SavedItemsModule';
+import ComingSoonSection from './sections/ComingSoonSection/ComingSoonSection';
 
 import css from './MelaHomePage.module.css';
 
@@ -20,7 +21,7 @@ const MelaHomePage = props => {
   const pageTitle = 'Sustainable Indian Design for Families | Baby, Fashion & More | Mela';
 
   // SEO-optimized meta description with target keywords
-  const pageDescription = 'Discover GOTS certified organic baby clothes, Indian fashion, and home goods from innovative Indian designers. Ethically made, traditional craftsmanship, delivered worldwide.';
+  const pageDescription = 'Mela curates the best Indian baby, fashion, and home brands for families in the US. Discover quality-verified brands, explore products, and shop directly on brand stores.';
 
   // Social media sharing images
   const socialImage = 'https://sharetribe-assets.imgix.net/68ab648b-6d39-4b2b-bd2c-f99295eeb366/raw/06/5ce7d29d9cfbdfb391af7bc0a744511b9fc1c4?auto=format&fit=clip&h=800&w=800&s=f0fae1b6a833c943e3af463df9cbb484';
@@ -93,6 +94,11 @@ const MelaHomePage = props => {
         {/* Featured Brand Partners */}
         <section className={css.brandsSection}>
           <FeaturedBrandPartnersContainer />
+        </section>
+
+        {/* Coming Soon - Roadmap Preview */}
+        <section className={css.comingSoonSection}>
+          <ComingSoonSection />
         </section>
 
         {/* Trust & Quality Assurance - Certifications */}
