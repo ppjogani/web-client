@@ -1499,5 +1499,20 @@
 
   "TopbarDesktop.savedItemsLink": "Saved",
 
-  "TopbarMobileMenu.savedItemsLink": "Saved items"
+  "TopbarMobileMenu.savedItemsLink": "Saved items",
+
+  "SentimentSheet.ariaLabel": "Share your feedback about Mela",
+  "SentimentSheet.prompt": "How's your Mela experience?",
+  "SentimentSheet.thumbsUp": "Thumbs up",
+  "SentimentSheet.thumbsDown": "Thumbs down",
+  "SentimentSheet.dismiss": "Dismiss feedback",
+  "SentimentSheet.promptThumbsUp": "What brought you to Mela today?",
+  "SentimentSheet.promptThumbsDown": "What would make Mela better for you?",
+  "SentimentSheet.textareaPlaceholder": "Share your thoughts…",
+  "SentimentSheet.emailLabel": "Want us to follow up? (optional)",
+  "SentimentSheet.emailPlaceholder": "your@email.com",
+  "SentimentSheet.emailError": "Please enter a valid email address.",
+  "SentimentSheet.submit": "Send feedback",
+  "SentimentSheet.skip": "Skip",
+  "SentimentSheet.thankYou": "Thank you — we read every response."
 }
