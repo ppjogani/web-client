@@ -506,7 +506,8 @@ export const createSearchResultSchema = (
   intl,
   routeConfiguration,
   config,
-  location
+  location,
+  pageHeading
 ) => {
   // Schema for search engines (helps them to understand what this page is about)
   // http://schema.org
@@ -514,7 +515,6 @@ export const createSearchResultSchema = (
   const marketplaceName = config.marketplaceName;
   const { address, keywords } = mainSearchData;
   const keywordsMaybe = keywords ? `"${keywords}"` : null;
-  
   // SEO OPTIMIZATION: Custom titles and descriptions for category and brand pages
   // This affects BROWSER TAB TITLES and SEARCH ENGINE RESULTS, not visible page content
   // Category pages like /categories/clothing get "Clothing - Authentic Indian Baby Products | Laem"
@@ -522,27 +522,27 @@ export const createSearchResultSchema = (
   const pathname = location?.pathname || '';
   const isCategoryPage = pathname.startsWith('/categories/');
   const isBrandPage = pathname.startsWith('/brands/');
-  
+
   let searchTitle, schemaDescription, schemaTitle;
-  
+
   if (isCategoryPage) {
     // Extract hierarchical category path from URL and format for SEO
     // URL format: /categories/level1/level2/level3
     const categoryPath = pathname.replace('/categories/', '');
     const categoryLevels = categoryPath.split('/').filter(Boolean);
-    
+
     // Get the most specific (deepest) category for display
     const deepestCategory = categoryLevels[categoryLevels.length - 1];
     const categoryName = deepestCategory.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    
+
     // Create breadcrumb-style title for nested categories
     const categoryBreadcrumb = categoryLevels
       .map(level => level.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase()))
       .join(' > ');
-    
+
     // SEO ONLY: These are for search engine results and browser tabs
-    searchTitle = categoryLevels.length > 1 
-      ? `${categoryName} in ${categoryBreadcrumb.split(' > ').slice(0, -1).join(' > ')}` 
+    searchTitle = categoryLevels.length > 1
+      ? `${categoryName} in ${categoryBreadcrumb.split(' > ').slice(0, -1).join(' > ')}`
       : `${categoryName} Products for Indian Babies`;
     schemaDescription = `Discover authentic Indian ${categoryName.toLowerCase()} products perfect for Indian diaspora families. Trusted brands, cultural heritage, modern parenting solutions.`;
     schemaTitle = `${categoryName} - Authentic Indian Baby Products | ${marketplaceName}`;
@@ -550,7 +550,7 @@ export const createSearchResultSchema = (
     // Extract brand from URL slug and format for SEO
     const brandSlug = pathname.replace('/brands/', '');
     const brandName = brandSlug.replace(/-/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-    
+
     // SEO ONLY: These are for search engine results and browser tabs
     searchTitle = `${brandName} Baby Products`;
     schemaDescription = `Shop ${brandName} authentic Indian baby products for US diaspora families. Trusted quality, cultural heritage, delivered to America.`;
@@ -561,7 +561,7 @@ export const createSearchResultSchema = (
     schemaDescription = intl.formatMessage({ id: 'SearchPage.schemaDescription' });
     schemaTitle = intl.formatMessage(
       { id: 'SearchPage.schemaTitle' },
-      { searchTitle, marketplaceName }
+      { searchTitle, marketplaceName, h1: pageHeading }
     );
   }
 

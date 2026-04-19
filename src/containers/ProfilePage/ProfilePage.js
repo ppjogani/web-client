@@ -124,7 +124,7 @@ export const MobileReviews = props => {
 };
 
 export const DesktopReviews = props => {
-  const { reviews, queryReviewsError, userTypeRoles } = props;
+  const { reviews, queryReviewsError, userTypeRoles, intl } = props;
   const { customer: isCustomerUserType, provider: isProviderUserType } = userTypeRoles;
 
   const initialReviewState = !isProviderUserType
@@ -174,7 +174,11 @@ export const DesktopReviews = props => {
   return (
     <div className={css.desktopReviews}>
       <div className={css.desktopReviewsWrapper}>
-        <ButtonTabNavHorizontal className={css.desktopReviewsTabNav} tabs={desktopReviewTabs} />
+        <ButtonTabNavHorizontal
+          className={css.desktopReviewsTabNav}
+          tabs={desktopReviewTabs}
+          ariaLabel={intl.formatMessage({ id: 'ProfilePage.screenreader.reviewsNav' })}
+        />
 
         <ReviewsErrorMaybe queryReviewsError={queryReviewsError} />
 
@@ -301,6 +305,7 @@ export const MainContent = props => {
           reviews={reviews}
           queryReviewsError={queryReviewsError}
           userTypeRoles={userTypeRoles}
+          intl={intl}
         />
       )}
     </div>
