@@ -1,6 +1,8 @@
 import { storableError } from '../util/errors';
 import { addMarketplaceEntities } from './marketplaceData.duck';
-import { CURRENT_USER_SHOW_SUCCESS } from './user.duck';
+import { fetchCurrentUserThunk } from './user.duck';
+
+const CURRENT_USER_SHOW_SUCCESS = fetchCurrentUserThunk.fulfilled.type;
 
 const STORAGE_KEY = 'melaUnsavedItems';
 const MAX_SAVED = 200;
