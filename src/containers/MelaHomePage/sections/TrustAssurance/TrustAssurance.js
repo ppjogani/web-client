@@ -20,8 +20,8 @@ const SECURITY_FEATURES = [
   },
   {
     icon: '📦',
-    title: 'Direct from Brands',
-    description: 'Products ship directly from verified Indian brand partners to your door',
+    title: 'Ships Directly to the US',
+    description: 'Every brand on Mela ships to US addresses. Orders go straight from the brand to your door — no re-shipping, no intermediaries.',
   },
   {
     icon: '↩️',
@@ -32,6 +32,34 @@ const SECURITY_FEATURES = [
     icon: '✅',
     title: 'Mela Curation Promise',
     description: 'Every brand on Mela is hand-vetted for quality, authenticity, and values',
+  },
+  {
+    icon: '💳',
+    title: 'US Cards Accepted on Brand Stores',
+    description: "Each brand's Shopify store accepts US-issued Visa, Mastercard, Amex, and Discover. You pay directly on their store — not on Mela.",
+  },
+];
+
+const US_SHOPPER_FAQS = [
+  {
+    question: 'Do Indian brands on Mela ship to the United States?',
+    answer: 'Yes. Every brand featured on Mela ships directly to US addresses. Most brands offer standard and express international shipping to all 50 states. Delivery typically takes 7–14 business days for standard shipping.',
+  },
+  {
+    question: 'Can I use my US credit card to shop on Mela?',
+    answer: "Yes. Mela is a discovery platform — you purchase directly on each brand's own Shopify store, which accepts all major US-issued credit and debit cards including Visa, Mastercard, American Express, and Discover. No special international payment setup is needed.",
+  },
+  {
+    question: 'Are there customs duties or import taxes when ordering from India to the US?',
+    answer: 'Import duties on personal-use orders under the US de minimis threshold ($800) are typically not charged. For larger orders, applicable duties are the buyer\'s responsibility. Each brand\'s checkout will show an estimate where applicable.',
+  },
+  {
+    question: 'What is the return policy for brands on Mela?',
+    answer: "Each brand maintains its own return policy, displayed on their store page. Mela vets all partners for fair return terms. Contact the Mela team for help navigating any return.",
+  },
+  {
+    question: 'How long does shipping from India to the US take?',
+    answer: "Standard international shipping from India to the US takes 7–14 business days. Many brands also offer expedited options (3–7 business days). Exact timelines and costs are shown at checkout on each brand's store.",
   },
 ];
 
@@ -134,6 +162,30 @@ const TrustAssurance = () => {
                   <h4 className={css.securityTitle}>{feature.title}</h4>
                   <p className={css.securityDescription}>{feature.description}</p>
                 </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* US Shopper FAQ */}
+        <div className={css.faqSection}>
+          <h3 className={css.sectionTitle}>
+            <FormattedMessage
+              id="MelaHomePage.usShopperFaqTitle"
+              defaultMessage="Shipping & Payment to the US"
+            />
+          </h3>
+          <p className={css.faqSubtitle}>
+            <FormattedMessage
+              id="MelaHomePage.usShopperFaqSubtitle"
+              defaultMessage="Everything you need to know about ordering from Indian brands on Mela"
+            />
+          </p>
+          <div className={css.faqList}>
+            {US_SHOPPER_FAQS.map((faq, index) => (
+              <div key={index} className={css.faqCard}>
+                <h4 className={css.faqQuestion}>{faq.question}</h4>
+                <p className={css.faqAnswer}>{faq.answer}</p>
               </div>
             ))}
           </div>

@@ -14,7 +14,9 @@ import css from './HeroSection.module.css';
 const TRUST_BADGES = [
   { icon: '🌱', text: 'GOTS Certified' },
   { icon: '✅', text: 'Quality Verified' },
-  { icon: '🇮🇳', text: 'Made in India' }
+  { icon: '🇮🇳', text: 'Made in India' },
+  { icon: '🇺🇸', text: 'Ships to the US' },
+  { icon: '💳', text: 'US Cards on Brand Stores' },
 ];
 
 const HeroSectionComponent = ({

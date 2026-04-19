@@ -124,6 +124,8 @@ export { default as Avatar, AvatarSmall, AvatarMedium, AvatarLarge } from './Ava
 export { default as CategoryBreadcrumb } from './CategoryBreadcrumb/CategoryBreadcrumb';
 export { default as CustomExtendedDataField } from './CustomExtendedDataField/CustomExtendedDataField';
 export { default as ItemSpecifics } from './ItemSpecifics/ItemSpecifics';
+export { default as ListingTrustChips } from './ListingTrustChips/ListingTrustChips';
+export { default as RedirectTrustSheet } from './RedirectTrustSheet/RedirectTrustSheet';
 export { default as OrderBreakdown } from './OrderBreakdown/OrderBreakdown';
 export { default as OrderPanel } from './OrderPanel/OrderPanel';
 export { default as ListingCard } from './ListingCard/ListingCard';

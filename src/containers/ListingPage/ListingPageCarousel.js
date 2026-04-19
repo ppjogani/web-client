@@ -11,6 +11,8 @@ import { useConfiguration } from '../../context/configurationContext';
 import { useRouteConfiguration } from '../../context/routeConfigurationContext';
 // Utils
 import { FormattedMessage, useIntl } from '../../util/reactIntl';
+import { shouldShowRedirectTrust, markRedirectTrustShown } from '../../util/sentimentCapture';
+import { isMelaVerified } from '../../util/certificationHelpers';
 import { LISTING_STATE_PENDING_APPROVAL, LISTING_STATE_CLOSED, propTypes } from '../../util/types';
 import { types as sdkTypes } from '../../util/sdkLoader';
 import {
@@ -59,6 +61,8 @@ import {
   LayoutSingleColumn,
   CategoryBreadcrumb,
   ItemSpecifics,
+  ListingTrustChips,
+  RedirectTrustSheet,
   SavedListingButton,
 } from '../../components';
 
@@ -112,6 +116,8 @@ export const ListingPageComponent = props => {
     props.inquiryModalOpenForListingId === props.params.id
   );
   const [mounted, setMounted] = useState(false);
+  const [redirectSheetOpen, setRedirectSheetOpen] = useState(false);
+  const [pendingRedirectUrl, setPendingRedirectUrl] = useState(null);
 
   // Desktop-only layout management (mobile-safe)
   const { registerOrderPanel, registerContentSection, layoutManager } = useDesktopLayoutManager();
@@ -340,6 +346,16 @@ export const ListingPageComponent = props => {
     }
   };
 
+  const handleShopNow = url => {
+    if (shouldShowRedirectTrust()) {
+      markRedirectTrustShown();
+      setPendingRedirectUrl(url);
+      setRedirectSheetOpen(true);
+    } else {
+      window.open(url, '_blank', 'noopener,noreferrer');
+    }
+  };
+
   const facebookImages = listingImages(currentListing, 'facebook');
   const twitterImages = listingImages(currentListing, 'twitter');
   const schemaImages = listingImages(
@@ -365,7 +381,9 @@ export const ListingPageComponent = props => {
     return `Shop authentic ${brandPart}${title} for Indian diaspora families${priceText}. ${truncatedDesc} Trusted Indian baby products delivered to USA. Cultural heritage meets modern parenting.`.substring(0, 160);
   };
   
-  const seoDescription = generateSEODescription(title, brandName, description, price);
+  // Use pipeline-generated meta description if available; fall back to template for existing listings
+  const seoDescription = publicData.metaDescription
+    || generateSEODescription(title, brandName, description, price);
   // You could add reviews, sku, etc. into page schema
   // Read more about product schema
   // https://developers.google.com/search/docs/advanced/structured-data/product
@@ -412,6 +430,11 @@ export const ListingPageComponent = props => {
           '@type': 'Audience',
           name: 'Indian Diaspora Parents in USA'
         },
+        // Consumer search synonyms — machine-readable for AI answer engines (AEO)
+        ...(publicData.searchSynonyms?.length > 0 && {
+          keywords: publicData.searchSynonyms,
+        }),
+
         additionalProperty: [
           {
             '@type': 'PropertyValue',
@@ -419,7 +442,7 @@ export const ListingPageComponent = props => {
             value: 'Authentic Indian Products'
           },
           {
-            '@type': 'PropertyValue', 
+            '@type': 'PropertyValue',
             name: 'Target Market',
             value: 'US Indian Diaspora Families'
           }
@@ -472,6 +495,12 @@ export const ListingPageComponent = props => {
                 </H3>
               )}
             </div>
+
+            {/* Certification + occasion trust chips */}
+            <ListingTrustChips
+              certifications={publicData.certification}
+              itemAspects={publicData.itemAspects}
+            />
 
             {/* Item Specifics Section */}
             <ItemSpecifics
@@ -602,6 +631,7 @@ export const ListingPageComponent = props => {
               dayCountAvailableForBooking={config.stripe.dayCountAvailableForBooking}
               marketplaceName={config.marketplaceName}
               showListingImage={showListingImage}
+              onShopNow={handleShopNow}
             />
           </div>
         </div>
@@ -636,6 +666,18 @@ export const ListingPageComponent = props => {
         )}
 
       </LayoutSingleColumn>
+
+      {/* Pre-redirect trust sheet — shown first CTA click per session */}
+      {redirectSheetOpen && pendingRedirectUrl && (
+        <RedirectTrustSheet
+          isOpen={redirectSheetOpen}
+          brandName={brandName || authorDisplayName}
+          productUrl={pendingRedirectUrl}
+          isVerified={isMelaVerified(publicData)}
+          onContinue={url => window.open(url, '_blank', 'noopener,noreferrer')}
+          onClose={() => setRedirectSheetOpen(false)}
+        />
+      )}
     </Page>
   );
 };

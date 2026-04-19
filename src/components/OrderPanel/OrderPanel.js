@@ -297,6 +297,7 @@ const OrderPanel = React.forwardRef((props, ref) => {
     fetchLineItemsError,
     payoutDetailsWarning,
     showListingImage,
+    onShopNow,
   } = props;
 
   const publicData = listing?.attributes?.publicData || {};
@@ -541,7 +542,11 @@ const OrderPanel = React.forwardRef((props, ref) => {
           </div>
         ) : brand && productUrl ? (
           <PrimaryButton
-            onClick={() => window.open(productUrl, '_blank', 'noopener,noreferrer')}
+            onClick={() =>
+              onShopNow
+                ? onShopNow(productUrl)
+                : window.open(productUrl, '_blank', 'noopener,noreferrer')
+            }
           >
             {isOutOfStock ? (
               <FormattedMessage id="OrderPanel.ctaButtonMessageViewOnBrand" values={{ brand }} />

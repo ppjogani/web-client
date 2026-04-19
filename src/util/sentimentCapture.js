@@ -7,6 +7,7 @@
  */
 
 const SESSION_SHOWN_KEY = 'mela_sentiment_shown';
+const REDIRECT_TRUST_KEY = 'mela_redirect_trust_shown';
 const SESSION_ID_KEY = 'mela_session_id';
 
 /**
@@ -19,6 +20,28 @@ export const shouldShowSentiment = () => {
   } catch {
     return false;
   }
+};
+
+/**
+ * Returns true if the redirect trust sheet should be shown this session.
+ * Shown once per session on the first CTA click; subsequent clicks redirect directly.
+ */
+export const shouldShowRedirectTrust = () => {
+  try {
+    return !sessionStorage.getItem(REDIRECT_TRUST_KEY);
+  } catch {
+    return false;
+  }
+};
+
+/**
+ * Mark that the redirect trust sheet has been shown this session.
+ * Call immediately when the sheet opens (not on confirm) so dismiss also suppresses.
+ */
+export const markRedirectTrustShown = () => {
+  try {
+    sessionStorage.setItem(REDIRECT_TRUST_KEY, '1');
+  } catch {}
 };
 
 /**
