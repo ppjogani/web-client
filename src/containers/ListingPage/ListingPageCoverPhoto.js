@@ -418,6 +418,11 @@ export const ListingPageComponent = props => {
     ? 'https://schema.org/InStock'
     : 'https://schema.org/OutOfStock';
 
+  const availabilityMaybe = schemaAvailability ? { availability: schemaAvailability } : {};
+  const noIndexMaybe =
+    currentListing.attributes.state === LISTING_STATE_CLOSED ? { noIndex: true } : {};
+
+
   const handleViewPhotosClick = e => {
     // Stop event from bubbling up to prevent image click handler
     // trying to open the carousel as well.
@@ -464,6 +469,7 @@ export const ListingPageComponent = props => {
       description={seoDescription} // SEO ONLY: Meta description for search engines, NOT visible on page
       facebookImages={facebookImages}
       twitterImages={twitterImages}
+      {...noIndexMaybe}
       schema={{
         // SEO ONLY: JSON-LD structured data for search engines (Google, Bing, etc.)
         // This is invisible to users but helps search engines understand the product

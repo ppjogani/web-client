@@ -414,6 +414,11 @@ export const ListingPageComponent = props => {
     ? 'https://schema.org/InStock'
     : 'https://schema.org/OutOfStock';
 
+  const availabilityMaybe = schemaAvailability ? { availability: schemaAvailability } : {};
+  const noIndexMaybe =
+    currentListing.attributes.state === LISTING_STATE_CLOSED ? { noIndex: true } : {};
+
+
   return (
     <Page
       title={schemaTitle}
@@ -422,6 +427,7 @@ export const ListingPageComponent = props => {
       description={seoDescription}
       facebookImages={facebookImages}
       twitterImages={twitterImages}
+      {...noIndexMaybe}
       schema={{
         '@context': 'http://schema.org',
         '@type': 'Product',

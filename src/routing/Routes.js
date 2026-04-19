@@ -83,7 +83,7 @@ const setPageScrollPosition = (location, delayed) => {
 const handleLocationChanged = (dispatch, location, routeConfiguration, delayed) => {
   setPageScrollPosition(location, delayed);
   const path = canonicalRoutePath(routeConfiguration, location);
-  dispatch(locationChanged(location, path));
+  dispatch(locationChanged({ location, canonicalPath: path }));
 };
 
 /**
@@ -172,7 +172,7 @@ class RouteComponentRenderer extends Component {
 
 const mapStateToProps = state => {
   const { isAuthenticated, logoutInProgress } = state.auth;
-  const { currentUser } = state.user;
+  const { currentUser } = state?.user || {};
   return { isAuthenticated, logoutInProgress, currentUser };
 };
 const RouteComponentContainer = compose(connect(mapStateToProps))(RouteComponentRenderer);
