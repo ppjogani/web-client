@@ -75,6 +75,7 @@ const NegotiationRequestQuoteForm = loadable(() =>
 // This defines when ModalInMobile shows content as Modal
 const MODAL_BREAKPOINT = 1023;
 const TODAY = new Date();
+const ORDER_PANEL_SUBMIT_BUTTON_ID = 'orderPanelSubmitButton';
 
 const isPublishedListing = listing => {
   return listing.attributes.state === LISTING_STATE_PUBLISHED;
@@ -432,7 +433,10 @@ const OrderPanel = React.forwardRef((props, ref) => {
         containerClassName={css.modalContainer}
         id="OrderFormInModal"
         isModalOpenOnMobile={isOrderOpen}
-        onClose={() => closeOrderModal(history, location)}
+        onClose={() => {
+          closeOrderModal(history, location);
+          document.getElementById(ORDER_PANEL_SUBMIT_BUTTON_ID)?.focus();
+        }}
         showAsModalMaxWidth={MODAL_BREAKPOINT}
         onManageDisableScrolling={onManageDisableScrolling}
         usePortal
@@ -591,6 +595,7 @@ const OrderPanel = React.forwardRef((props, ref) => {
           </PrimaryButton>
         ) : (
           <PrimaryButton
+            id={ORDER_PANEL_SUBMIT_BUTTON_ID}
             onClick={handleSubmit(
               isOwnListing,
               isClosed,
