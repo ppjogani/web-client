@@ -18,6 +18,7 @@ import {
   INQUIRY_PROCESS_NAME,
   REQUEST,
   resolveLatestProcessName,
+  isNegotiationProcess,
 } from '../../transactions/transaction';
 import { requireListingImage } from '../../util/configHelpers';
 
@@ -27,7 +28,7 @@ import { confirmCardPayment, retrievePaymentIntent } from '../../ducks/stripe.du
 import { savePaymentMethod } from '../../ducks/paymentMethods.duck';
 
 // Import shared components
-import { NamedRedirect, Page, TopbarSimplified } from '../../components';
+import { IconSpinner, NamedRedirect, Page, TopbarSimplified } from '../../components';
 
 // Session helpers file needs to be imported before CheckoutPageWithPayment and CheckoutPageWithInquiryProcess
 import { storeData, clearData, handlePageData } from './CheckoutPageSessionHelpers';
@@ -39,7 +40,6 @@ import {
   speculateTransaction,
   stripeCustomer,
   confirmPayment,
-  sendMessage,
   initiateInquiryWithoutPayment,
 } from './CheckoutPage.duck';
 
@@ -47,6 +47,7 @@ import CheckoutPageWithPayment, {
   loadInitialDataForStripePayments,
 } from './CheckoutPageWithPayment';
 import CheckoutPageWithInquiryProcess from './CheckoutPageWithInquiryProcess';
+import css from './CheckoutPage.module.css';
 
 const STORAGE_KEY = 'CheckoutPage';
 
@@ -132,7 +133,6 @@ const EnhancedCheckoutPage = props => {
   // Redirect back to ListingPage if data is missing.
   // Redirection must happen before any data format error is thrown (e.g. wrong currency)
   if (shouldRedirect) {
-    // eslint-disable-next-line no-console
     console.error('Missing or invalid data for checkout, redirecting back to listing page.', {
       listing,
     });
@@ -159,6 +159,11 @@ const EnhancedCheckoutPage = props => {
     conf => conf.listingType === listing?.attributes?.publicData?.listingType
   );
   const showListingImage = requireListingImage(foundListingTypeConfig);
+  const transactionFieldConfigs = foundListingTypeConfig?.transactionFields;
+  // We don't show or collect transaction fields on the checkout page for
+  // negotiation processes, because they are collected in earlier steps
+  // of those processes
+  const showTransactionFields = !isNegotiationProcess(processName);
 
   const listingTitle = listing?.attributes?.title;
   const authorDisplayName = userDisplayNameAsString(listing?.author, '');
@@ -182,6 +187,7 @@ const EnhancedCheckoutPage = props => {
       onInquiryWithoutPayment={onInquiryWithoutPayment}
       onSubmitCallback={onSubmitCallback}
       showListingImage={showListingImage}
+      transactionFieldConfigs={transactionFieldConfigs}
       {...props}
     />
   ) : processName && !isInquiryProcess && !speculateTransactionInProgress ? (
@@ -198,11 +204,14 @@ const EnhancedCheckoutPage = props => {
       title={title}
       onSubmitCallback={onSubmitCallback}
       showListingImage={showListingImage}
+      transactionFieldConfigs={transactionFieldConfigs}
+      showTransactionFields={showTransactionFields}
       {...props}
     />
   ) : (
     <Page title={title} scrollingDisabled={scrollingDisabled}>
       <TopbarSimplified />
+      <IconSpinner className={css.spinner} />
     </Page>
   );
 };
@@ -256,7 +265,6 @@ const mapDispatchToProps = dispatch => ({
   onConfirmCardPayment: params => dispatch(confirmCardPayment(params)),
   onConfirmPayment: (transactionId, transitionName, transitionParams) =>
     dispatch(confirmPayment(transactionId, transitionName, transitionParams)),
-  onSendMessage: params => dispatch(sendMessage(params)),
   onSavePaymentMethod: (stripeCustomer, stripePaymentMethodId) =>
     dispatch(savePaymentMethod(stripeCustomer, stripePaymentMethodId)),
 });

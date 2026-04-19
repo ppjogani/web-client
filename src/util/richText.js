@@ -107,7 +107,6 @@ export const linkifyOrWrapLinkSplit = (word, key, options = {}) => {
   // urlRegex modified from examples in
   // https://stackoverflow.com/questions/1500260/detect-urls-in-text-with-javascript
 
-  // eslint-disable-next-line no-useless-escape
   const urlRegex = /(\bhttps?:\/\/[-A-Z0-9+&@#\/%?=~_|\(\)!:,.;]*[-A-Z0-9+&@#\/%=~_|\)])/gi;
   if (word.match(urlRegex)) {
     // Split strings like "(http://www.example.com)" to ["(","http://www.example.com",")"]
@@ -159,7 +158,7 @@ export const richText = (text, options) => {
   const { longWordMinLength, longWordClass, linkify = false, linkClass, breakChars } = options;
   const linkOrLongWordClass = linkClass ? linkClass : longWordClass;
   const nonWhiteSpaceSequence = /([^\s]+)/gi;
-  const breakCharsConfig = breakChars != null ? breakChars : '/,';
+  const breakCharsConfig = breakChars != null ? breakChars : '/';
 
   return text.split(nonWhiteSpaceSequence).reduce((acc, nextChild, i) => {
     const parts = flow([

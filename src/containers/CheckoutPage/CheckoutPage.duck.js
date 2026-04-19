@@ -168,34 +168,6 @@ export const confirmPayment = (
   ).unwrap();
 };
 
-//////////////////
-// Send Message //
-//////////////////
-const sendMessagePayloadCreator = ({ message, id: orderId }, { extra: sdk, rejectWithValue }) => {
-  if (message) {
-    return sdk.messages
-      .send({ transactionId: orderId, content: message })
-      .then(() => {
-        return { orderId, messageSuccess: true };
-      })
-      .catch(e => {
-        log.error(e, 'initial-message-send-failed', { txId: orderId });
-        return rejectWithValue({ orderId, messageSuccess: false });
-      });
-  } else {
-    return { orderId, messageSuccess: true };
-  }
-};
-
-export const sendMessageThunk = createAsyncThunk(
-  'CheckoutPage/sendMessage',
-  sendMessagePayloadCreator
-);
-// Backward compatible wrapper function for sendMessage
-export const sendMessage = params => dispatch => {
-  return dispatch(sendMessageThunk(params)).unwrap();
-};
-
 //////////////////////
 // Initiate Inquiry //
 //////////////////////
@@ -438,6 +410,7 @@ const initialState = {
   initiateOrderError: null,
   confirmPaymentError: null,
   stripeCustomerFetched: false,
+  stripeCustomerFetchError: null,
   initiateInquiryInProgress: false,
   initiateInquiryError: null,
 };
@@ -460,7 +433,7 @@ const checkoutPageSlice = createSlice({
         state.transaction = action.payload;
       })
       .addCase(initiateOrderThunk.rejected, (state, action) => {
-        console.error(action.payload); // eslint-disable-line no-console
+        console.error(action.payload);
         state.initiateOrderError = action.payload;
       })
       // Confirm Payment cases
@@ -471,7 +444,7 @@ const checkoutPageSlice = createSlice({
         // Payment confirmed successfully, no state change needed
       })
       .addCase(confirmPaymentThunk.rejected, (state, action) => {
-        console.error(action.payload); // eslint-disable-line no-console
+        console.error(action.payload);
         state.confirmPaymentError = action.payload;
       })
       // Speculate Transaction cases
@@ -491,19 +464,20 @@ const checkoutPageSlice = createSlice({
           Math.abs(lastTransitionedAt?.getTime() - localTime.getTime()) < minute;
       })
       .addCase(speculateTransactionThunk.rejected, (state, action) => {
-        console.error(action.payload); // eslint-disable-line no-console
+        console.error(action.payload);
         state.speculateTransactionInProgress = false;
         state.speculateTransactionError = action.payload;
       })
       // Stripe Customer cases
       .addCase(stripeCustomerThunk.pending, state => {
         state.stripeCustomerFetched = false;
+        state.stripeCustomerFetchError = null;
       })
       .addCase(stripeCustomerThunk.fulfilled, state => {
         state.stripeCustomerFetched = true;
       })
       .addCase(stripeCustomerThunk.rejected, (state, action) => {
-        console.error(action.payload); // eslint-disable-line no-console
+        console.error(action.payload);
         state.stripeCustomerFetchError = action.payload;
       })
       // Initiate Inquiry cases

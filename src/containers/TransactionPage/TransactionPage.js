@@ -28,6 +28,9 @@ import {
   isBookingProcess,
   NEGOTIATION_PROCESS_NAME,
   OFFER,
+  isPurchaseProcess,
+  PURCHASE_PROCESS_NAME,
+  isInquiryProcess,
 } from '../../transactions/transaction';
 
 import { getMarketplaceEntities } from '../../ducks/marketplaceData.duck';
@@ -57,6 +60,7 @@ import ActionButtons, {
 } from './ActionButtons/ActionButtons';
 import RequestQuote from './RequestQuote/RequestQuote';
 import Offer from './Offer/Offer';
+import TransactionFields from './TransactionFields/TransactionFields.js';
 import ActivityFeed from './ActivityFeed/ActivityFeed';
 import DisputeModal from './DisputeModal/DisputeModal';
 import ReviewModal from './ReviewModal/ReviewModal';
@@ -230,7 +234,6 @@ const getDataValidationResult = (transaction, process) => {
  * @param {propTypes.error} props.fetchMessagesError - The fetch messages error
  * @param {number} props.totalMessagePages - The total message pages
  * @param {number} props.oldestMessagePageFetched - The oldest message page fetched
- * @param {propTypes.uuid} props.initialMessageFailedToTransaction - The initial message failed to be send to transaction
  * @param {boolean} props.sendMessageInProgress - Whether the send message is in progress
  * @param {propTypes.error} props.sendMessageError - The send message error
  * @param {boolean} props.savePaymentMethodFailed - Whether the payment method is saved
@@ -277,7 +280,6 @@ export const TransactionPageComponent = props => {
   const intl = useIntl();
   const {
     currentUser,
-    initialMessageFailedToTransaction,
     savePaymentMethodFailed = false,
     fetchMessagesError,
     fetchMessagesInProgress,
@@ -325,7 +327,7 @@ export const TransactionPageComponent = props => {
   };
 
   const redirectToCheckoutPageWithInitialValues = (initialValues, currentListing) => {
-    // Customize checkout page state with current listing and selected bookingDates
+    // Customize the state of the CheckoutPage with the current transaction, listing and the selected orderData
     const { setInitialValues } = findRouteByRouteName('CheckoutPage', routeConfiguration);
     callSetInitialValues(setInitialValues, initialValues);
 
@@ -523,14 +525,12 @@ export const TransactionPageComponent = props => {
     // If the user's user type does not have a provider role set, redirect
     // to 'orders' inbox tab. Otherwise, redirect to 'sales' tab.
     const tab = !isProviderUserTypeRole ? 'orders' : 'sales';
-    // eslint-disable-next-line no-console
     console.error('Tried to access a sale that was not owned by the current user');
     return <NamedRedirect name="InboxPage" params={{ tab }} />;
   } else if (isDataAvailable && isCustomerRole && !isOwnOrder) {
     // If the user's user type does not have a customer role set, redirect
     // to 'sales' inbox tab. Otherwise, redirect to 'orders' tab.
     const tab = !isCustomerUserTypeRole ? 'sales' : 'orders';
-    // eslint-disable-next-line no-console
     console.error('Tried to access an order that was not owned by the current user');
     return <NamedRedirect name="InboxPage" params={{ tab }} />;
   }
@@ -557,11 +557,6 @@ export const TransactionPageComponent = props => {
       <FormattedMessage id={`${loadingMessage}`} />
       <IconSpinner />
     </div>
-  );
-
-  const initialMessageFailed = !!(
-    initialMessageFailedToTransaction &&
-    initialMessageFailedToTransaction.uuid === transaction?.id?.uuid
   );
 
   const otherUserDisplayName = isOwnOrder ? (
@@ -640,10 +635,12 @@ export const TransactionPageComponent = props => {
       }
     : {};
 
-  // The location of the booking can be shown if fuzzy location
+  // The location of the booking can be shown if fuzzy location, and if
+  // the listing type actually includes a location field.
   const showBookingLocation =
     isBookingProcess(stateData.processName) &&
-    process?.hasPassedState(process?.states?.ACCEPTED, transaction);
+    process?.hasPassedState(process?.states?.ACCEPTED, transaction) &&
+    foundListingTypeConfig?.defaultListingFields.location;
 
   const isNegotiationProcess = processName === NEGOTIATION_PROCESS_NAME;
   const isRegularNegotiation =
@@ -659,6 +656,21 @@ export const TransactionPageComponent = props => {
       ? window.matchMedia(`(max-width: ${MAX_MOBILE_SCREEN_WIDTH}px)`)?.matches
       : true;
 
+  const customTransactionFieldProps = (role = 'customer', isOfferOrRequest = false) => ({
+    protectedData: transaction?.attributes.protectedData,
+    intl,
+    role,
+    transactionFieldConfigs: foundListingTypeConfig?.transactionFields,
+    isCustomerBanned,
+    isProviderBanned,
+    isOfferOrRequest,
+    isNegotiationProcess,
+    isBookingProcess: isBookingProcess(processName),
+    isPurchaseProcess: processName === PURCHASE_PROCESS_NAME,
+    isInquiryProcess: processName === INQUIRY_PROCESS_NAME,
+    isRegularNegotiation,
+  });
+
   const actionButtonContainer = isMobile ? 'mobile' : 'desktop';
   // TransactionPanel is presentational component
   // that currently handles showing everything inside layout's main view area.
@@ -671,9 +683,9 @@ export const TransactionPageComponent = props => {
       customer={customer}
       provider={provider}
       transitions={txTransitions}
+      processName={processName}
       protectedData={transaction?.attributes?.protectedData}
       messages={messages}
-      initialMessageFailed={initialMessageFailed}
       savePaymentMethodFailed={savePaymentMethodFailed}
       fetchMessagesError={fetchMessagesError}
       sendMessageInProgress={sendMessageInProgress}
@@ -717,6 +729,9 @@ export const TransactionPageComponent = props => {
           fetchMessagesInProgress={fetchMessagesInProgress}
         />
       }
+      transactionFieldsComponent={
+        <TransactionFields {...customTransactionFieldProps('customer')} />
+      }
       requestQuote={
         <RequestQuote
           transaction={transaction}
@@ -724,6 +739,9 @@ export const TransactionPageComponent = props => {
           isCustomerBanned={isCustomerBanned}
           transactionRole={transactionRole}
           intl={intl}
+          transactionFieldsComponent={
+            <TransactionFields {...customTransactionFieldProps('customer', true)} />
+          }
         />
       }
       offer={
@@ -734,6 +752,9 @@ export const TransactionPageComponent = props => {
           isRegularNegotiation={isRegularNegotiation}
           isProviderBanned={isProviderBanned}
           intl={intl}
+          transactionFieldsComponent={
+            <TransactionFields {...customTransactionFieldProps('provider', true)} />
+          }
         />
       }
       isInquiryProcess={processName === INQUIRY_PROCESS_NAME}
@@ -908,7 +929,6 @@ const mapStateToProps = state => {
     totalMessagePages,
     oldestMessagePageFetched,
     messages,
-    initialMessageFailedToTransaction,
     savePaymentMethodFailed,
     sendMessageInProgress,
     sendMessageError,
@@ -938,7 +958,6 @@ const mapStateToProps = state => {
     totalMessagePages,
     oldestMessagePageFetched,
     messages,
-    initialMessageFailedToTransaction,
     savePaymentMethodFailed,
     sendMessageInProgress,
     sendMessageError,

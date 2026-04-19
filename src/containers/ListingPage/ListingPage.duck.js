@@ -22,7 +22,12 @@ import {
   LISTING_PAGE_DRAFT_VARIANT,
   LISTING_PAGE_PENDING_APPROVAL_VARIANT,
 } from '../../util/urlHelpers';
-import { getProcess, isBookingProcessAlias } from '../../transactions/transaction';
+import {
+  getProcess,
+  isBookingProcessAlias,
+  isNegotiationProcessAlias,
+  OFFER,
+} from '../../transactions/transaction';
 import { fetchCurrentUser, setCurrentUserHasOrders } from '../../ducks/user.duck';
 
 const { UUID } = sdkTypes;
@@ -228,6 +233,20 @@ const sendInquiryPayloadCreator = (
 
   const listingId = listing?.id;
   const [processName, alias] = processAlias.split('/');
+
+  // Negotiation process does not support inquiry for customer role on OFFER flog (only request for quote is supported)
+  const isNegotiationProcess = isNegotiationProcessAlias(processAlias);
+  const unitType = listing?.attributes?.publicData?.unitType || '';
+  if (isNegotiationProcess && unitType === OFFER) {
+    return rejectWithValue(
+      storableError(
+        new Error(
+          'Negotiation process with unit type OFFER does not support inquiry for customer role'
+        )
+      )
+    );
+  }
+
   const transitions = getProcess(processName)?.transitions;
 
   const bodyParams = {
@@ -401,6 +420,7 @@ const listingPageSlice = createSlice({
       })
       .addCase(showListingThunk.fulfilled, (state, action) => {
         // Data is handled by addMarketplaceEntities in the thunk
+        state.id = action.payload.data.data.id;
       })
       .addCase(showListingThunk.rejected, (state, action) => {
         state.showListingError = action.payload;

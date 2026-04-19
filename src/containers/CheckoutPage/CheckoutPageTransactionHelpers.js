@@ -181,12 +181,10 @@ export const processCheckoutWithPayment = (orderParams, extraPaymentParams) => {
     hasPaymentIntentUserActionsDone,
     isPaymentFlowUseSavedCard,
     isPaymentFlowPayAndSaveCard,
-    message,
     onConfirmCardPayment,
     onConfirmPayment,
     onInitiateOrder,
     onSavePaymentMethod,
-    onSendMessage,
     pageData,
     paymentIntent,
     process,
@@ -303,34 +301,27 @@ export const processCheckoutWithPayment = (orderParams, extraPaymentParams) => {
     return orderPromise;
   };
 
-  //////////////////////////////////
-  // Step 4: send initial message //
-  //////////////////////////////////
-  const fnSendMessage = fnParams => {
-    const orderId = fnParams?.id;
-    return onSendMessage({ id: orderId, message });
-  };
-
   //////////////////////////////////////////////////////////
-  // Step 5: optionally save card as defaultPaymentMethod //
+  // Step 4: optionally save card as defaultPaymentMethod //
   //////////////////////////////////////////////////////////
   const fnSavePaymentMethod = fnParams => {
     const pi = createdPaymentIntent || paymentIntent;
+    const orderId = fnParams?.id;
 
     if (isPaymentFlowPayAndSaveCard) {
       return onSavePaymentMethod(ensuredStripeCustomer, pi.payment_method)
         .then(response => {
           if (response.errors) {
-            return { ...fnParams, paymentMethodSaved: false };
+            return { orderId, paymentMethodSaved: false };
           }
-          return { ...fnParams, paymentMethodSaved: true };
+          return { orderId, paymentMethodSaved: true };
         })
         .catch(e => {
           // Real error cases are catched already in paymentMethods page.
-          return { ...fnParams, paymentMethodSaved: false };
+          return { orderId, paymentMethodSaved: false };
         });
     } else {
-      return Promise.resolve({ ...fnParams, paymentMethodSaved: true });
+      return Promise.resolve({ orderId, paymentMethodSaved: true });
     }
   };
 
@@ -345,7 +336,6 @@ export const processCheckoutWithPayment = (orderParams, extraPaymentParams) => {
     fnRequestPayment,
     fnConfirmCardPayment,
     fnConfirmPayment,
-    fnSendMessage,
     fnSavePaymentMethod
   );
 
@@ -362,7 +352,6 @@ export const processCheckoutWithPayment = (orderParams, extraPaymentParams) => {
 export const setOrderPageInitialValues = (initialValues, routes, dispatch) => {
   const OrderPage = findRouteByRouteName('OrderDetailsPage', routes);
 
-  // Transaction is already created, but if the initial message
-  // sending failed, we tell it to the OrderDetailsPage.
+  // Transaction is already created
   dispatch(OrderPage.setInitialValues(initialValues));
 };

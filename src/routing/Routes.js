@@ -36,6 +36,13 @@ const callLoadData = props => {
 
   if (shouldLoadData) {
     dispatch(loadData(match.params, location.search, config))
+      .then(() => {
+        if (props.logLoadDataCalls) {
+          // This gives good input for debugging issues on live environments, but with test it's not needed.
+          // eslint-disable-next-line no-console
+          console.log(`loadData success for ${name} route`);
+        }
+      })
       .catch(e => {
         log.error(e, 'load-data-failed', { routeName: name });
       });
@@ -50,7 +57,9 @@ const setPageScrollPosition = (location, delayed) => {
       left: 0,
     });
   } else {
-    const el = document.querySelector(location.hash);
+    const idString = location.hash.substring(1); // Remove the # from the hash
+    const escapedHashId = `#${CSS.escape(idString)}`; // Escape the id string to avoid invalid CSS id
+    const el = document.querySelector(escapedHashId);
     if (el) {
       // Found element from the current page with the given fragment identifier,
       // scrolling to that element.
@@ -70,7 +79,7 @@ const setPageScrollPosition = (location, delayed) => {
       // Note: 300 milliseconds might not be enough, but adding too much delay
       // might affect user initiated scrolling.
       delayed = window.setTimeout(() => {
-        const reTry = document.querySelector(location.hash);
+        const reTry = document.querySelector(escapedHashId);
         reTry?.scrollIntoView({
           block: 'start',
           behavior: 'smooth',
