@@ -75,7 +75,7 @@ const SearchResultsPanel = props => {
 
   return (
     <div className={classes}>
-      <div className={isMapVariant ? css.listingCardsMapVariant : css.listingCards}>
+      <ul className={isMapVariant ? css.listingCardsMapVariant : css.listingCards}>
         {listings.map(l => {
           // Calculate badge data
           const { createdAt, currentStock, publicData } = l.attributes;
@@ -90,22 +90,23 @@ const SearchResultsPanel = props => {
             : false;
 
           return (
-            <ListingCard
-              className={css.listingCard}
-              key={l.id.uuid}
-              listing={l}
-              renderSizes={cardRenderSizes(isMapVariant)}
-              setActiveListing={setActiveListing}
-              showTrustBadges={true}
-              showConversionBadges={true}
-              isBestseller={isBestseller}
-              stockCount={stockCount}
-              isNew={isNew}
-            />
+            <li key={l.id.uuid} className={css.resultItem}>
+              <ListingCard
+                className={css.listingCard}
+                listing={l}
+                renderSizes={cardRenderSizes(isMapVariant)}
+                setActiveListing={setActiveListing}
+                showTrustBadges={true}
+                showConversionBadges={true}
+                isBestseller={isBestseller}
+                stockCount={stockCount}
+                isNew={isNew}
+              />
+            </li>
           );
         })}
         {props.children}
-      </div>
+      </ul>
       {paginationLinks}
     </div>
   );

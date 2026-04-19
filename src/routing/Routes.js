@@ -86,6 +86,19 @@ const handleLocationChanged = (dispatch, location, routeConfiguration, delayed) 
   dispatch(locationChanged({ location, canonicalPath: path }));
 };
 
+const handleFocusedElement = delayed => {
+  if (window.__focusedElementId__) {
+    delayed = window.setTimeout(() => {
+      const focusedElement = document.getElementById(window.__focusedElementId__);
+      if (focusedElement) {
+        focusedElement.focus();
+      } else {
+        window.__focusedElementId__ = null;
+      }
+    }, 300);
+  }
+};
+
 /**
  * RouteComponentRenderer handles loadData calls on client-side.
  * It also checks authentication and redirects unauthenticated users
@@ -117,6 +130,7 @@ class RouteComponentRenderer extends Component {
     // Calling loadData on initial rendering (on client side).
     callLoadData(this.props);
     handleLocationChanged(dispatch, location, routeConfiguration, this.delayed);
+    handleFocusedElement(this.focusedElementDelay);
   }
 
   componentDidUpdate(prevProps) {
@@ -130,11 +144,15 @@ class RouteComponentRenderer extends Component {
       callLoadData(this.props);
       handleLocationChanged(dispatch, location, routeConfiguration, this.delayed);
     }
+    handleFocusedElement(this.focusedElementDelay);
   }
 
   componentWillUnmount() {
     if (this.delayed) {
       window.clearTimeout(this.resetTimeoutId);
+    }
+    if (this.focusedElementDelay) {
+      window.clearTimeout(this.focusedElementDelay);
     }
   }
 
