@@ -129,6 +129,7 @@ export { default as RedirectTrustSheet } from './RedirectTrustSheet/RedirectTrus
 export { default as OrderBreakdown } from './OrderBreakdown/OrderBreakdown';
 export { default as OrderPanel } from './OrderPanel/OrderPanel';
 export { default as ListingCard } from './ListingCard/ListingCard';
+export { default as ProductCarousel } from './ProductCarousel/ProductCarousel';
 export { default as SavedListingButton } from './SavedListingButton/SavedListingButton';
 export { default as SavedItemsBanner } from './SavedItemsBanner/SavedItemsBanner';
 export { default as ListingCardMini } from './ListingCardMini/ListingCardMini';

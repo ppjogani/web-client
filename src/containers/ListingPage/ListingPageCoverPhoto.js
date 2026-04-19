@@ -694,8 +694,6 @@ export const ListingPageComponent = props => {
           <CategoryProducts
             categoryLevel="categoryLevel3"
             categoryName={publicData.categoryLevel3}
-            layoutManager={layoutManager}
-            useFullWidth={true}
             currentListingId={currentListing?.id?.uuid}
           />
         )}
@@ -703,8 +701,6 @@ export const ListingPageComponent = props => {
           <CategoryProducts
             categoryLevel="categoryLevel2"
             categoryName={publicData.categoryLevel2}
-            layoutManager={layoutManager}
-            useFullWidth={true}
             currentListingId={currentListing?.id?.uuid}
           />
         )}
@@ -712,8 +708,6 @@ export const ListingPageComponent = props => {
           <CategoryProducts
             categoryLevel="categoryLevel1"
             categoryName={publicData.categoryLevel1}
-            layoutManager={layoutManager}
-            useFullWidth={true}
             currentListingId={currentListing?.id?.uuid}
           />
         )}

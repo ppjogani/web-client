@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FormattedMessage } from '../../../../util/reactIntl';
-import { NamedLink, ListingCard } from '../../../../components';
+import { NamedLink, ListingCard, ProductCarousel } from '../../../../components';
 import { useConfiguration } from '../../../../context/configurationContext';
 import { createInstance } from '../../../../util/sdkLoader';
 import { denormalisedEntities, updatedEntities } from '../../../../util/data';
@@ -116,57 +116,8 @@ const generateStructuredData = (categories, categoryProducts) => {
   };
 };
 
-// ── ProductCarouselSection ─────────────────────────────────────────────────
-// Shared carousel component used by both AgeNavigation and OccasionStrip.
-// Renders a horizontally-scrollable row of ListingCards.
-// Suppresses itself when < 2 products are available (prevents empty sections).
-
-const ProductCarouselSection = ({ title, viewAllSearch, products, isLoading }) => {
-  const hasEnough = products && products.length >= 2;
-
-  if (!isLoading && !hasEnough) return null;
-
-  return (
-    <div className={css.categorySection}>
-      <div className={css.categorySectionHeader}>
-        <div className={css.categoryHeaderContent}>
-          <h3 className={css.sectionCategoryTitle}>{title}</h3>
-        </div>
-        <NamedLink
-          name="SearchPage"
-          to={{ search: viewAllSearch }}
-          className={css.viewCategoryLink}
-        >
-          <FormattedMessage id="MelaHomePage.viewAll" defaultMessage="View All" />
-          <span className={css.arrow}>→</span>
-        </NamedLink>
-      </div>
-
-      {isLoading ? (
-        <div className={css.productCarousel}>
-          {[1, 2, 3, 4].map(i => (
-            <div key={i} className={`${css.productSkeleton} ${css.carouselCard}`} />
-          ))}
-        </div>
-      ) : (
-        <div className={css.productCarousel}>
-          {products.map((listing, productIndex) => (
-            <div key={listing.id.uuid} className={css.carouselCard}>
-              <ListingCard
-                listing={listing}
-                showAuthorInfo={false}
-                showTrustBadges={true}
-                showConversionBadges={true}
-                isBestseller={productIndex === 0}
-                renderSizes="(max-width: 639px) 50vw, (max-width: 1023px) 33vw, 25vw"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
+// ProductCarouselSection has been extracted to src/components/ProductCarousel/ProductCarousel.js
+// AgeNavigation (below) uses the shared ProductCarousel component directly.
 
 // ── OccasionStrip ──────────────────────────────────────────────────────────
 // Two-panel editorial section: one panel per occasion.
@@ -338,7 +289,7 @@ export const OccasionStrip = ({ config, additionalQueryParams = {} }) => {
 
 // ── AgeNavigation ──────────────────────────────────────────────────────────
 // Age-based product carousels (top 3 groups).
-// Uses ProductCarouselSection — same carousel pattern as OccasionStrip panels.
+// Uses the shared ProductCarousel component (same pattern as listing page modules).
 
 const AgeNavigation = ({ config }) => {
   const [ageProducts, setAgeProducts] = useState({});
@@ -397,11 +348,12 @@ const AgeNavigation = ({ config }) => {
       </h3>
       <div className={css.categorySections}>
         {TOP_AGE_GROUPS.map(({ option, label }) => (
-          <ProductCarouselSection
+          <ProductCarousel
             key={option}
             title={label}
-            viewAllSearch={`?pub_categoryLevel1=Baby-Clothes-Accessories&pub_age_group=${option}`}
-            products={ageProducts[option] || []}
+            viewAllLinkName="SearchPage"
+            viewAllLinkSearch={`?pub_categoryLevel1=Baby-Clothes-Accessories&pub_age_group=${option}`}
+            listings={ageProducts[option] || []}
             isLoading={isLoading}
           />
         ))}
