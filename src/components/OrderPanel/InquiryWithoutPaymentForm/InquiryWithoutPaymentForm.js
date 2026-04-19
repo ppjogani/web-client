@@ -10,7 +10,16 @@ import css from './InquiryWithoutPaymentForm.module.css';
 
 const renderForm = formRenderProps => {
   // FormRenderProps from final-form
-  const { formId, className, rootClassName, handleSubmit, brand, productUrl } = formRenderProps;
+  const {
+    formId,
+    className,
+    rootClassName,
+    handleSubmit,
+    brand,
+    productUrl,
+    isOwnListing,
+    finePrintComponent: FinePrint,
+  } = formRenderProps;
   const classes = classNames(rootClassName || css.root, className);
 
   return (
@@ -27,6 +36,7 @@ const renderForm = formRenderProps => {
             <FormattedMessage id="InquiryWithoutPaymentForm.ctaButton" />
           </PrimaryButton>
         )}
+        {FinePrint && <FinePrint isOwnListing={isOwnListing} omitYouWontBeChargedMessage={true} />}
       </div>
     </Form>
   );

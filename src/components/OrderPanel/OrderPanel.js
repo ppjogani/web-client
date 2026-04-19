@@ -26,16 +26,19 @@ import { formatMoney } from '../../util/currency';
 import { createSlug, parse, stringify } from '../../util/urlHelpers';
 import { userDisplayNameAsString } from '../../util/data';
 import {
-  INQUIRY_PROCESS_NAME,
-  NEGOTIATION_PROCESS_NAME,
+  OFFER,
+  REQUEST,
   getSupportedProcessesInfo,
   isBookingProcess,
+  isNegotiationProcess,
+  isInquiryProcess,
   isPurchaseProcess,
   resolveLatestProcessName,
 } from '../../transactions/transaction';
 
 import { ModalInMobile, PrimaryButton, AvatarSmall, H1, H2 } from '../../components';
 import PriceVariantPicker from './PriceVariantPicker/PriceVariantPicker';
+import SubmitFinePrint from './SubmitFinePrint/SubmitFinePrint';
 
 import css from './OrderPanel.module.css';
 
@@ -61,6 +64,12 @@ const ProductOrderForm = loadable(() =>
 
 const NegotiationForm = loadable(() =>
   import(/* webpackChunkName: "NegotiationForm" */ './NegotiationForm/NegotiationForm')
+);
+
+const NegotiationRequestQuoteForm = loadable(() =>
+  import(
+    /* webpackChunkName: "NegotiationRequestQuoteForm" */ './NegotiationRequestQuoteForm/NegotiationRequestQuoteForm'
+  )
 );
 
 // This defines when ModalInMobile shows content as Modal
@@ -306,17 +315,19 @@ const OrderPanel = React.forwardRef((props, ref) => {
   const lineItemUnitType = lineItemUnitTypeMaybe || `line-item/${unitType}`;
 
   const price = listing?.attributes?.price;
-  const isPaymentProcess = processName !== INQUIRY_PROCESS_NAME;
-  const isNegotiationProcess = processName === NEGOTIATION_PROCESS_NAME;
+  const isInquiry = isInquiryProcess(processName);
+  const isBooking = isBookingProcess(processName);
+  const isPurchase = isPurchaseProcess(processName);
+  const isNegotiation = isNegotiationProcess(processName);
+  const isPaymentProcess = isBooking || isPurchase || isNegotiation;
 
-  const showPriceMissing = isPaymentProcess && !isNegotiationProcess && !price;
+  const showPriceMissing = isPaymentProcess && !isNegotiation && !price;
   const showInvalidCurrency =
-    isPaymentProcess && !isNegotiationProcess && price?.currency !== marketplaceCurrency;
+    isPaymentProcess && !isNegotiation && price?.currency !== marketplaceCurrency;
 
   const timeZone = listing?.attributes?.availabilityPlan?.timezone;
   const isClosed = listing?.attributes?.state === LISTING_STATE_CLOSED;
 
-  const isBooking = isBookingProcess(processName);
   const shouldHaveFixedBookingDuration = isBooking && [LINE_ITEM_FIXED].includes(lineItemUnitType);
   const showBookingFixedDurationForm =
     mounted && shouldHaveFixedBookingDuration && !isClosed && timeZone && priceVariants?.length > 0;
@@ -330,7 +341,6 @@ const OrderPanel = React.forwardRef((props, ref) => {
 
   // The listing resource has a relationship: `currentStock`,
   // which you should include when making API calls.
-  const isPurchase = isPurchaseProcess(processName);
   const shouldHavePurchase = isPurchase && lineItemUnitType === LINE_ITEM_ITEM;
   const currentStock = listing.currentStock?.attributes?.quantity;
   const isOutOfStock = shouldHavePurchase && !isClosed && currentStock === 0;
@@ -340,8 +350,11 @@ const OrderPanel = React.forwardRef((props, ref) => {
   const showProductOrderForm =
     mounted && shouldHavePurchase && !isClosed && typeof currentStock === 'number';
 
-  const showInquiryForm = mounted && !isClosed && processName === INQUIRY_PROCESS_NAME;
-  const showNegotiationForm = mounted && !isClosed && isNegotiationProcess;
+  const showInquiryForm = mounted && !isClosed && isInquiry;
+  // if listing is a request, we show the negotiation form (reverse negotiation). User (provider) needs to make an offer first.
+  const showNegotiationForm = mounted && !isClosed && isNegotiation && unitType === REQUEST;
+  // if listing is an offer, we show the "request a quote" form as user needs to ask for a quote first from the provider.
+  const showRequestQuoteForm = mounted && !isClosed && isNegotiation && unitType === OFFER;
 
   const supportedProcessesInfo = getSupportedProcessesInfo();
   const isKnownProcess = supportedProcessesInfo.map(info => info.name).includes(processName);
@@ -471,6 +484,7 @@ const OrderPanel = React.forwardRef((props, ref) => {
             startDatePlaceholder={intl.formatDate(TODAY, dateFormattingOptions)}
             startTimeInterval={startTimeInterval}
             timeZone={timeZone}
+            finePrintComponent={SubmitFinePrint}
             {...priceVariantsMaybe}
             {...sharedProps}
           />
@@ -486,6 +500,7 @@ const OrderPanel = React.forwardRef((props, ref) => {
             startDatePlaceholder={intl.formatDate(TODAY, dateFormattingOptions)}
             endDatePlaceholder={intl.formatDate(TODAY, dateFormattingOptions)}
             timeZone={timeZone}
+            finePrintComponent={SubmitFinePrint}
             {...priceVariantsMaybe}
             {...sharedProps}
           />
@@ -498,6 +513,7 @@ const OrderPanel = React.forwardRef((props, ref) => {
             monthlyTimeSlots={monthlyTimeSlots}
             onFetchTimeSlots={onFetchTimeSlots}
             timeZone={timeZone}
+            finePrintComponent={SubmitFinePrint}
             {...priceVariantsMaybe}
             {...sharedProps}
           />
@@ -520,9 +536,25 @@ const OrderPanel = React.forwardRef((props, ref) => {
             onSubmit={onSubmit}
             brand={brand}
             productUrl={productUrl}
+            finePrintComponent={SubmitFinePrint}
+            isOwnListing={isOwnListing}
           />
         ) : showNegotiationForm ? (
-          <NegotiationForm formId="OrderPanelNegotiationForm" onSubmit={onSubmit} />
+          <NegotiationForm
+            formId="OrderPanelNegotiationForm"
+            onSubmit={onSubmit}
+            finePrintComponent={SubmitFinePrint}
+            payoutDetailsWarning={payoutDetailsWarning}
+            isOwnListing={isOwnListing}
+          />
+        ) : showRequestQuoteForm ? (
+          <NegotiationRequestQuoteForm
+            formId="OrderPanelRequestQuoteForm"
+            onSubmit={onSubmit}
+            finePrintComponent={SubmitFinePrint}
+            payoutDetailsWarning={payoutDetailsWarning}
+            isOwnListing={isOwnListing}
+          />
         ) : !isKnownProcess ? (
           <p className={css.errorSidebar}>
             <FormattedMessage id="OrderPanel.unknownTransactionProcess" />
@@ -577,6 +609,8 @@ const OrderPanel = React.forwardRef((props, ref) => {
               <FormattedMessage id="OrderPanel.ctaButtonMessagePurchase" />
             ) : showNegotiationForm ? (
               <FormattedMessage id="OrderPanel.ctaButtonMessageMakeOffer" />
+            ) : showRequestQuoteForm ? (
+              <FormattedMessage id="OrderPanel.ctaButtonMessageRequestAQuote" />
             ) : (
               <FormattedMessage id="OrderPanel.ctaButtonMessageInquiry" />
             )}
