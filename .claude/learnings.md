@@ -235,6 +235,35 @@ const categoryPath = (level1, level2, level3) => {
 - **Required mock state shape**: `{ SearchPage: { currentPageResultIds: [], searchInProgress: false }, marketplaceData: { entities: {} }, ui: { disableScrollRequests: [] } }`.
 - `ui.scrollingDisabled: false` is WRONG — the actual key is `ui.disableScrollRequests: []` (array).
 
+### Sharetribe Upstream Merge Strategy
+- **Remote chain**: `sharetribe/web-template` (remote: `sharetribe`) → `shop-at-mela/web-client` (remote: `upstream`) → `ppjogani/web-client` (remote: `origin`)
+- **Push branch**: Local `main` → `upstream/test` (not `upstream/main`): `git push upstream main:test`
+- **Merge incrementally by version tag** — never merge all 900+ commits at once; go tag-by-tag (v9.0.0, v9.1.0, v10.0.0, ...) to keep conflict scope manageable
+- **CHANGELOG.md**: Always `git rm CHANGELOG.md` — Mela doesn't use it, sharetribe modifies it every release
+
+### Mela Brand Values — Always Keep in Conflicts
+- **Primary color**: `--marketplaceColor: #262261` (purple) — never accept sharetribe's default
+- **Button color**: `--colorPrimaryButton: #e67e71` (coral) — never accept sharetribe's default
+- **Topbar navigation**: Keep `CategoriesPage` and `BrandsPage` links; sharetribe repurposes these components for SignupPage/LoginPage
+- **Mobile menu Browse section**: Keep Mela's custom Browse/Account sections; sharetribe removes them
+
+### Redux Toolkit Migration (v9.0.0+)
+- **`@reduxjs/toolkit`**: Added as dependency in v9.0.0. Run `yarn install` after first merge that includes it.
+- **`CURRENT_USER_SHOW_SUCCESS` removed**: Replaced with `fetchCurrentUserThunk.fulfilled.type` from `user.duck`. Import `fetchCurrentUserThunk` and derive the type — payload shape (user entity) is unchanged.
+- **`migrateLocalSavesToProfile`**: Must be preserved in `login` and `signupWithIdp` wrappers in `auth.duck.js`. Chain `.then(() => dispatch(migrateLocalSavesToProfile()))` after `.unwrap()` in both wrappers.
+- **Test pattern changed**: Duck tests now use Redux store + action type assertions, not direct dispatch mocks.
+
+### Babel Compatibility (v9.0.0+)
+- **`@babel/plugin-proposal-private-property-in-object`**: Add to `devDependencies` — sharetribe's dependencies import it transitively but don't declare it, causing a crash at startup.
+
+### SearchPage SEO (Keep Mela Logic in Conflicts)
+- **`SearchPage.shared.js` `createSearchResultSchema`**: Our version uses `location` param to generate custom SEO titles for `/categories/*` and `/brands/*` URLs. Sharetribe adds `pageHeading` param. Resolution: accept both params; pass `pageHeading` in the default case's `schemaTitle` interpolation.
+
+### Semantic HTML Changes (v10.7.0+)
+- Sharetribe replaced `<div>` with `<ul>/<li>` for listing cards and menu items (accessibility).
+- **SearchResultsPanel**: Accept `<ul>/<li>` structure, keep Mela badge calculation logic inside.
+- **TopbarMobileMenu authenticated links**: Accept `<ul>/<li>`, keep Mela Browse section as-is.
+
 ## Session Log
 2024-10-10: Fixed CategoryProducts to display proper category names + product filtering improvements
 2025-10-10: Implemented HeroProducts with real API integration, randomization, and comprehensive testing
@@ -242,3 +271,4 @@ const categoryPath = (level1, level2, level3) => {
 2025-11-18: Phase 2 - CategoryShowcase product-first, ListingCard badges, image variant fallback
 2025-11-29: Fixed addMarketplaceEntities payload format issue in Brands page implementation
 2025-12-15: Brand storefront UX - scroll affordance, mobile-first CSS, lazy loading, tab navigation component fix
+2026-04-19: Sharetribe upstream merge v8.8.0→v10.7.0 — incremental tag-by-tag strategy, Redux Toolkit migration fixes, Mela brand color/nav preservation patterns
