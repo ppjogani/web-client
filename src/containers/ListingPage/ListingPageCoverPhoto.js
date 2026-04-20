@@ -500,6 +500,21 @@ export const ListingPageComponent = props => {
               itemAspects={publicData.itemAspects}
             />
 
+            {/* Brand / author section — placed early for affiliate trust */}
+            <SectionAuthorMaybe
+              title={title}
+              listing={currentListing}
+              authorDisplayName={authorDisplayName}
+              onContactUser={onContactUser}
+              isInquiryModalOpen={isAuthenticated && inquiryModalOpen}
+              onCloseInquiryModal={() => setInquiryModalOpen(false)}
+              sendInquiryError={sendInquiryError}
+              sendInquiryInProgress={sendInquiryInProgress}
+              onSubmitInquiry={onSubmitInquiry}
+              currentUser={currentUser}
+              onManageDisableScrolling={onManageDisableScrolling}
+            />
+
             {/* Item Specifics Section */}
             <ItemSpecifics
               attributes={getItemSpecificsAttributes(publicData)}
@@ -559,13 +574,9 @@ export const ListingPageComponent = props => {
               )}
             </div>
 
-            <SectionMapMaybe
-              geolocation={geolocation}
-              publicData={publicData}
-              listingId={currentListing.id}
-              mapsConfig={config.maps}
-            />
-            <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+            {reviews.length > 0 && (
+              <SectionReviews reviews={reviews} fetchReviewsError={fetchReviewsError} />
+            )}
             {/* Recommended Products Section */}
             {recommendedProductSKUs && recommendedProductSKUs.length > 0 && (
               <RecommendedProducts
@@ -574,19 +585,6 @@ export const ListingPageComponent = props => {
                 onManageDisableScrolling={onManageDisableScrolling}
               />
             )}
-            <SectionAuthorMaybe
-              title={title}
-              listing={currentListing}
-              authorDisplayName={authorDisplayName}
-              onContactUser={onContactUser}
-              isInquiryModalOpen={isAuthenticated && inquiryModalOpen}
-              onCloseInquiryModal={() => setInquiryModalOpen(false)}
-              sendInquiryError={sendInquiryError}
-              sendInquiryInProgress={sendInquiryInProgress}
-              onSubmitInquiry={onSubmitInquiry}
-              currentUser={currentUser}
-              onManageDisableScrolling={onManageDisableScrolling}
-            />
           </div>
           <div className={css.orderColumnForHeroLayout}>
             <OrderPanel

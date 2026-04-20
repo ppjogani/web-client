@@ -118,8 +118,8 @@ const ItemSpecifics = ({
             onClick={() => setIsSheetOpen(true)}
           >
             <FormattedMessage
-              id="ItemSpecifics.showMore"
-              values={{ count: allAttributes.length - maxMobileAttributes }}
+              id="ItemSpecifics.showAll"
+              values={{ count: allAttributes.length }}
             />
           </button>
         )}
