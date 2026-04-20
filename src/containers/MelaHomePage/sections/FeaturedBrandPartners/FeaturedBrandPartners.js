@@ -88,8 +88,6 @@ const FeaturedBrandPartners = props => {
 
   const classes = classNames(rootClassName || css.root, className);
 
-  // Limit to 6 brands maximum (4-6 per user preference)
-  const displayBrands = brandsWithProducts.slice(0, 6);
   const totalBrandCount = brandsWithProducts.length;
 
   return (
@@ -105,14 +103,17 @@ const FeaturedBrandPartners = props => {
           </p>
         </div>
 
-        {/* Brand Grid */}
-        <div className={css.grid}>
-          {displayBrands.map(({ brand, products }) => (
-            <BrandCardHome key={brand.id.uuid} brand={brand} products={products} />
+        {/* Brand Carousel */}
+        <div className={css.carousel}>
+          {brandsWithProducts.map(({ brand, products }) => (
+            <div key={brand.id.uuid} className={css.carouselCard}>
+              <BrandCardHome brand={brand} products={products} />
+            </div>
           ))}
-
-          {/* Partner CTA Card */}
-          <PartnerCTACard partnerUrl="/partner" />
+          {/* Partner CTA Card — last in carousel */}
+          <div className={css.carouselCard}>
+            <PartnerCTACard partnerUrl="/partner" />
+          </div>
         </div>
 
         {/* View All Brands CTA */}

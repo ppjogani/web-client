@@ -1344,6 +1344,8 @@
   "TopbarMobileMenu.heroSubtitle": "Curated baby, home & fashion — quality-verified, shipped to the US",
   "TopbarMobileMenu.heroTitle": "Discover Quality Indian Brands",
   "TopbarMobileMenu.homeKitchenLink": "Home & Kitchen",
+  "TopbarMobileMenu.jewelryLink": "Jewelry & Accessories",
+  "TopbarMobileMenu.beautyLink": "Beauty & Wellness",
   "TopbarMobileMenu.inboxLink": "Inbox",
   "TopbarMobileMenu.loginLink": "Log in",
   "TopbarMobileMenu.logoutLink": "Log out",
@@ -1621,6 +1623,7 @@
   "ItemSpecifics.title": "Item Specifics",
   "ItemSpecifics.category": "Category",
   "ItemSpecifics.showMore": "Show {count} more",
+  "ItemSpecifics.showAll": "See all {count} details ›",
   "ItemSpecifics.modalTitle": "All Item Specifics",
   "CategoryBreadcrumb.home": "Home",
 

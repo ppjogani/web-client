@@ -3,6 +3,7 @@
  * shows login actions for those who are not authenticated.
  */
 import React from 'react';
+import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 
 import { ACCOUNT_SETTINGS_PAGES } from '../../../../routing/routeConfiguration';
@@ -143,36 +144,36 @@ const TopbarMobileMenu = props => {
                 <span className={css.navigationArrow}>→</span>
               </span>
             </NamedLink>
-            <NamedLink
-              name="SearchPage"
-              to={{ search: '?pub_categoryLevel1=Baby-Clothes-Accessories' }}
-              className={css.navigationLink}
-            >
+            <Link to="/categories/Baby-Kids" className={css.navigationLink}>
               <span className={css.navigationLinkContent}>
                 <FormattedMessage id="TopbarMobileMenu.babyKidsLink" />
                 <span className={css.navigationArrow}>→</span>
               </span>
-            </NamedLink>
-            <NamedLink
-              name="SearchPage"
-              to={{ search: '?pub_categoryLevel1=Home-Kitchen' }}
-              className={css.navigationLink}
-            >
-              <span className={css.navigationLinkContent}>
-                <FormattedMessage id="TopbarMobileMenu.homeKitchenLink" />
-                <span className={css.navigationArrow}>→</span>
-              </span>
-            </NamedLink>
-            <NamedLink
-              name="SearchPage"
-              to={{ search: '?pub_categoryLevel1=Fashion' }}
-              className={css.navigationLink}
-            >
+            </Link>
+            <Link to="/categories/Fashion" className={css.navigationLink}>
               <span className={css.navigationLinkContent}>
                 <FormattedMessage id="TopbarMobileMenu.fashionLink" />
                 <span className={css.navigationArrow}>→</span>
               </span>
-            </NamedLink>
+            </Link>
+            <Link to="/categories/Home-Kitchen" className={css.navigationLink}>
+              <span className={css.navigationLinkContent}>
+                <FormattedMessage id="TopbarMobileMenu.homeKitchenLink" />
+                <span className={css.navigationArrow}>→</span>
+              </span>
+            </Link>
+            <Link to="/categories/Jewelry-Accessories" className={css.navigationLink}>
+              <span className={css.navigationLinkContent}>
+                <FormattedMessage id="TopbarMobileMenu.jewelryLink" defaultMessage="Jewelry & Accessories" />
+                <span className={css.navigationArrow}>→</span>
+              </span>
+            </Link>
+            <Link to="/categories/Beauty-Wellness" className={css.navigationLink}>
+              <span className={css.navigationLinkContent}>
+                <FormattedMessage id="TopbarMobileMenu.beautyLink" defaultMessage="Beauty & Wellness" />
+                <span className={css.navigationArrow}>→</span>
+              </span>
+            </Link>
             <NamedLink name="CategoriesPage" className={css.navigationLink}>
               <span className={css.navigationLinkContent}>
                 <FormattedMessage id="TopbarMobileMenu.allCategoriesLink" />
@@ -253,13 +254,18 @@ const TopbarMobileMenu = props => {
           >
             <FormattedMessage id="TopbarMobileMenu.allBrandsLink" />
           </NamedLink>
-          <NamedLink
-            className={css.navigationLink}
-            name="SearchPage"
-            to={{ search: '?pub_categoryLevel1=Baby-Clothes-Accessories' }}
-          >
+          <Link to="/categories/Baby-Kids" className={css.navigationLink}>
             <FormattedMessage id="TopbarMobileMenu.babyKidsLink" />
-          </NamedLink>
+          </Link>
+          <Link to="/categories/Fashion" className={css.navigationLink}>
+            <FormattedMessage id="TopbarMobileMenu.fashionLink" />
+          </Link>
+          <Link to="/categories/Home-Kitchen" className={css.navigationLink}>
+            <FormattedMessage id="TopbarMobileMenu.homeKitchenLink" />
+          </Link>
+          <Link to="/categories/Jewelry-Accessories" className={css.navigationLink}>
+            <FormattedMessage id="TopbarMobileMenu.jewelryLink" defaultMessage="Jewelry & Accessories" />
+          </Link>
           <NamedLink
             className={classNames(css.navigationLink, currentPageClass('CategoriesPage'))}
             name="CategoriesPage"

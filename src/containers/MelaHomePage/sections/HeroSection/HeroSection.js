@@ -14,7 +14,7 @@ import css from './HeroSection.module.css';
 const TRUST_BADGES = [
   { icon: '🌱', text: 'GOTS Certified' },
   { icon: '✅', text: 'Quality Verified' },
-  { icon: '🇮🇳', text: 'Made in India' },
+  { icon: '🇮🇳', text: 'Indian Brands' },
   { icon: '🇺🇸', text: 'Ships to the US' },
   { icon: '💳', text: 'US Cards on Brand Stores' },
 ];
@@ -159,7 +159,7 @@ const HeroSectionComponent = ({
 
           {/* Product Showcase */}
           <div className={css.productShowcase}>
-            <div className={css.featuredProduct}>
+            <NamedLink {...displayProduct.linkProps} className={css.featuredProduct}>
               <div className={css.productImage}>
                 {displayProduct.image ? (
                   <ResponsiveImage
@@ -182,17 +182,8 @@ const HeroSectionComponent = ({
               <div className={css.productInfo}>
                 <h3 className={css.productTitle}>{displayProduct.title}</h3>
                 <p className={css.productPrice}>{displayProduct.price}</p>
-                <NamedLink
-                  {...displayProduct.linkProps}
-                  className={css.productCta}
-                >
-                  <FormattedMessage
-                    id="SectionMelaHero.viewProduct"
-                    defaultMessage="View Product"
-                  />
-                </NamedLink>
               </div>
-            </div>
+            </NamedLink>
 
             {/* Product Navigation Dots */}
             <div className={css.productDots}>
@@ -225,9 +216,9 @@ const HeroSectionComponent = ({
             <span className={css.quickNavText}>Home &amp; Kitchen</span>
           </Link>
 
-          <Link to="/categories/Gifts" className={css.quickNavItem}>
-            <span className={css.quickNavIcon}>🎁</span>
-            <span className={css.quickNavText}>Gifts</span>
+          <Link to="/categories/Jewelry-Accessories" className={css.quickNavItem}>
+            <span className={css.quickNavIcon}>💎</span>
+            <span className={css.quickNavText}>Jewelry</span>
           </Link>
         </div>
       </div>

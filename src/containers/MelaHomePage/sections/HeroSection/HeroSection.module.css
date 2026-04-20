@@ -38,8 +38,9 @@
 /* Hero Content Layout */
 .heroContent {
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  /* Mobile: product image first, text second */
+  flex-direction: column-reverse;
+  gap: 1.5rem;
   align-items: center;
   text-align: center;
 
@@ -50,7 +51,7 @@
   }
 
   @media (min-width: 1024px) {
-    gap: 4rem;
+    gap: 3rem;
   }
 }
 
@@ -102,13 +103,25 @@
 /* Trust Badges */
 .trustBadges {
   display: flex;
-  flex-wrap: wrap;
   gap: 0.75rem;
-  justify-content: center;
-  margin: 0 0 2rem;
+  margin: 0 0 1.5rem;
+  /* Mobile: horizontal scroll strip — 3 badges visible, rest swipeable */
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  padding-bottom: 0.25rem;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @media (min-width: 768px) {
+    flex-wrap: wrap;
+    overflow-x: visible;
     justify-content: flex-start;
+    margin: 0 0 2rem;
   }
 }
 
@@ -231,20 +244,34 @@
 }
 
 .featuredProduct {
+  display: block;
   width: 100%;
-  max-width: 400px;
-  background: #ffffff;
-  border-radius: 16px;
-  padding: 1rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+  cursor: pointer;
   transition: transform 0.3s ease;
 
+  /* Mobile: flat, no card framing — product floats directly in the hero */
+  background: transparent;
+  border-radius: 0;
+  padding: 0;
+  box-shadow: none;
+
   &:hover {
-    transform: translateY(-4px);
+    transform: translateY(-2px);
+    text-decoration: none;
   }
 
-  @media (min-width: 640px) {
+  @media (min-width: 768px) {
+    /* Desktop: restore the card appearance */
+    max-width: 400px;
+    background: #ffffff;
+    border-radius: 16px;
     padding: 1.5rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+
+    &:hover {
+      transform: translateY(-4px);
+    }
   }
 }
 
@@ -302,27 +329,6 @@
   }
 }
 
-.productCta {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem 1.5rem;
-  background: #f7fafc;
-  color: var(--marketplaceColor);
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  font-size: 0.875rem;
-  font-weight: 600;
-  text-decoration: none;
-  transition: all 0.2s ease;
-
-  &:hover {
-    background: var(--colorPrimaryButton);
-    color: #ffffff;
-    border-color: var(--marketplaceColor);
-  }
-}
-
 /* Product Navigation Dots */
 .productDots {
   display: flex;
@@ -355,17 +361,16 @@
 /* Quick Navigation */
 .quickNav {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 0.75rem;
-  margin-top: 3rem;
+  margin-top: 1.5rem;
 
   @media (min-width: 480px) {
-    grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
   }
 
   @media (min-width: 768px) {
-    margin-top: 4rem;
+    margin-top: 2rem;
   }
 }
 
