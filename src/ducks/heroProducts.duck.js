@@ -1,4 +1,5 @@
 import { storableError } from '../util/errors';
+import { pickRandom } from '../util/data';
 
 // ================ Action types ================ //
 
@@ -74,18 +75,6 @@ const attachImagesToListings = (listings, includedData) => {
   });
 };
 
-// Randomly pick n items from an array without mutation
-const pickRandom = (arr, n) => {
-  const pool = [...arr];
-  const result = [];
-  const count = Math.min(n, pool.length);
-  for (let i = 0; i < count; i++) {
-    const idx = Math.floor(Math.random() * pool.length);
-    result.push(pool[idx]);
-    pool.splice(idx, 1);
-  }
-  return result;
-};
 
 export const fetchHeroProducts = (config) => (dispatch, getState, sdk) => {
   dispatch(fetchHeroProductsRequest());

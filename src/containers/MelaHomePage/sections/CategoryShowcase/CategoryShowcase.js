@@ -4,7 +4,7 @@ import { FormattedMessage } from '../../../../util/reactIntl';
 import { NamedLink, ListingCard, ProductCarousel } from '../../../../components';
 import { useConfiguration } from '../../../../context/configurationContext';
 import { createInstance } from '../../../../util/sdkLoader';
-import { denormalisedEntities, updatedEntities } from '../../../../util/data';
+import { denormalisedEntities, updatedEntities, pickRandom } from '../../../../util/data';
 import appSettings from '../../../../config/settings';
 import * as apiUtils from '../../../../util/api';
 
@@ -154,11 +154,11 @@ export const OccasionStrip = ({ config, additionalQueryParams = {} }) => {
             try {
               const response = await sdk.listings.query({
                 pub_occasion: option,
-                perPage: 6,
+                perPage: 18,
                 include: ['images', 'currentStock'],
                 ...additionalQueryParams,
               });
-              const listingIds = response.data.data.map(l => l.id);
+              const listingIds = pickRandom(response.data.data.map(l => l.id), 6);
               return { option, listingIds, responseData: response.data };
             } catch {
               return { option, listingIds: [], responseData: null };
@@ -313,10 +313,10 @@ const AgeNavigation = ({ config }) => {
             try {
               const response = await sdk.listings.query({
                 pub_age_group: option,
-                perPage: 8,
+                perPage: 24,
                 include: ['images', 'currentStock'],
               });
-              const listingIds = response.data.data.map(l => l.id);
+              const listingIds = pickRandom(response.data.data.map(l => l.id), 8);
               return { option, listingIds, responseData: response.data };
             } catch {
               return { option, listingIds: [], responseData: null };
@@ -393,10 +393,10 @@ const CrossCategoryCarousels = ({ config }) => {
             try {
               const response = await sdk.listings.query({
                 pub_categoryLevel1: id,
-                perPage: 8,
+                perPage: 24,
                 include: ['images', 'currentStock'],
               });
-              const listingIds = response.data.data.map(l => l.id);
+              const listingIds = pickRandom(response.data.data.map(l => l.id), 8);
               return { id, listingIds, responseData: response.data };
             } catch {
               return { id, listingIds: [], responseData: null };

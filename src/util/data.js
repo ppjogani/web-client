@@ -475,3 +475,16 @@ export const humanizeLineItemCode = code => {
 
   return lowercase.charAt(0).toUpperCase() + lowercase.slice(1);
 };
+
+// Randomly pick n unique items from an array without mutating the original.
+export const pickRandom = (arr, n) => {
+  const pool = [...arr];
+  const result = [];
+  const count = Math.min(n, pool.length);
+  for (let i = 0; i < count; i++) {
+    const idx = Math.floor(Math.random() * pool.length);
+    result.push(pool[idx]);
+    pool.splice(idx, 1);
+  }
+  return result;
+};
