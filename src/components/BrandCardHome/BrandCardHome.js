@@ -1,5 +1,5 @@
 import React from 'react';
-import { string, arrayOf, shape, func } from 'prop-types';
+import { bool, number, string, arrayOf, shape, func } from 'prop-types';
 import classNames from 'classnames';
 
 import { FormattedMessage } from '../../util/reactIntl';
@@ -25,6 +25,10 @@ import css from './BrandCardHome.module.css';
  * @param {Object} props.brand - Brand user entity
  * @param {Array} props.products - Array of listing entities (up to 4)
  * @param {Function} props.onFavorite - Callback when favorite button clicked
+ * @param {boolean} props.showCertifications - Show/hide certification badges row (default: true)
+ * @param {boolean} props.showCta - Show/hide "Shop All" CTA (default: true). Set false in hero
+ *                                  context where "Explore Brands" is the primary CTA.
+ * @param {number} props.maxProducts - Max products shown in grid (default: 4). Use 2 for hero.
  * @param {string} props.className - Additional CSS class
  * @param {string} props.rootClassName - Root CSS class override
  */
@@ -33,6 +37,10 @@ const BrandCardHome = props => {
     brand,
     products = [],
     onFavorite,
+    showCertifications = true,
+    showCta = true,
+    maxProducts = 4,
+    showPlaceholders = true,
     className = null,
     rootClassName = null,
   } = props;
@@ -79,19 +87,17 @@ const BrandCardHome = props => {
     ? { name: 'BrandPage', params: { brandSlug } }
     : { name: 'ProfilePage', params: { id: brand.id.uuid } };
 
-  // Show up to 4 products in 2x2 grid
-  const featuredProducts = products.slice(0, 4);
-
-  // Fill with placeholders if less than 4
+  // Limit products shown; fill remainder with placeholders
+  const featuredProducts = products.slice(0, maxProducts);
   const gridProducts = [...featuredProducts];
-  while (gridProducts.length < 4) {
-    gridProducts.push(null); // Placeholder
+  while (gridProducts.length < maxProducts) {
+    gridProducts.push(null);
   }
 
   return (
     <div className={classes}>
-      {/* Header */}
-      <div className={css.header}>
+      {/* Header — entire area is a link to the brand page */}
+      <NamedLink {...brandLinkProps} className={css.headerLink}>
         <div className={css.brandInfo}>
           {logoSrc ? (
             <img src={logoSrc} alt={displayName} className={css.smallLogo} />
@@ -107,26 +113,26 @@ const BrandCardHome = props => {
             {/* Tagline */}
             {tagline ? (
               <p className={css.tagline}>{tagline}</p>
-            ) : (
+            ) : showPlaceholders ? (
               <p className={css.taglinePlaceholder}>
                 <FormattedMessage id="BrandCardHome.addDescription" />
               </p>
-            )}
+            ) : null}
 
             {/* Brand Origin & Established Year */}
             {brandInfo ? (
               <p className={css.brandOrigin}>{brandInfo}</p>
-            ) : (
+            ) : showPlaceholders ? (
               <p className={css.brandOriginPlaceholder}>
                 <FormattedMessage id="BrandCardHome.addOriginYear" />
               </p>
-            )}
+            ) : null}
           </div>
         </div>
-      </div>
+      </NamedLink>
 
       {/* Certifications */}
-      {certifications.length > 0 ? (
+      {showCertifications && (certifications.length > 0 ? (
         <div className={css.certBadges}>
           {certifications.map(cert => (
             <CertificationBadge
@@ -141,7 +147,7 @@ const BrandCardHome = props => {
         <div className={css.certPlaceholder}>
           <FormattedMessage id="BrandCardHome.addCertifications" />
         </div>
-      )}
+      ))}
 
       {/* Product Grid (2x2) */}
       <div className={css.productGrid}>
@@ -161,13 +167,15 @@ const BrandCardHome = props => {
         )}
       </div>
 
-      {/* Shop All CTA */}
-      <NamedLink {...brandLinkProps} className={css.cta}>
-        <span className={css.ctaText}>
-          <FormattedMessage id="BrandCard.shopAll" />
-        </span>
-        <span className={css.ctaArrow}>→</span>
-      </NamedLink>
+      {/* Shop All CTA — hidden in hero context where "Explore Brands" owns that role */}
+      {showCta && (
+        <NamedLink {...brandLinkProps} className={css.cta}>
+          <span className={css.ctaText}>
+            <FormattedMessage id="BrandCard.shopAll" />
+          </span>
+          <span className={css.ctaArrow}>→</span>
+        </NamedLink>
+      )}
     </div>
   );
 };
@@ -186,6 +194,10 @@ BrandCardHome.propTypes = {
     })
   ),
   onFavorite: func,
+  showCertifications: bool,
+  showCta: bool,
+  maxProducts: number,
+  showPlaceholders: bool,
   className: string,
   rootClassName: string,
 };

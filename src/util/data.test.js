@@ -6,6 +6,7 @@ import {
   denormalisedEntities,
   humanizeLineItemCode,
   denormalizeAssetData,
+  pickRandom,
 } from './data';
 
 const { UUID } = sdkTypes;
@@ -427,5 +428,49 @@ describe('denormalizeAssetData', () => {
       },
     };
     expect(JSON.stringify(denormalizeAssetData(jsonObj))).toEqual(JSON.stringify(expected));
+  });
+
+  describe('pickRandom()', () => {
+    it('returns exactly n items', () => {
+      const arr = [1, 2, 3, 4, 5, 6, 7, 8];
+      expect(pickRandom(arr, 3)).toHaveLength(3);
+    });
+
+    it('returns all items when n >= array length', () => {
+      const arr = [1, 2, 3];
+      expect(pickRandom(arr, 10)).toHaveLength(3);
+    });
+
+    it('returns empty array for empty input', () => {
+      expect(pickRandom([], 5)).toHaveLength(0);
+    });
+
+    it('returns no duplicate items', () => {
+      const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+      const result = pickRandom(arr, 8);
+      expect(new Set(result).size).toBe(result.length);
+    });
+
+    it('does not mutate the original array', () => {
+      const arr = [1, 2, 3, 4, 5];
+      const copy = [...arr];
+      pickRandom(arr, 3);
+      expect(arr).toEqual(copy);
+    });
+
+    it('returns all items when n equals array length', () => {
+      const arr = ['a', 'b', 'c'];
+      const result = pickRandom(arr, 3);
+      expect(result).toHaveLength(3);
+      expect(result.sort()).toEqual(['a', 'b', 'c']);
+    });
+
+    it('each returned item exists in the original array', () => {
+      const arr = ['x', 'y', 'z', 'w'];
+      const result = pickRandom(arr, 2);
+      result.forEach(item => {
+        expect(arr).toContain(item);
+      });
+    });
   });
 });

@@ -235,7 +235,7 @@ const routeConfiguration = (layoutConfig, accessControlConfig) => {
     {
       path: '/u/:id/:variant',
       name: 'ProfilePageVariant',
-      auth: true,
+      ...authForPrivateMarketplace,
       component: ProfilePage,
       loadData: pageDataLoadingAPI.ProfilePage.loadData,
     },

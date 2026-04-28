@@ -8,7 +8,6 @@ import {
   H3,
   H4,
   ListingCard,
-  Reviews,
   LinkTabNavHorizontal,
   NamedLink,
 } from '../../components';
@@ -188,8 +187,6 @@ const CertificationDetail = ({ certificationData }) => {
  * @param {Object} props
  * @param {Object} props.user - Brand user entity
  * @param {Array} props.listings - Brand's product listings
- * @param {Array} props.reviews - Brand reviews
- * @param {boolean} props.queryReviewsError - Reviews query error
  * @param {Object} props.currentUser - Currently logged in user
  * @param {boolean} props.isCurrentUser - True if viewing own profile
  * @param {Object} props.intl - Intl instance for formatting
@@ -198,8 +195,6 @@ const BrandStorefront = props => {
   const {
     user,
     listings = [],
-    reviews = [],
-    queryReviewsError,
     userTypeRoles,
     currentUser,
     isCurrentUser,
@@ -211,7 +206,7 @@ const BrandStorefront = props => {
   const loadMoreRef = React.useRef(null);
 
   // Determine active tab from route variant (default to 'products')
-  const activeTab = variant === 'about' ? 'about' : variant === 'reviews' ? 'reviews' : 'products';
+  const activeTab = variant === 'about' ? 'about' : 'products';
 
   useEffect(() => {
     setMounted(true);
@@ -324,18 +319,6 @@ const BrandStorefront = props => {
       linkProps: {
         name: 'ProfilePageVariant',
         params: { id: userId, variant: 'about' },
-      },
-    },
-    {
-      text: (
-        <span className={css.tabLabel}>
-          <FormattedMessage id="BrandStorefront.reviewsTab" values={{ count: reviews.length }} />
-        </span>
-      ),
-      selected: activeTab === 'reviews',
-      linkProps: {
-        name: 'ProfilePageVariant',
-        params: { id: userId, variant: 'reviews' },
       },
     },
   ];
@@ -530,19 +513,6 @@ const BrandStorefront = props => {
           </div>
         )}
 
-        {/* Reviews Tab */}
-        {activeTab === 'reviews' && (
-          <div className={css.reviewsSection}>
-
-            {queryReviewsError ? (
-              <p className={css.error}>
-                <FormattedMessage id="ProfilePage.loadingReviewsFailed" />
-              </p>
-            ) : (
-              <Reviews reviews={reviews} />
-            )}
-          </div>
-        )}
       </div>
     </div>
   );

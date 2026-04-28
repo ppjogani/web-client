@@ -62,11 +62,13 @@ const TOP_AGE_GROUPS = [
   { option: '6_12_months', label: '6-12 Months' },
 ];
 
-const CROSS_CATEGORIES = [
-  { id: 'Fashion',              label: 'Indian Fashion',        viewAllSearch: '?pub_categoryLevel1=Fashion' },
-  { id: 'Home-Kitchen',         label: 'Home & Kitchen',        viewAllSearch: '?pub_categoryLevel1=Home-Kitchen' },
-  { id: 'Jewelry-Accessories',  label: 'Jewelry & Accessories', viewAllSearch: '?pub_categoryLevel1=Jewelry-Accessories' },
-  { id: 'Beauty-Wellness',      label: 'Beauty & Wellness',     viewAllSearch: '?pub_categoryLevel1=Beauty-Wellness' },
+const ALL_CATEGORIES = [
+  { id: 'Baby-Kids',           label: 'Baby & Kids',          viewAllSearch: '?pub_categoryLevel1=Baby-Kids' },
+  { id: 'Fashion',             label: 'Indian Fashion',        viewAllSearch: '?pub_categoryLevel1=Fashion' },
+  { id: 'Home-Kitchen',        label: 'Home & Kitchen',        viewAllSearch: '?pub_categoryLevel1=Home-Kitchen' },
+  { id: 'Jewelry-Accessories', label: 'Jewelry & Accessories', viewAllSearch: '?pub_categoryLevel1=Jewelry-Accessories' },
+  { id: 'Beauty-Wellness',     label: 'Beauty & Wellness',     viewAllSearch: '?pub_categoryLevel1=Beauty-Wellness' },
+  { id: 'Art-Craft',           label: 'Art & Craft',           viewAllSearch: '?pub_categoryLevel1=Art-Craft' },
 ];
 
 // ── Get categories for showcase ────────────────────────────────────────────
@@ -374,75 +376,82 @@ const AgeNavigation = ({ config }) => {
   );
 };
 
-// ── CrossCategoryCarousels ─────────────────────────────────────────────────
-// Fashion, Home & Kitchen, Jewelry & Accessories, Beauty & Wellness carousels.
-// Each fetches by pub_categoryLevel1 and renders with the shared ProductCarousel.
+// ── makeCategoryCarousels ──────────────────────────────────────────────────
+// Factory that creates a carousel component for a given slice of ALL_CATEGORIES.
+// Each instance has its own loading state so fetches are independent.
 
-const CrossCategoryCarousels = ({ config }) => {
-  const [categoryProducts, setCategoryProducts] = useState({});
-  const [isLoading, setIsLoading] = useState(true);
+const makeCategoryCarousels = (categories) => {
+  const CategoryCarousels = ({ config }) => {
+    const [categoryProducts, setCategoryProducts] = useState({});
+    const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const listingFields = config?.listing?.listingFields;
-    const sanitizeConfig = { listingFields };
+    useEffect(() => {
+      const listingFields = config?.listing?.listingFields;
+      const sanitizeConfig = { listingFields };
 
-    const fetchProducts = async () => {
-      try {
-        const results = await Promise.all(
-          CROSS_CATEGORIES.map(async ({ id }) => {
-            try {
-              const response = await sdk.listings.query({
-                pub_categoryLevel1: id,
-                perPage: 24,
-                include: ['images', 'currentStock'],
-              });
-              const listingIds = pickRandom(response.data.data.map(l => l.id), 8);
-              return { id, listingIds, responseData: response.data };
-            } catch {
-              return { id, listingIds: [], responseData: null };
+      const fetchProducts = async () => {
+        try {
+          const results = await Promise.all(
+            categories.map(async ({ id }) => {
+              try {
+                const response = await sdk.listings.query({
+                  pub_categoryLevel1: id,
+                  perPage: 24,
+                  include: ['images', 'currentStock'],
+                });
+                const listingIds = pickRandom(response.data.data.map(l => l.id), 8);
+                return { id, listingIds, responseData: response.data };
+              } catch {
+                return { id, listingIds: [], responseData: null };
+              }
+            })
+          );
+
+          let allEntities = {};
+          results.forEach(r => {
+            if (r.responseData) {
+              allEntities = updatedEntities(allEntities, r.responseData, sanitizeConfig);
             }
-          })
-        );
+          });
 
-        let allEntities = {};
-        results.forEach(r => {
-          if (r.responseData) {
-            allEntities = updatedEntities(allEntities, r.responseData, sanitizeConfig);
-          }
-        });
+          const productsMap = results.reduce((acc, { id, listingIds }) => {
+            const refs = listingIds.map(lid => ({ id: lid, type: 'listing' }));
+            acc[id] = denormalisedEntities(allEntities, refs, false);
+            return acc;
+          }, {});
 
-        const productsMap = results.reduce((acc, { id, listingIds }) => {
-          const refs = listingIds.map(lid => ({ id: lid, type: 'listing' }));
-          acc[id] = denormalisedEntities(allEntities, refs, false);
-          return acc;
-        }, {});
+          setCategoryProducts(productsMap);
+        } catch {
+          // leave empty
+        } finally {
+          setIsLoading(false);
+        }
+      };
 
-        setCategoryProducts(productsMap);
-      } catch {
-        // leave empty
-      } finally {
-        setIsLoading(false);
-      }
-    };
+      fetchProducts();
+    }, []); // eslint-disable-line
 
-    fetchProducts();
-  }, []); // eslint-disable-line
-
-  return (
-    <div className={css.categorySections}>
-      {CROSS_CATEGORIES.map(({ id, label, viewAllSearch }) => (
-        <ProductCarousel
-          key={id}
-          title={label}
-          viewAllLinkName="SearchPage"
-          viewAllLinkSearch={viewAllSearch}
-          listings={categoryProducts[id] || []}
-          isLoading={isLoading}
-        />
-      ))}
-    </div>
-  );
+    return (
+      <div className={css.categorySections}>
+        {categories.map(({ id, label, viewAllSearch }) => (
+          <ProductCarousel
+            key={id}
+            title={label}
+            viewAllLinkName="SearchPage"
+            viewAllLinkSearch={viewAllSearch}
+            listings={categoryProducts[id] || []}
+            isLoading={isLoading}
+          />
+        ))}
+      </div>
+    );
+  };
+  return CategoryCarousels;
 };
+
+// All 6 categories in a single instance so their skeleton loading states render
+// simultaneously — prevents the "Baby & Kids only" perception during initial load.
+const AllCategoryCarousels = makeCategoryCarousels(ALL_CATEGORIES);
 
 // ── CategoryShowcase ───────────────────────────────────────────────────────
 
@@ -463,16 +472,16 @@ const CategoryShowcase = () => {
           <p className={css.subtitle}>
             <FormattedMessage
               id="MelaHomePage.categorySubtitle"
-              defaultMessage="Baby, fashion, home, jewelry and wellness — curated from independent Indian brands"
+              defaultMessage="Baby, fashion, home, jewelry, wellness and art — curated from independent Indian brands"
             />
           </p>
         </div>
 
-        {/* Age-Based Navigation */}
-        <AgeNavigation config={config} />
+        {/* All 6 category carousels — single instance so all skeletons render simultaneously */}
+        <AllCategoryCarousels config={config} />
 
-        {/* Cross-category carousels: Fashion, Home, Jewelry, Beauty */}
-        <CrossCategoryCarousels config={config} />
+        {/* Age-Based Navigation — directly after category carousels */}
+        <AgeNavigation config={config} />
 
         {/* Occasion Strip */}
         <OccasionStrip config={config} />

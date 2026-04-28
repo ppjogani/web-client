@@ -6,10 +6,10 @@ import css from './TrustAssurance.module.css';
 
 // certification prop values match CertificationBadge / certificationIcons.js keys
 const CERTIFICATIONS = [
-  { id: 'gots_certified',  description: 'Global Organic Textile Standard' },
-  { id: 'organic_cotton',  description: 'Certified Organic Materials' },
-  { id: 'oeko_tex',        description: 'Tested for harmful substances' },
-  { id: 'eco_friendly',    description: 'Sustainable Manufacturing' },
+  { id: 'gots_certified', name: 'GOTS Certified',   description: 'Strict environmental and social standards across every step of textile production — from farm to finished product' },
+  { id: 'organic_cotton', name: 'Organic Cotton',   description: 'Grown without toxic pesticides or synthetic fertilizers — gentler on baby skin and the planet' },
+  { id: 'oeko_tex',       name: 'OEKO-TEX®',        description: 'Independently tested against 100+ harmful substances. If it passes, it\'s safe enough to put against a newborn\'s skin' },
+  { id: 'eco_friendly',   name: 'Eco-Friendly',     description: 'Partners meet verified benchmarks for sustainable materials, production processes, and packaging' },
 ];
 
 const SECURITY_FEATURES = [
@@ -51,7 +51,7 @@ const US_SHOPPER_FAQS = [
   },
   {
     question: 'Are there customs duties or import taxes when ordering from India to the US?',
-    answer: 'Import duties on personal-use orders under the US de minimis threshold ($800) are typically not charged. For larger orders, applicable duties are the buyer\'s responsibility. Each brand\'s checkout will show an estimate where applicable.',
+    answer: 'The US de minimis exemption — which historically allowed personal-use orders under $800 to clear customs duty-free — is currently under active review by the US government. Recent executive and judicial actions have created uncertainty around this rule, and the policy may change with limited notice. For most orders from Indian brands at typical price points, duties have not been assessed, but we cannot guarantee this will remain the case. Mela recommends checking the latest US Customs and Border Protection (CBP) guidance before placing large orders. Each brand\'s checkout will show a duty estimate where available.',
   },
   {
     question: 'What is the return policy for brands on Mela?',
@@ -134,11 +134,12 @@ const TrustAssurance = () => {
                 <CertificationBadge
                   certification={cert.id}
                   variant="default"
-                  size={32}
-                  showTooltip={false}
+                  size={40}
+                  showTooltip={true}
                   className={css.certLogo}
                 />
                 <div className={css.certInfo}>
+                  <p className={css.certName}>{cert.name}</p>
                   <p className={css.certDescription}>{cert.description}</p>
                 </div>
               </div>

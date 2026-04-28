@@ -527,8 +527,6 @@ export const ProfilePageComponent = props => {
             <BrandStorefront
               user={profileUser}
               listings={rest.listings || []}
-              reviews={rest.reviews || []}
-              queryReviewsError={rest.queryReviewsError}
               userTypeRoles={userTypeRoles}
               currentUser={currentUser}
               isCurrentUser={isCurrentUser}

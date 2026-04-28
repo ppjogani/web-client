@@ -75,7 +75,7 @@ const brandConfigurationsByEnv = {
 
 /**
  * Featured brands by environment
- * Maximum 6 brands recommended for optimal display
+ * Up to 8 brands for hero carousel; shows all configured brands (works with any count ≥ 1)
  */
 const featuredBrandIdsByEnv = {
   development: [

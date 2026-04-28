@@ -1,3 +1,4 @@
+// TODO: remove after hero brand carousel ships (HeroSection now uses BrandsPage duck)
 import { storableError } from '../util/errors';
 import { pickRandom } from '../util/data';
 
