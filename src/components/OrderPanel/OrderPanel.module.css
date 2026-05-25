@@ -75,6 +75,28 @@
   color: var(--marketplaceColor);
 }
 
+.inrPrice {
+  composes: marketplaceTinyFontStyles from global;
+  color: var(--colorGrey500);
+  font-weight: var(--fontWeightRegular);
+  margin: 2px 0 0 24px;
+
+  @media (--viewportMedium) {
+    margin: 2px 0 0 0;
+  }
+}
+
+.priceDisclaimer {
+  composes: marketplaceTinyFontStyles from global;
+  color: var(--colorGrey500);
+  font-weight: var(--fontWeightRegular);
+  margin: 2px 0 0 24px;
+
+  @media (--viewportMedium) {
+    margin: 2px 0 0 0;
+  }
+}
+
 .author {
   composes: p from global;
   margin: 0px 24px 32px 24px;

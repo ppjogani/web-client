@@ -528,15 +528,6 @@ export const ListingPageComponent = props => {
             )}
           </div>
           <div className={css.orderColumnForProductLayout}>
-            <SavedListingButton
-              listingId={currentListing?.id?.uuid}
-              listingData={{
-                title: currentListing?.attributes?.title || '',
-                imageUrl: currentListing?.images?.[0]?.attributes?.variants?.['listing-card']?.url || '',
-              }}
-              variant="button"
-              className={css.listingPageSaveButton}
-            />
             <OrderPanel
               ref={orderPanelRef}
               className={classNames(css.productOrderPanel, {
@@ -572,6 +563,15 @@ export const ListingPageComponent = props => {
               marketplaceName={config.marketplaceName}
               showListingImage={showListingImage}
               onShopNow={handleShopNow}
+            />
+            <SavedListingButton
+              listingId={currentListing?.id?.uuid}
+              listingData={{
+                title: currentListing?.attributes?.title || '',
+                imageUrl: currentListing?.images?.[0]?.attributes?.variants?.['listing-card']?.url || '',
+              }}
+              variant="button"
+              className={css.listingPageSaveButton}
             />
           </div>
         </div>

@@ -82,11 +82,11 @@ const SearchResultsPanel = props => {
           const isBestseller = publicData?.isBestseller || false;
           const stockCount = currentStock?.quantity || null;
 
-          // Check if listing is new (created within last 30 days)
+          // Check if listing is new (created within last 7 days)
           const now = new Date();
           const listingCreatedDate = createdAt ? new Date(createdAt) : null;
           const isNew = listingCreatedDate
-            ? daysBetween(listingCreatedDate, now) <= 30
+            ? daysBetween(listingCreatedDate, now) <= 7
             : false;
 
           return (

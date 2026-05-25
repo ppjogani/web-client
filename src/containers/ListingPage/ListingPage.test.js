@@ -35,6 +35,16 @@ const { UUID } = sdkTypes;
 const { screen, waitFor, within } = testingLibrary;
 const noop = () => null;
 
+// JSDOM does not implement IntersectionObserver — mock it for carousel layout detection
+global.IntersectionObserver = class IntersectionObserver {
+  constructor(callback) {
+    this.callback = callback;
+  }
+  observe() {}
+  unobserve() {}
+  disconnect() {}
+};
+
 const logger = actions => () => {
   return next => action => {
     actions.push(action);
@@ -323,6 +333,14 @@ describe('ListingPage variants', () => {
       expect(getByRole('link', { name: 'UserCard.viewProfileLink' })).toBeInTheDocument();
       // Has button to contact provider
       expect(getByRole('button', { name: 'UserCard.contactUser' })).toBeInTheDocument();
+
+      // Save button appears after the order panel title (below 'Shop from brand', not above title)
+      const saveButton = screen.getByRole('button', { name: 'SavedListingButton.saveAriaLabel' });
+      const orderPanelTitle = queryAllByRole('heading', { name: 'ListingPage.orderTitle' })[0];
+      expect(saveButton).toBeInTheDocument();
+      expect(
+        orderPanelTitle.compareDocumentPosition(saveButton) & Node.DOCUMENT_POSITION_FOLLOWING
+      ).toBeTruthy();
     });
   });
 });

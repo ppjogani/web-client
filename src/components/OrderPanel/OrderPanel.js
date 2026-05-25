@@ -22,7 +22,7 @@ import {
   STOCK_INFINITE_MULTIPLE_ITEMS,
   LISTING_STATE_PUBLISHED,
 } from '../../util/types';
-import { formatMoney } from '../../util/currency';
+import { formatMoney, formatCurrencyMajorUnit } from '../../util/currency';
 import { createSlug, parse, stringify } from '../../util/urlHelpers';
 import { userDisplayNameAsString } from '../../util/data';
 import {
@@ -166,6 +166,9 @@ const PriceMaybe = props => {
     </span>
   );
 
+  const inrPrice = publicData?.priceInINR;
+  const formattedINRPrice = inrPrice ? formatCurrencyMajorUnit(intl, 'INR', inrPrice) : null;
+
   // TODO: In CTA, we don't have space to show proper error message for a mismatch of marketplace currency
   //       Instead, we show the currency code in place of the price
   return showCurrencyMismatch ? (
@@ -185,6 +188,16 @@ const PriceMaybe = props => {
       <p className={css.price}>
         <FormattedMessage id="OrderPanel.price" values={{ priceValue, pricePerUnit }} />
       </p>
+      {formattedINRPrice && (
+        <p className={css.inrPrice}>
+          <FormattedMessage id="OrderPanel.inrEquivalent" values={{ inrPrice: formattedINRPrice }} />
+        </p>
+      )}
+      {formattedINRPrice && (
+        <p className={css.priceDisclaimer}>
+          <FormattedMessage id="OrderPanel.priceConvertedDisclaimer" />
+        </p>
+      )}
     </div>
   );
 };

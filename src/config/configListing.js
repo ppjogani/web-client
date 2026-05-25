@@ -88,6 +88,32 @@ export const listingFields = [
       requiredMessage: 'You need to select an age group.',
     },
   },
+  // Gender field - select the target gender for the product
+  {
+    key: 'gender',
+    scope: 'public',
+    schemaType: 'enum',
+    enumOptions: [
+      { option: 'male', label: 'Men' },
+      { option: 'female', label: 'Women' },
+      { option: 'unisex', label: 'Unisex' },
+    ],
+    filterConfig: {
+      indexForSearch: true,
+      filterType: 'SelectSingleFilter',
+      label: 'Gender',
+      group: 'primary',
+    },
+    showConfig: {
+      label: 'Gender',
+      isDetail: true,
+    },
+    saveConfig: {
+      label: 'Gender',
+      placeholderMessage: 'Select gender…',
+      isRequired: false,
+    },
+  },
   // Material field - select multiple materials (for clothing & accessories)
   {
     key: 'material',
@@ -108,7 +134,8 @@ export const listingFields = [
       { option: 'kala_cotton', label: 'Kala Cotton' },
       { option: 'muslin', label: 'Muslin' },
       { option: 'other_natural', label: 'Other Natural' },
-      { option: 'denim', label: 'Denim' }
+      { option: 'denim', label: 'Denim' },
+      { option: 'natural_rubber', label: 'Natural Rubber' }
     ],
     filterConfig: {
       indexForSearch: true,
@@ -169,6 +196,8 @@ export const listingFields = [
       { option: 'yellow', label: 'Yellow' },
       { option: 'gray', label: 'Gray' },
       { option: 'cream', label: 'Cream' },
+      { option: 'beige', label: 'Beige' },
+      { option: 'lavender', label: 'Lavender' },
       { option: 'multi_color', label: 'Multi-color' },
       { option: 'pastel', label: 'Pastel Colors' },
     ],
@@ -202,6 +231,8 @@ export const listingFields = [
       { option: 'handcrafted', label: 'Handcrafted' },
       { option: 'adjustable', label: 'Adjustable' },
       { option: 'room_to_grow', label: 'Room to Grow' },
+      { option: 'ayurvedic', label: 'Ayurvedic' },
+      { option: 'talc_free', label: 'Talc-Free' },
     ],
     filterConfig: {
       indexForSearch: true,
@@ -296,6 +327,7 @@ export const listingFields = [
       { option: 'low_impact_dyes', label: 'Low-Impact Dyes' },
       { option: 'organic_materials', label: 'Organic Materials' },
       { option: 'ethically_made', label: 'Ethically Made' },
+      { option: 'biodegradable', label: 'Biodegradable' },
     ],
     filterConfig: {
       indexForSearch: true,
