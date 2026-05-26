@@ -110,10 +110,11 @@ const FeaturedBrandPartners = props => {
               <BrandCardHome brand={brand} products={products} />
             </div>
           ))}
-          {/* Partner CTA Card — last in carousel */}
+          {/* COMMENTED OUT: partner recruitment CTA card
           <div className={css.carouselCard}>
             <PartnerCTACard partnerUrl="/partner" />
           </div>
+          */}
         </div>
 
         {/* View All Brands CTA */}

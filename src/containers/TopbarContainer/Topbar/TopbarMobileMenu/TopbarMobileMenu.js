@@ -96,13 +96,15 @@ const TopbarMobileMenu = props => {
     );
   });
 
-  const createListingsLinkMaybe = showCreateListingsLink ? (
-    <NamedLink className={css.createNewListingLink} name="NewListingPage">
-      <FormattedMessage
-        id={isAuthenticated ? "TopbarMobileMenu.newListingLink" : "TopbarMobileMenu.startSelling"}
-      />
-    </NamedLink>
-  ) : null;
+  // COMMENTED OUT: entry point to provider signup / listing creation ("Apply to Partner" / "Post a new listing")
+  // const createListingsLinkMaybe = showCreateListingsLink ? (
+  //   <NamedLink className={css.createNewListingLink} name="NewListingPage">
+  //     <FormattedMessage
+  //       id={isAuthenticated ? "TopbarMobileMenu.newListingLink" : "TopbarMobileMenu.startSelling"}
+  //     />
+  //   </NamedLink>
+  // ) : null;
+  const createListingsLinkMaybe = null;
 
   if (!isAuthenticated) {
     return (
@@ -194,6 +196,7 @@ const TopbarMobileMenu = props => {
 
           <div className={css.spacer} />
         </div>
+        {/* COMMENTED OUT: "LIST YOUR BRAND ON MELA" partner recruitment footer
         <div className={css.footer}>
           <div className={css.footerContent}>
             <div className={css.footerHeader}>
@@ -207,6 +210,7 @@ const TopbarMobileMenu = props => {
             </NamedLink>
           </div>
         </div>
+        */}
       </nav>
     );
   }

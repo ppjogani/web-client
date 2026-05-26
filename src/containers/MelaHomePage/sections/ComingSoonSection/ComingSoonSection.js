@@ -3,21 +3,22 @@ import React from 'react';
 import css from './ComingSoonSection.module.css';
 
 const COMING_SOON_FEATURES = [
-  {
-    icon: '🛒',
-    title: 'Unified Checkout',
-    description: 'Shop from multiple Indian brands in one seamless checkout. No more brand-hopping.',
-  },
-  {
-    icon: '⭐',
-    title: 'Community Reviews',
-    description: 'Verified reviews from Indian diaspora parents who\'ve bought and loved these products.',
-  },
-  {
-    icon: '📦',
-    title: 'Order Tracking',
-    description: 'End-to-end tracking across all your Indian brand orders, in one place.',
-  },
+  // COMMENTED OUT: marketplace features incompatible with directory positioning
+  // {
+  //   icon: '🛒',
+  //   title: 'Unified Checkout',
+  //   description: 'Shop from multiple Indian brands in one seamless checkout. No more brand-hopping.',
+  // },
+  // {
+  //   icon: '⭐',
+  //   title: 'Community Reviews',
+  //   description: 'Verified reviews from Indian diaspora parents who\'ve bought and loved these products.',
+  // },
+  // {
+  //   icon: '📦',
+  //   title: 'Order Tracking',
+  //   description: 'End-to-end tracking across all your Indian brand orders, in one place.',
+  // },
   {
     icon: '🎁',
     title: 'Wishlists & Gift Registry',
@@ -32,7 +33,7 @@ const ComingSoonSection = () => {
         <div className={css.header}>
           <h2 className={css.title}>More Coming to Mela</h2>
           <p className={css.subtitle}>
-            We're building the complete shopping experience for quality Indian brands.
+            We're adding more quality Indian brands, one at a time.
           </p>
         </div>
 
@@ -48,7 +49,7 @@ const ComingSoonSection = () => {
         </div>
 
         <p className={css.currentNote}>
-          Currently, checkout happens on each brand's own Shopify store. We link you there — securely.
+          Checkout happens directly on each brand's Shopify store — we link you there securely.
         </p>
       </div>
     </div>

@@ -15,8 +15,8 @@ const CERTIFICATIONS = [
 const SECURITY_FEATURES = [
   {
     icon: '🛍️',
-    title: 'Transact on Brand Sites',
-    description: "Purchase securely on each brand's own Shopify store — trusted payment infrastructure",
+    title: 'Shop Directly With the Brand',
+    description: "You buy from the brand's own store — not a middleman. Your payment goes straight to them.",
   },
   {
     icon: '📦',
@@ -28,11 +28,12 @@ const SECURITY_FEATURES = [
     title: 'Brand Return Policies',
     description: "Each partner brand's return policy applies — we help you navigate it",
   },
-  {
-    icon: '✅',
-    title: 'Mela Curation Promise',
-    description: 'Every brand on Mela is hand-vetted for quality, authenticity, and values',
-  },
+  // COMMENTED OUT: "Mela Curation Promise" — curation story now lives in section title/heading
+  // {
+  //   icon: '✅',
+  //   title: 'Mela Curation Promise',
+  //   description: 'Every brand on Mela is hand-vetted for quality, authenticity, and values',
+  // },
   {
     icon: '💳',
     title: 'US Cards Accepted on Brand Stores',
@@ -65,13 +66,13 @@ const US_SHOPPER_FAQS = [
 
 const QUALITY_GUARANTEES = [
   {
-    title: 'Premium Quality',
-    description: 'Every product is hand-selected from brands with a proven quality track record',
+    title: 'Proven Track Record',
+    description: 'We only list brands with years of happy customers — not just pretty products',
     icon: '✨',
   },
   {
-    title: 'Trusted Indian Brands',
-    description: 'We partner only with verified Indian brands known for craftsmanship and integrity',
+    title: 'Verified Indian Brands',
+    description: 'Every brand is India-based and independently verified — no grey-market resellers',
     icon: '🤝',
   },
   {
@@ -90,13 +91,13 @@ const TrustAssurance = () => {
           <h2 className={css.title}>
             <FormattedMessage
               id="MelaHomePage.trustTitle"
-              defaultMessage="Why Families Trust Mela"
+              defaultMessage="Every Brand Here Earned Its Place"
             />
           </h2>
           <p className={css.subtitle}>
             <FormattedMessage
               id="MelaHomePage.trustSubtitle"
-              defaultMessage="Your peace of mind is our priority - from quality to delivery"
+              defaultMessage="We do the research so you don't have to."
             />
           </p>
         </div>
@@ -106,7 +107,7 @@ const TrustAssurance = () => {
           <h3 className={css.sectionTitle}>
             <FormattedMessage
               id="MelaHomePage.qualityGuarantees"
-              defaultMessage="Our Quality Promise"
+              defaultMessage="How We Vet Every Brand"
             />
           </h3>
           <div className={css.guaranteeGrid}>
@@ -152,7 +153,7 @@ const TrustAssurance = () => {
           <h3 className={css.sectionTitle}>
             <FormattedMessage
               id="MelaHomePage.securityFeatures"
-              defaultMessage="Shopping with Confidence"
+              defaultMessage="Shopping on Brand Sites"
             />
           </h3>
           <div className={css.securityGrid}>
