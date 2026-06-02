@@ -703,7 +703,19 @@ describe('Duck', () => {
   });
 
   // Shared parameters for viewing rights loadData tests
-  const fakeResponse = resource => ({ data: { data: resource, include: [] } });
+  // meta.totalPages is required by fetchAllPages in ProfilePage.duck.js
+  const fakeResponse = (resource, { totalPages = 1 } = {}) => ({
+    data: {
+      data: resource,
+      include: [],
+      meta: {
+        totalItems: Array.isArray(resource) ? resource.length : 1,
+        totalPages,
+        page: 1,
+        perPage: 100,
+      },
+    },
+  });
   const sdkFn = response => jest.fn(() => Promise.resolve(response));
   const forbiddenError = new Error({ status: 403, message: 'forbidden' });
   const errorSdkFn = error => jest.fn(() => Promise.reject(error));
@@ -937,6 +949,138 @@ describe('Duck', () => {
       expect(
         relevantActions.some(action => action.type === 'ProfilePage/queryUserListings/fulfilled')
       ).toBe(true);
+    });
+  });
+
+  describe('queryUserListings — pagination and filtering', () => {
+    it('queries with perPage: 100 so brands with many listings are not truncated', () => {
+      const initialState = getInitialState();
+      const { currentUser } = initialState.user;
+      const { l1: listing } = initialState.marketplaceData.entities.listing;
+
+      const testInitialState = {
+        ...initialState,
+        user: { currentUser },
+        auth: { isAuthenticated: true },
+      };
+
+      const querySpy = jest.fn(() => Promise.resolve(fakeResponse([listing])));
+      const sdk = {
+        currentUser: { show: sdkFn(fakeResponse(currentUser)) },
+        users: { show: sdkFn(fakeResponse(initialState.marketplaceData.entities.user.userId)) },
+        reviews: { query: sdkFn(fakeResponse([])) },
+        listings: { query: querySpy },
+        authInfo: sdkFn({}),
+      };
+
+      const store = configureStore({ initialState: testInitialState, sdk, extraMiddlewares: [] });
+
+      return loadData({ id: userId }, null, config)(store.dispatch, store.getState, sdk).then(() => {
+        expect(querySpy).toHaveBeenCalled();
+        const callArgs = querySpy.mock.calls[0][0];
+        expect(callArgs.perPage).toBe(100);
+        expect(callArgs.page).toBe(1);
+      });
+    });
+
+    it('fetches additional pages when totalPages > 1', () => {
+      const initialState = getInitialState();
+      const { currentUser } = initialState.user;
+      const { l1: listing } = initialState.marketplaceData.entities.listing;
+
+      const listing2 = createListing('l2');
+
+      const testInitialState = {
+        ...initialState,
+        user: { currentUser },
+        auth: { isAuthenticated: true },
+      };
+
+      // First call returns 2 pages; second call returns page 2
+      const querySpy = jest.fn()
+        .mockResolvedValueOnce(fakeResponse([listing], { totalPages: 2 }))
+        .mockResolvedValueOnce(fakeResponse([listing2], { totalPages: 2 }));
+
+      const sdk = {
+        currentUser: { show: sdkFn(fakeResponse(currentUser)) },
+        users: { show: sdkFn(fakeResponse(initialState.marketplaceData.entities.user.userId)) },
+        reviews: { query: sdkFn(fakeResponse([])) },
+        listings: { query: querySpy },
+        authInfo: sdkFn({}),
+      };
+
+      let actions = [];
+      const store = configureStore({
+        initialState: testInitialState,
+        sdk,
+        extraMiddlewares: [logger(actions)],
+      });
+
+      return loadData({ id: userId }, null, config)(store.dispatch, store.getState, sdk).then(() => {
+        // Both pages fetched
+        expect(querySpy).toHaveBeenCalledTimes(2);
+        expect(querySpy.mock.calls[0][0].page).toBe(1);
+        expect(querySpy.mock.calls[1][0].page).toBe(2);
+
+        // addMarketplaceEntities dispatched once per page (plus once for showUser)
+        const addEntities = actions.filter(a => a.type === 'marketplaceData/addEntities');
+        expect(addEntities).toHaveLength(3); // showUser + page1 + page2
+
+        // Both listing refs end up in state
+        const fulfilled = actions.find(
+          a => a.type === 'ProfilePage/queryUserListings/fulfilled'
+        );
+        expect(fulfilled.payload.listingRefs).toHaveLength(2);
+      });
+    });
+
+    it('excludes deleted listings but keeps listings regardless of state field presence', () => {
+      const initialState = getInitialState();
+      const { currentUser } = initialState.user;
+      const { l1: listing } = initialState.marketplaceData.entities.listing;
+
+      // Public API may omit the state attribute — these should still appear
+      const listingNoState = {
+        ...createListing('l-no-state'),
+        attributes: { ...createListing('l-no-state').attributes, deleted: false, state: undefined },
+      };
+      const deletedListing = {
+        ...createListing('l-deleted'),
+        attributes: { ...createListing('l-deleted').attributes, deleted: true },
+      };
+
+      const testInitialState = {
+        ...initialState,
+        user: { currentUser },
+        auth: { isAuthenticated: true },
+      };
+
+      const sdk = {
+        currentUser: { show: sdkFn(fakeResponse(currentUser)) },
+        users: { show: sdkFn(fakeResponse(initialState.marketplaceData.entities.user.userId)) },
+        reviews: { query: sdkFn(fakeResponse([])) },
+        listings: { query: sdkFn(fakeResponse([listing, listingNoState, deletedListing])) },
+        authInfo: sdkFn({}),
+      };
+
+      let actions = [];
+      const store = configureStore({
+        initialState: testInitialState,
+        sdk,
+        extraMiddlewares: [logger(actions)],
+      });
+
+      return loadData({ id: userId }, null, config)(store.dispatch, store.getState, sdk).then(() => {
+        const fulfilled = actions.find(
+          a => a.type === 'ProfilePage/queryUserListings/fulfilled'
+        );
+        // Deleted listing excluded; listing with no state field included
+        expect(fulfilled.payload.listingRefs).toHaveLength(2);
+        const uuids = fulfilled.payload.listingRefs.map(r => r.id.uuid);
+        expect(uuids).toContain('l1');
+        expect(uuids).toContain('l-no-state');
+        expect(uuids).not.toContain('l-deleted');
+      });
     });
   });
 });

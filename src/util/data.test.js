@@ -7,6 +7,7 @@ import {
   humanizeLineItemCode,
   denormalizeAssetData,
   pickRandom,
+  pickBrandDiverse,
 } from './data';
 
 const { UUID } = sdkTypes;
@@ -471,6 +472,97 @@ describe('denormalizeAssetData', () => {
       result.forEach(item => {
         expect(arr).toContain(item);
       });
+    });
+  });
+});
+
+describe('pickBrandDiverse()', () => {
+  const makeListing = (listingUuid, sellerUuid) => ({
+    id: { uuid: listingUuid },
+    relationships: { author: { data: { id: { uuid: sellerUuid } } } },
+  });
+
+  it('returns exactly n IDs', () => {
+    const listings = [
+      makeListing('l1', 'seller-a'),
+      makeListing('l2', 'seller-b'),
+      makeListing('l3', 'seller-c'),
+      makeListing('l4', 'seller-d'),
+    ];
+    expect(pickBrandDiverse(listings, 3)).toHaveLength(3);
+  });
+
+  it('returns all listings when n >= total', () => {
+    const listings = [makeListing('l1', 'a'), makeListing('l2', 'b')];
+    expect(pickBrandDiverse(listings, 10)).toHaveLength(2);
+  });
+
+  it('returns no duplicates', () => {
+    const listings = [
+      makeListing('l1', 'seller-a'),
+      makeListing('l2', 'seller-a'),
+      makeListing('l3', 'seller-b'),
+      makeListing('l4', 'seller-b'),
+      makeListing('l5', 'seller-c'),
+    ];
+    const result = pickBrandDiverse(listings, 4);
+    const uuids = result.map(id => id.uuid);
+    expect(new Set(uuids).size).toBe(uuids.length);
+  });
+
+  it('spreads across sellers when there are enough', () => {
+    const listings = [
+      makeListing('l1', 'seller-a'),
+      makeListing('l2', 'seller-b'),
+      makeListing('l3', 'seller-c'),
+      makeListing('l4', 'seller-d'),
+      makeListing('l5', 'seller-e'),
+      makeListing('l6', 'seller-f'),
+      makeListing('l7', 'seller-g'),
+      makeListing('l8', 'seller-h'),
+    ];
+    const result = pickBrandDiverse(listings, 8);
+    const resultUuids = result.map(id => id.uuid);
+    // All 8 listings are from different sellers, so all should appear
+    expect(new Set(resultUuids).size).toBe(8);
+  });
+
+  it('fills remaining slots from same seller when brands are exhausted', () => {
+    // Only 2 sellers but we want 4 — must pick 2 from each seller
+    const listings = [
+      makeListing('l1', 'seller-a'),
+      makeListing('l2', 'seller-a'),
+      makeListing('l3', 'seller-b'),
+      makeListing('l4', 'seller-b'),
+    ];
+    const result = pickBrandDiverse(listings, 4);
+    expect(result).toHaveLength(4);
+    const uuids = result.map(id => id.uuid);
+    expect(new Set(uuids).size).toBe(4);
+  });
+
+  it('handles empty input', () => {
+    expect(pickBrandDiverse([], 8)).toHaveLength(0);
+  });
+
+  it('falls back to listing UUID when author relationship is absent', () => {
+    const listings = [
+      { id: { uuid: 'l1' } },
+      { id: { uuid: 'l2' } },
+    ];
+    const result = pickBrandDiverse(listings, 2);
+    expect(result).toHaveLength(2);
+  });
+
+  it('returned IDs are the raw id objects from the input listings', () => {
+    const listings = [
+      makeListing('l1', 'seller-a'),
+      makeListing('l2', 'seller-b'),
+    ];
+    const result = pickBrandDiverse(listings, 2);
+    const inputIds = listings.map(l => l.id);
+    result.forEach(id => {
+      expect(inputIds).toContain(id);
     });
   });
 });

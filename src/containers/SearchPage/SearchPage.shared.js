@@ -1027,18 +1027,14 @@ export const getSearchPageResourceLocatorStringParams = (routes, location) => {
     const matched = matchedRoutes[0];
     const { params: pathParams, route } = matched;
     
-    // Return the specific route name for category and brand pages
+    // Category pages scope search within that category
     if (route.name === categoryPageRoute) {
       return {
         routeName: categoryPageRoute,
         pathParams,
       };
-    } else if (route.name === brandPageRoute) {
-      return {
-        routeName: brandPageRoute,
-        pathParams,
-      };
     }
+    // Brand pages fall through to SearchPage — the brand page doesn't handle keyword params
     
     const routeName =
       route.name === searchPageListingTypeRoute ? searchPageListingTypeRoute : searchPageRoute;

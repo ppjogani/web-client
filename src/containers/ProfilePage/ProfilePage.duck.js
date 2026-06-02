@@ -61,25 +61,36 @@ const queryUserListingsPayloadCreator = (
     ...createImageVariantConfig(`${variantPrefix}-2x`, 800, aspectRatio),
   };
 
-  const listingsPromise = ownProfileOnly
-    ? sdk.ownListings.query({
-        states: ['published'],
-        ...queryParams,
-      })
-    : sdk.listings.query({
-        author_id: userId,
-        ...queryParams,
-      });
+  const fetchAllPages = async (queryFn, firstPageParams) => {
+    const firstResponse = await queryFn({ ...firstPageParams, page: 1, perPage: 100 });
+    dispatch(addMarketplaceEntities(firstResponse));
+    const { totalPages } = firstResponse.data.meta;
+    if (totalPages <= 1) return firstResponse.data.data;
 
-  return listingsPromise
-    .then(response => {
-      // Pick only the id and type properties from the response listings
-      const listings = response.data.data;
+    const remainingPages = Array.from({ length: totalPages - 1 }, (_, i) => i + 2);
+    const rest = await Promise.all(
+      remainingPages.map(page => queryFn({ ...firstPageParams, page, perPage: 100 }))
+    );
+    rest.forEach(r => dispatch(addMarketplaceEntities(r)));
+    return [firstResponse, ...rest].flatMap(r => r.data.data);
+  };
+
+  const baseParams = ownProfileOnly
+    ? { states: ['published'], ...queryParams }
+    : { author_id: userId, ...queryParams };
+  const queryFn = ownProfileOnly
+    ? p => sdk.ownListings.query(p)
+    : p => sdk.listings.query(p);
+
+  return fetchAllPages(queryFn, baseParams)
+    .then(listings => {
+      // Public SDK queries only return published listings; ownListings query
+      // is scoped to states:['published']. State check is omitted because
+      // the API may not include the state attribute on public responses.
       const listingRefs = listings
-        .filter(l => l => !l.attributes.deleted && l.attributes.state === 'published')
+        .filter(l => !l.attributes.deleted)
         .map(({ id, type }) => ({ id, type }));
-      dispatch(addMarketplaceEntities(response));
-      return { listingRefs, response };
+      return { listingRefs };
     })
     .catch(e => {
       return rejectWithValue(storableError(e));

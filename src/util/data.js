@@ -488,3 +488,32 @@ export const pickRandom = (arr, n) => {
   }
   return result;
 };
+
+// Pick n listing IDs from raw Sharetribe response listings, maximising seller diversity.
+// Groups by seller UUID, shuffles within each seller's pool, then round-robins across
+// sellers so the first n slots each come from a different brand where possible.
+export const pickBrandDiverse = (rawListings, n) => {
+  const byBrand = {};
+  rawListings.forEach(l => {
+    const sellerId = l.relationships?.author?.data?.id?.uuid ?? l.id.uuid;
+    if (!byBrand[sellerId]) byBrand[sellerId] = [];
+    byBrand[sellerId].push(l.id);
+  });
+
+  // Shuffle within each brand and shuffle brand order for variety across loads
+  const brandSlots = pickRandom(
+    Object.values(byBrand).map(ids => pickRandom(ids, ids.length)),
+    Object.keys(byBrand).length
+  );
+
+  const result = [];
+  for (let round = 0; result.length < n; round++) {
+    let added = false;
+    for (const slot of brandSlots) {
+      if (result.length >= n) break;
+      if (slot[round] !== undefined) { result.push(slot[round]); added = true; }
+    }
+    if (!added) break;
+  }
+  return result;
+};

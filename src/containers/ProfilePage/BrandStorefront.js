@@ -202,8 +202,8 @@ const BrandStorefront = props => {
   } = props;
 
   const [mounted, setMounted] = useState(false);
-  const [visibleProducts, setVisibleProducts] = useState(12); // Show first 12 products initially
-  const loadMoreRef = React.useRef(null);
+  const [visibleProducts, setVisibleProducts] = useState(12);
+  const observerRef = React.useRef(null);
 
   // Determine active tab from route variant (default to 'products')
   const activeTab = variant === 'about' ? 'about' : 'products';
@@ -212,22 +212,21 @@ const BrandStorefront = props => {
     setMounted(true);
   }, []);
 
-  // Lazy loading: Load more products when user scrolls to bottom
-  useEffect(() => {
-    if (!loadMoreRef.current) return;
-
-    const observer = new IntersectionObserver(
+  // Callback ref: sets up IntersectionObserver whenever the sentinel element mounts.
+  // useEffect with [] misses async listing loads because the element doesn't exist on mount.
+  const loadMoreRef = React.useCallback(node => {
+    if (observerRef.current) {
+      observerRef.current.disconnect();
+      observerRef.current = null;
+    }
+    if (!node) return;
+    observerRef.current = new IntersectionObserver(
       entries => {
-        if (entries[0].isIntersecting) {
-          setVisibleProducts(prev => prev + 12);
-        }
+        if (entries[0].isIntersecting) setVisibleProducts(prev => prev + 12);
       },
-      { rootMargin: '200px' } // Start loading 200px before reaching the element
+      { rootMargin: '200px' }
     );
-
-    observer.observe(loadMoreRef.current);
-
-    return () => observer.disconnect();
+    observerRef.current.observe(node);
   }, []);
 
   // Early return if user data is not available

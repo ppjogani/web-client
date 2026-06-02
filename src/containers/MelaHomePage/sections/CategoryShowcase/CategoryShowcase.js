@@ -4,7 +4,7 @@ import { FormattedMessage } from '../../../../util/reactIntl';
 import { NamedLink, ListingCard, ProductCarousel } from '../../../../components';
 import { useConfiguration } from '../../../../context/configurationContext';
 import { createInstance } from '../../../../util/sdkLoader';
-import { denormalisedEntities, updatedEntities, pickRandom } from '../../../../util/data';
+import { denormalisedEntities, updatedEntities, pickBrandDiverse } from '../../../../util/data';
 import appSettings from '../../../../config/settings';
 import * as apiUtils from '../../../../util/api';
 
@@ -156,11 +156,11 @@ export const OccasionStrip = ({ config, additionalQueryParams = {} }) => {
             try {
               const response = await sdk.listings.query({
                 pub_occasion: option,
-                perPage: 18,
+                perPage: 50,
                 include: ['images', 'currentStock'],
                 ...additionalQueryParams,
               });
-              const listingIds = pickRandom(response.data.data.map(l => l.id), 6);
+              const listingIds = pickBrandDiverse(response.data.data, 6);
               return { option, listingIds, responseData: response.data };
             } catch {
               return { option, listingIds: [], responseData: null };
@@ -315,10 +315,10 @@ const AgeNavigation = ({ config }) => {
             try {
               const response = await sdk.listings.query({
                 pub_age_group: option,
-                perPage: 24,
+                perPage: 100,
                 include: ['images', 'currentStock'],
               });
-              const listingIds = pickRandom(response.data.data.map(l => l.id), 8);
+              const listingIds = pickBrandDiverse(response.data.data, 8);
               return { option, listingIds, responseData: response.data };
             } catch {
               return { option, listingIds: [], responseData: null };
@@ -396,10 +396,10 @@ const makeCategoryCarousels = (categories) => {
               try {
                 const response = await sdk.listings.query({
                   pub_categoryLevel1: id,
-                  perPage: 24,
+                  perPage: 100,
                   include: ['images', 'currentStock'],
                 });
-                const listingIds = pickRandom(response.data.data.map(l => l.id), 8);
+                const listingIds = pickBrandDiverse(response.data.data, 8);
                 return { id, listingIds, responseData: response.data };
               } catch {
                 return { id, listingIds: [], responseData: null };

@@ -34,7 +34,9 @@ const ProductCarousel = ({
   minItems = 2,
   className,
 }) => {
-  if (!isLoading && listings.length < minItems) return null;
+  const listingsWithImages = listings.filter(l => l.images && l.images.length > 0);
+
+  if (!isLoading && listingsWithImages.length < minItems) return null;
 
   return (
     <div className={className || css.root}>
@@ -58,7 +60,7 @@ const ProductCarousel = ({
           ? [1, 2, 3, 4].map(i => (
               <div key={i} className={`${css.card} ${css.skeleton}`} />
             ))
-          : listings.map((listing, index) => (
+          : listingsWithImages.map((listing, index) => (
               <div key={listing.id.uuid} className={css.card}>
                 <ListingCard
                   listing={listing}
