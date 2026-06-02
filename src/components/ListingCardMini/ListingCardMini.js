@@ -55,10 +55,16 @@ export const ListingCardMini = props => {
             className={css.image}
           />
         </div>
-        {(formattedPrice || formattedINRPrice) && (
+        {formattedPrice && (
           <div className={css.priceWrapper}>
-            {formattedPrice && <span className={css.usdPrice}>{formattedPrice}</span>}
-            {formattedINRPrice && <span className={css.inrPrice}>~{formattedINRPrice}</span>}
+            <span className={css.usdPrice}>{formattedPrice}</span>
+            <span
+              className={css.inrPrice}
+              aria-hidden={!formattedINRPrice}
+              style={formattedINRPrice ? undefined : { visibility: 'hidden' }}
+            >
+              {formattedINRPrice ? `~${formattedINRPrice}` : ' '}
+            </span>
           </div>
         )}
       </NamedLink>

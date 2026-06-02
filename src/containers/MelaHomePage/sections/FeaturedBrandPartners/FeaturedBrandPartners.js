@@ -4,6 +4,7 @@ import classNames from 'classnames';
 
 import { FormattedMessage } from '../../../../util/reactIntl';
 import { BrandCardHome, PartnerCTACard, NamedLink } from '../../../../components';
+import { getAllBrandIds } from '../../../../config/configBrands';
 
 import css from './FeaturedBrandPartners.module.css';
 
@@ -88,7 +89,7 @@ const FeaturedBrandPartners = props => {
 
   const classes = classNames(rootClassName || css.root, className);
 
-  const totalBrandCount = brandsWithProducts.length;
+  const totalBrandCount = getAllBrandIds().length;
 
   return (
     <div className={classes}>
@@ -107,7 +108,13 @@ const FeaturedBrandPartners = props => {
         <div className={css.carousel}>
           {brandsWithProducts.map(({ brand, products }) => (
             <div key={brand.id.uuid} className={css.carouselCard}>
-              <BrandCardHome brand={brand} products={products} />
+              <BrandCardHome
+              brand={brand}
+              products={products}
+              showCertifications={false}
+              showTagline={false}
+              showLocation={false}
+            />
             </div>
           ))}
           {/* COMMENTED OUT: partner recruitment CTA card

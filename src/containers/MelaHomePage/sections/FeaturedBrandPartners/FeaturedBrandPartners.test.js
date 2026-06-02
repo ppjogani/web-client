@@ -1,6 +1,11 @@
 import React from 'react';
 import '@testing-library/jest-dom';
 import { render, screen } from '@testing-library/react';
+
+jest.mock('../../../../config/configBrands', () => ({
+  getAllBrandIds: () => Array.from({ length: 12 }, (_, i) => `brand-uuid-${i}`),
+  getBrandSlugById: () => null,
+}));
 import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 import { ConfigurationProvider } from '../../../../context/configurationContext';
@@ -277,9 +282,9 @@ describe('FeaturedBrandPartners', () => {
       </TestWrapper>
     );
 
-    expect(screen.getByText('Explore All 2 Brands')).toBeInTheDocument();
+    expect(screen.getByText('Explore All 12 Brands')).toBeInTheDocument();
 
-    const viewAllLink = screen.getByText('Explore All 2 Brands').closest('a');
+    const viewAllLink = screen.getByText('Explore All 12 Brands').closest('a');
     expect(viewAllLink).toBeInTheDocument();
   });
 

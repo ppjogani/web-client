@@ -38,6 +38,8 @@ const BrandCardHome = props => {
     products = [],
     onFavorite,
     showCertifications = true,
+    showTagline = true,
+    showLocation = true,
     showCta = true,
     maxProducts = 4,
     showPlaceholders = true,
@@ -111,22 +113,22 @@ const BrandCardHome = props => {
             <h3 className={css.brandName}>{displayName}</h3>
 
             {/* Tagline */}
-            {tagline ? (
+            {showTagline && (tagline ? (
               <p className={css.tagline}>{tagline}</p>
             ) : showPlaceholders ? (
               <p className={css.taglinePlaceholder}>
                 <FormattedMessage id="BrandCardHome.addDescription" />
               </p>
-            ) : null}
+            ) : null)}
 
             {/* Brand Origin & Established Year */}
-            {brandInfo ? (
+            {showLocation && (brandInfo ? (
               <p className={css.brandOrigin}>{brandInfo}</p>
             ) : showPlaceholders ? (
               <p className={css.brandOriginPlaceholder}>
                 <FormattedMessage id="BrandCardHome.addOriginYear" />
               </p>
-            ) : null}
+            ) : null)}
           </div>
         </div>
       </NamedLink>
@@ -195,6 +197,8 @@ BrandCardHome.propTypes = {
   ),
   onFavorite: func,
   showCertifications: bool,
+  showTagline: bool,
+  showLocation: bool,
   showCta: bool,
   maxProducts: number,
   showPlaceholders: bool,

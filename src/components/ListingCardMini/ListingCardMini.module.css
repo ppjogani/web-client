@@ -30,15 +30,9 @@
   width: 100%;
   /* Off-white background shows as letterbox when image doesn't fill the container */
   background: #f7f5f2;
-  /* Compact portrait on mobile */
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1;
   overflow: hidden;
   border-radius: 8px;
-
-  @media (--viewportMedium) {
-    /* Deeper portrait on desktop */
-    aspect-ratio: 3 / 4;
-  }
 }
 
 .image {
