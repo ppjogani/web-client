@@ -39,8 +39,8 @@ const US_SHOPPER_FAQS = [
     answer: 'Yes. Every brand on Mela ships directly to US addresses. Standard delivery is 7–14 business days; express options are available.',
   },
   {
-    question: 'Can I use my US credit card to shop on Mela?',
-    answer: "Yes. You purchase on each brand's own Shopify store, which accepts all major US-issued cards — Visa, Mastercard, Amex, and Discover. No special setup needed.",
+    question: 'Can I use my US credit card to shop?',
+    answer: "Yes — Mela has validated each brand accepts major US-issued (international) cards on their Shopify store. Visa, Mastercard, Amex, and Discover. No special setup needed.",
   },
   {
     question: 'Are there customs duties or import taxes when ordering from India to the US?',
