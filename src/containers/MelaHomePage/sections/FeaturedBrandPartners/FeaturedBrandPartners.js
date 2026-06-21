@@ -3,7 +3,7 @@ import { bool, func, arrayOf, shape, string } from 'prop-types';
 import classNames from 'classnames';
 
 import { FormattedMessage } from '../../../../util/reactIntl';
-import { BrandCardHome, PartnerCTACard, NamedLink } from '../../../../components';
+import { BrandCardHome, NamedLink } from '../../../../components';
 import { getAllBrandIds } from '../../../../config/configBrands';
 
 import css from './FeaturedBrandPartners.module.css';
@@ -112,11 +112,6 @@ const FeaturedBrandPartners = props => {
               />
             </div>
           ))}
-          {/* COMMENTED OUT: partner recruitment CTA card
-          <div className={css.carouselCard}>
-            <PartnerCTACard partnerUrl="/partner" />
-          </div>
-          */}
         </div>
 
         {/* View All Brands CTA */}
