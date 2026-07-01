@@ -186,7 +186,7 @@ describe('BrandCardHome', () => {
 
     render(
       <TestWrapper>
-        <BrandCardHome brand={brandNoOrigin} products={[]} />
+        <BrandCardHome brand={brandNoOrigin} products={mockProducts} />
       </TestWrapper>
     );
 
@@ -207,7 +207,7 @@ describe('BrandCardHome', () => {
 
     render(
       <TestWrapper>
-        <BrandCardHome brand={brandNoBio} products={[]} />
+        <BrandCardHome brand={brandNoBio} products={mockProducts} />
       </TestWrapper>
     );
 
@@ -228,7 +228,7 @@ describe('BrandCardHome', () => {
 
     render(
       <TestWrapper>
-        <BrandCardHome brand={brandNoCerts} products={[]} />
+        <BrandCardHome brand={brandNoCerts} products={mockProducts} />
       </TestWrapper>
     );
 
@@ -335,7 +335,7 @@ describe('BrandCardHome', () => {
 
     const { container } = render(
       <TestWrapper>
-        <BrandCardHome brand={brandNoLogo} products={[]} />
+        <BrandCardHome brand={brandNoLogo} products={mockProducts} />
       </TestWrapper>
     );
 

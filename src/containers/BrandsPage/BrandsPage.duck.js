@@ -410,7 +410,7 @@ export const fetchBrands = (params = {}) => (dispatch, getState, sdk) => {
 export const fetchFeaturedBrands = () => (dispatch, getState, sdk) => {
   dispatch(fetchFeaturedBrandsRequest());
 
-  const featuredIds = getRandomBrandIds(6);
+  const featuredIds = getRandomBrandIds(10);
 
   if (featuredIds.length === 0) {
     dispatch(fetchFeaturedBrandsSuccess([]));
@@ -698,7 +698,7 @@ export const getBrandsWithProducts = state => {
       brand,
       products,
     };
-  });
+  }).filter(({ products }) => products.length > 0);
 };
 
 export const getFeaturedBrands = state => {
@@ -758,7 +758,7 @@ export const getFeaturedBrandsWithProducts = state => {
       brand,
       products,
     };
-  });
+  }).filter(({ products }) => products.length > 0);
 };
 
 /**
