@@ -20,7 +20,7 @@ const fetchBestsellerListingsForBrand = (sdk, brandId) => {
       'imageVariant.square-small': 'w:400;h:300;fit:crop',
       'imageVariant.square-small2x': 'w:800;h:600;fit:crop',
       include: ['author', 'images'],
-      author: brandId,
+      author_id: brandId,
       pub_isBestseller: true,
       perPage: 20,
     })
