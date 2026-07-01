@@ -124,7 +124,7 @@ describe('BrandCardHome', () => {
     expect(screen.getByText('Premium organic baby clothing from India')).toBeInTheDocument();
   });
 
-  it('truncates long tagline with ellipsis at 80 chars', () => {
+  it('renders full first sentence of bio as tagline when no brandTagline set', () => {
     const longBioBrand = {
       ...mockBrand,
       attributes: {
@@ -142,9 +142,10 @@ describe('BrandCardHome', () => {
       </TestWrapper>
     );
 
+    // Component uses the full first sentence (split at '.') with no length cap
     const tagline = screen.getByText(/This is a very long bio/);
-    expect(tagline.textContent).toContain('...');
-    expect(tagline.textContent.length).toBeLessThanOrEqual(83); // 80 chars + "..."
+    expect(tagline.textContent).not.toContain('...');
+    expect(tagline).toBeInTheDocument();
   });
 
   it('renders brand origin when provided', () => {
