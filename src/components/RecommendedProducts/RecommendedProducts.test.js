@@ -3,7 +3,7 @@ import '@testing-library/jest-dom';
 import { screen } from '@testing-library/react';
 import { renderWithProviders } from '../../util/testHelpers';
 import { createStore, combineReducers, applyMiddleware } from 'redux';
-import thunk from 'redux-thunk';
+import { thunk } from 'redux-thunk';
 
 import { types as sdkTypes } from '../../util/sdkLoader';
 import { createListing, createUser } from '../../util/testData';
