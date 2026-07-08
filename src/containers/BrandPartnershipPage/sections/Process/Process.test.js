@@ -40,15 +40,16 @@ describe('Process', () => {
   it('renders step numbers and icons', () => {
     render(<Process />);
 
-    expect(screen.getByText('1')).toBeInTheDocument();
-    expect(screen.getByText('2')).toBeInTheDocument();
-    expect(screen.getByText('3')).toBeInTheDocument();
-    expect(screen.getByText('4')).toBeInTheDocument();
+    // Numbers/icons appear in both mobile and desktop copies
+    expect(screen.getAllByText('1')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('2')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('3')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('4')[0]).toBeInTheDocument();
 
-    expect(screen.getByText('📝')).toBeInTheDocument();
-    expect(screen.getByText('🏪')).toBeInTheDocument();
-    expect(screen.getByText('🚀')).toBeInTheDocument();
-    expect(screen.getByText('📈')).toBeInTheDocument();
+    expect(screen.getAllByText('📝')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('🏪')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('🚀')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('📈')[0]).toBeInTheDocument();
   });
 
   it('renders expand/collapse icons', () => {

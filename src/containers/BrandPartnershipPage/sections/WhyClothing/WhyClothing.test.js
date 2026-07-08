@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import WhyClothing from './WhyClothing';
@@ -21,8 +21,8 @@ describe('WhyClothing', () => {
   it('renders all pillar cards', () => {
     render(<WhyClothing />);
 
-    // Should show the first pillar by default
-    expect(screen.getByText('Proven Demand')).toBeInTheDocument();
+    // Should show the first pillar by default (mobile + desktop copies both render it)
+    expect(screen.getAllByText('Proven Demand')[0]).toBeInTheDocument();
   });
 
   it('renders navigation buttons', () => {
@@ -43,28 +43,30 @@ describe('WhyClothing', () => {
   });
 
   it('navigates to next pillar when next button is clicked', () => {
-    render(<WhyClothing />);
+    const { container } = render(<WhyClothing />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const nextButton = screen.getByLabelText('Next pillar');
+    const nextButton = within(mobileCarousel).getByLabelText('Next pillar');
     fireEvent.click(nextButton);
 
-    expect(screen.getByText('Clear Value Proposition')).toBeInTheDocument();
-    expect(screen.getByText('Unique designs')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Clear Value Proposition')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Unique designs')).toBeInTheDocument();
   });
 
   it('navigates to previous pillar when prev button is clicked', () => {
-    render(<WhyClothing />);
+    const { container } = render(<WhyClothing />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
     // First go to next pillar
-    const nextButton = screen.getByLabelText('Next pillar');
+    const nextButton = within(mobileCarousel).getByLabelText('Next pillar');
     fireEvent.click(nextButton);
 
     // Then go back
-    const prevButton = screen.getByLabelText('Previous pillar');
+    const prevButton = within(mobileCarousel).getByLabelText('Previous pillar');
     fireEvent.click(prevButton);
 
-    expect(screen.getByText('Proven Demand')).toBeInTheDocument();
-    expect(screen.getByText('Highest search volume')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Proven Demand')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Highest search volume')).toBeInTheDocument();
   });
 
   it('disables prev button on first pillar', () => {
@@ -88,13 +90,14 @@ describe('WhyClothing', () => {
   });
 
   it('allows direct navigation via page indicators', () => {
-    render(<WhyClothing />);
+    const { container } = render(<WhyClothing />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const thirdIndicator = screen.getByLabelText('Go to pillar 3');
+    const thirdIndicator = within(mobileCarousel).getByLabelText('Go to pillar 3');
     fireEvent.click(thirdIndicator);
 
-    expect(screen.getByText('Strategic Partnership')).toBeInTheDocument();
-    expect(screen.getByText('Focused expertise')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Strategic Partnership')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Focused expertise')).toBeInTheDocument();
   });
 
   it('renders baby clothing market facts', () => {
@@ -113,7 +116,7 @@ describe('WhyClothing', () => {
     render(<WhyClothing />);
 
     expect(screen.getByText('Start with Baby Clothes, Expand Together')).toBeInTheDocument();
-    expect(screen.getByText('Starting with baby and children\'s clothing to prove the model, then expanding to home goods and beyond.')).toBeInTheDocument();
+    expect(screen.getByText(/Starting with baby and children's clothing to prove the model, then expanding to home goods and beyond\./)).toBeInTheDocument();
   });
 
   it('renders updated expansion path', () => {
@@ -140,14 +143,15 @@ describe('WhyClothing', () => {
   });
 
   it('handles keyboard navigation', () => {
-    render(<WhyClothing />);
+    const { container } = render(<WhyClothing />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const nextButton = screen.getByLabelText('Next pillar');
+    const nextButton = within(mobileCarousel).getByLabelText('Next pillar');
 
     // Focus the button and press Enter
     nextButton.focus();
     fireEvent.keyDown(nextButton, { key: 'Enter' });
 
-    expect(screen.getByText('Clear Value Proposition')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Clear Value Proposition')).toBeInTheDocument();
   });
 });

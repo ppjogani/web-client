@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import '@testing-library/jest-dom';
 
 import Benefits from './Benefits';
@@ -21,10 +21,10 @@ describe('Benefits', () => {
   it('renders mobile carousel by default', () => {
     render(<Benefits />);
 
-    // Should show the first benefit card (updated content)
-    expect(screen.getByText('Performance-Based Model')).toBeInTheDocument();
-    expect(screen.getByText('Pay only for success')).toBeInTheDocument();
-    expect(screen.getByText(/Start selling with zero investment/)).toBeInTheDocument();
+    // Should show the first benefit card (mobile + desktop copies both render it)
+    expect(screen.getAllByText('Performance-Based Model')[0]).toBeInTheDocument();
+    expect(screen.getAllByText('Pay only for success')[0]).toBeInTheDocument();
+    expect(screen.getAllByText(/Start selling with zero investment/)[0]).toBeInTheDocument();
   });
 
 
@@ -52,12 +52,13 @@ describe('Benefits', () => {
   });
 
   it('navigates to next card when next button is clicked', () => {
-    render(<Benefits />);
+    const { container } = render(<Benefits />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const nextButton = screen.getByText('→');
+    const nextButton = within(mobileCarousel).getByText('→');
     fireEvent.click(nextButton);
 
-    expect(screen.getByText('Targeted Market')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Targeted Market')).toBeInTheDocument();
   });
 
   it('navigates to previous card when prev button is clicked', () => {
@@ -96,15 +97,17 @@ describe('Benefits', () => {
   });
 
   it('allows direct navigation via page indicators', () => {
-    render(<Benefits />);
+    const { container } = render(<Benefits />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const indicators = screen.getAllByRole('button');
-    // Find the third indicator (should be index 3, accounting for nav buttons)
-    const thirdIndicator = indicators[3]; // Assuming prev, next, then indicators
+    const indicators = within(mobileCarousel).getAllByRole('button');
+    // indicators[0] = prev arrow, indicators[1] = next arrow, indicators[2..] = page dots
+    // Third page dot (index 2, "Marketing Boost") is therefore at array index 4.
+    const thirdIndicator = indicators[4];
 
     fireEvent.click(thirdIndicator);
 
-    expect(screen.getByText('Marketing Boost')).toBeInTheDocument();
+    expect(within(mobileCarousel).getByText('Marketing Boost')).toBeInTheDocument();
   });
 
   it('renders all benefit cards content', () => {
