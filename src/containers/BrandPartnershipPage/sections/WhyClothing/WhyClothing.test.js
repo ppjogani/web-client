@@ -69,24 +69,38 @@ describe('WhyClothing', () => {
     expect(within(mobileCarousel).getByText('Highest search volume')).toBeInTheDocument();
   });
 
-  it('disables prev button on first pillar', () => {
-    render(<WhyClothing />);
+  // All 3 pillar cards render simultaneously in the carousel track (position is CSS
+  // transform-driven, not conditional), so text presence alone can't confirm which
+  // card is current. The dot indicator's "active" class is the one place that does.
+  const getActivePillarIndex = mobileCarousel => {
+    const dots = within(mobileCarousel).getAllByLabelText(/Go to pillar \d+/);
+    return dots.findIndex(dot => dot.className.includes('active'));
+  };
 
-    const prevButton = screen.getByLabelText('Previous pillar');
-    expect(prevButton).toBeDisabled();
+  it('wraps to the last pillar when prev is clicked on the first pillar', () => {
+    const { container } = render(<WhyClothing />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
+
+    const prevButton = within(mobileCarousel).getByLabelText('Previous pillar');
+    expect(prevButton).not.toBeDisabled();
+
+    fireEvent.click(prevButton);
+    expect(getActivePillarIndex(mobileCarousel)).toBe(2); // wraps from first to last of 3 pillars
   });
 
-  it('disables next button on last pillar', () => {
-    render(<WhyClothing />);
+  it('wraps to the first pillar when next is clicked on the last pillar', () => {
+    const { container } = render(<WhyClothing />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const nextButton = screen.getByLabelText('Next pillar');
+    const nextButton = within(mobileCarousel).getByLabelText('Next pillar');
+    expect(nextButton).not.toBeDisabled();
 
-    // Navigate to last pillar (click next 2 times)
+    // Navigate to last pillar (click next 2 times for 3 total), then once more to wrap
     fireEvent.click(nextButton);
     fireEvent.click(nextButton);
+    fireEvent.click(nextButton);
 
-    expect(screen.getByText('Strategic Partnership')).toBeInTheDocument();
-    expect(nextButton).toBeDisabled();
+    expect(getActivePillarIndex(mobileCarousel)).toBe(0);
   });
 
   it('allows direct navigation via page indicators', () => {
@@ -100,16 +114,16 @@ describe('WhyClothing', () => {
     expect(within(mobileCarousel).getByText('Focused expertise')).toBeInTheDocument();
   });
 
-  it('renders baby clothing market facts', () => {
+  it('renders category market insight stats', () => {
     render(<WhyClothing />);
 
-    expect(screen.getByText('Baby Clothing Market Facts')).toBeInTheDocument();
-    expect(screen.getByText('200K+')).toBeInTheDocument();
-    expect(screen.getByText('Indian babies born in US annually')).toBeInTheDocument();
+    expect(screen.getByText('Why This Category Works')).toBeInTheDocument();
     expect(screen.getByText('#1')).toBeInTheDocument();
     expect(screen.getByText('Search volume for "Indian baby clothes"')).toBeInTheDocument();
-    expect(screen.getByText('0')).toBeInTheDocument();
-    expect(screen.getByText('Indian specialty retailers in US')).toBeInTheDocument();
+    expect(screen.getByText('Limited')).toBeInTheDocument();
+    expect(screen.getByText('Specialized retailers in US')).toBeInTheDocument();
+    expect(screen.getByText('Easy')).toBeInTheDocument();
+    expect(screen.getByText('International shipping category')).toBeInTheDocument();
   });
 
   it('renders future vision section', () => {

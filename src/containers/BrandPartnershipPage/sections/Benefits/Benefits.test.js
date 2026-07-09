@@ -61,39 +61,55 @@ describe('Benefits', () => {
     expect(within(mobileCarousel).getByText('Targeted Market')).toBeInTheDocument();
   });
 
+  // All 7 cards render simultaneously in both the mobile carousel track and the desktop
+  // grid (position is CSS transform-driven, not conditional), so the current card can't
+  // be identified by text presence alone. The dot indicator's "active" class is the one
+  // place that reflects which card is current.
+  const getActiveCardIndex = mobileCarousel => {
+    const dots = within(mobileCarousel).getAllByLabelText(/Go to benefit \d+/);
+    return dots.findIndex(dot => dot.className.includes('active'));
+  };
+
   it('navigates to previous card when prev button is clicked', () => {
-    render(<Benefits />);
+    const { container } = render(<Benefits />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
     // First go to next card
-    const nextButton = screen.getByText('→');
+    const nextButton = within(mobileCarousel).getByText('→');
     fireEvent.click(nextButton);
 
     // Then go back
-    const prevButton = screen.getByText('←');
+    const prevButton = within(mobileCarousel).getByText('←');
     fireEvent.click(prevButton);
 
-    expect(screen.getByText('Zero Risk Start')).toBeInTheDocument();
+    expect(getActiveCardIndex(mobileCarousel)).toBe(0);
   });
 
-  it('disables prev button on first card', () => {
-    render(<Benefits />);
+  it('wraps to the last card when prev is clicked on the first card', () => {
+    const { container } = render(<Benefits />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const prevButton = screen.getByText('←');
-    expect(prevButton).toBeDisabled();
+    const prevButton = within(mobileCarousel).getByText('←');
+    expect(prevButton).not.toBeDisabled();
+
+    fireEvent.click(prevButton);
+    expect(getActiveCardIndex(mobileCarousel)).toBe(6); // wraps from first to last of 7 cards
   });
 
-  it('disables next button on last card', () => {
-    render(<Benefits />);
+  it('wraps to the first card when next is clicked on the last card', () => {
+    const { container } = render(<Benefits />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const nextButton = screen.getByText('→');
+    const nextButton = within(mobileCarousel).getByText('→');
+    expect(nextButton).not.toBeDisabled();
 
-    // Navigate to last card (click next 6 times for 7 total cards)
-    for (let i = 0; i < 6; i++) {
+    // Navigate to last card (click next 6 times for 7 total cards), then once more to wrap
+    for (let i = 0; i < 7; i++) {
       fireEvent.click(nextButton);
     }
 
-    // Should be on last card
-    expect(nextButton).toBeDisabled();
+    // Should be back on the first card
+    expect(getActiveCardIndex(mobileCarousel)).toBe(0);
   });
 
   it('allows direct navigation via page indicators', () => {
@@ -111,33 +127,31 @@ describe('Benefits', () => {
   });
 
   it('renders all benefit cards content', () => {
-    render(<Benefits />);
+    const { container } = render(<Benefits />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
     const benefitTitles = [
-      'Zero Risk Start',
+      'Performance-Based Model',
       'Targeted Market',
       'Marketing Boost',
-      'Risk-Free Start',
+      'Guaranteed Protection',
       'Global Expansion',
       'Business Insights',
       'Partnership Support'
     ];
 
-    // Navigate through all cards to check content
-    benefitTitles.forEach((title, index) => {
-      if (index > 0) {
-        const nextButton = screen.getByText('→');
-        fireEvent.click(nextButton);
-      }
-      expect(screen.getByText(title)).toBeInTheDocument();
+    // All cards render simultaneously (position is CSS transform-driven), so every
+    // title should already be present without needing to navigate between them.
+    benefitTitles.forEach(title => {
+      expect(within(mobileCarousel).getByText(title)).toBeInTheDocument();
     });
   });
 
   it('renders the CTA section', () => {
     render(<Benefits />);
 
-    expect(screen.getByText('Ready to Start?')).toBeInTheDocument();
-    expect(screen.getByText('Be among the founding partners building this marketplace together')).toBeInTheDocument();
+    expect(screen.getByText('Start Selling in 48 Hours')).toBeInTheDocument();
+    expect(screen.getByText(/Join Indian brands already building their US presence/)).toBeInTheDocument();
   });
 
   it('has proper accessibility structure', () => {
@@ -149,7 +163,7 @@ describe('Benefits', () => {
 
     const subHeadings = screen.getAllByRole('heading', { level: 3 });
     expect(subHeadings.length).toBeGreaterThan(0);
-    expect(subHeadings[0]).toHaveTextContent('Zero Risk Start');
+    expect(subHeadings[0]).toHaveTextContent('Performance-Based Model');
 
     // Check for button accessibility
     const buttons = screen.getAllByRole('button');

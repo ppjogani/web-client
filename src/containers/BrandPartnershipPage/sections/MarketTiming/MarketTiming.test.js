@@ -68,25 +68,38 @@ describe('MarketTiming', () => {
     expect(within(mobileCarousel).getByText('First-Mover Advantage')).toBeInTheDocument();
   });
 
-  it('disables prev button on first advantage', () => {
-    render(<MarketTiming />);
+  // All 4 advantage cards render simultaneously in the carousel track (position is
+  // CSS transform-driven, not conditional), so text presence alone can't confirm which
+  // card is current. The dot indicator's "active" class is the one place that does.
+  const getActiveAdvantageIndex = mobileCarousel => {
+    const dots = within(mobileCarousel).getAllByLabelText(/Go to advantage \d+/);
+    return dots.findIndex(dot => dot.className.includes('active'));
+  };
 
-    const prevButton = screen.getByLabelText('Previous advantage');
-    expect(prevButton).toBeDisabled();
+  it('wraps to the last advantage when prev is clicked on the first advantage', () => {
+    const { container } = render(<MarketTiming />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
+
+    const prevButton = within(mobileCarousel).getByLabelText('Previous advantage');
+    expect(prevButton).not.toBeDisabled();
+
+    fireEvent.click(prevButton);
+    expect(getActiveAdvantageIndex(mobileCarousel)).toBe(3); // wraps from first to last of 4 cards
   });
 
-  it('disables next button on last advantage', () => {
-    render(<MarketTiming />);
+  it('wraps to the first advantage when next is clicked on the last advantage', () => {
+    const { container } = render(<MarketTiming />);
+    const mobileCarousel = container.querySelector('.mobileCarousel');
 
-    const nextButton = screen.getByLabelText('Next advantage');
+    const nextButton = within(mobileCarousel).getByLabelText('Next advantage');
+    expect(nextButton).not.toBeDisabled();
 
-    // Navigate to last advantage (click next 3 times)
-    for (let i = 0; i < 3; i++) {
+    // Navigate to last advantage (click next 3 times for 4 total), then once more to wrap
+    for (let i = 0; i < 4; i++) {
       fireEvent.click(nextButton);
     }
 
-    expect(screen.getByText('Performance-Based Protection')).toBeInTheDocument();
-    expect(nextButton).toBeDisabled();
+    expect(getActiveAdvantageIndex(mobileCarousel)).toBe(0);
   });
 
   it('allows direct navigation via page indicators', () => {
