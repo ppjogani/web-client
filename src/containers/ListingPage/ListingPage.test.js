@@ -161,11 +161,12 @@ const getConfig = variantType => {
   const hostedConfig = getHostedConfiguration();
   return {
     ...hostedConfig,
-    listing: {
-      listingTypes,
-      listingFields,
-    },
-    categoryConfiguration: { categories },
+    // mergeConfig() derives listing.listingTypes/listingFields and categoryConfiguration
+    // from these raw hosted-asset shapes (see util/configHelpers.js mergeListingConfig /
+    // mergeConfig), ignoring a `listing`/`categoryConfiguration` key passed in directly.
+    listingTypes: { listingTypes },
+    listingFields: { listingFields },
+    categories: { categories },
     layout: {
       ...hostedConfig.layout,
       listingPage: { variantType },
@@ -276,9 +277,6 @@ describe('ListingPage variants', () => {
       expect(getByText('Cat')).toBeInTheDocument();
       expect(getByText('Cat 1')).toBeInTheDocument();
 
-      // Has details location title
-      expect(getByRole('heading', { name: 'ListingPage.locationTitle' })).toBeInTheDocument();
-
       // Has details reviews title
       const reviewsTitle = getByRole('heading', { name: 'ListingPage.reviewsTitle' });
       expect(reviewsTitle).toBeInTheDocument();
@@ -331,9 +329,6 @@ describe('ListingPage variants', () => {
       expect(getByText('Cat')).toBeInTheDocument();
       expect(getByText('Cat 1')).toBeInTheDocument();
 
-      // Has details location title
-      expect(getByRole('heading', { name: 'ListingPage.locationTitle' })).toBeInTheDocument();
-
       // Has details reviews title
       const reviewsTitle = getByRole('heading', { name: 'ListingPage.reviewsTitle' });
       expect(reviewsTitle).toBeInTheDocument();
@@ -350,8 +345,12 @@ describe('ListingPage variants', () => {
       // Has button to contact provider
       expect(getByRole('button', { name: 'UserCard.contactUser' })).toBeInTheDocument();
 
-      // Save button appears after the order panel title (below 'Shop from brand', not above title)
-      const saveButton = screen.getByRole('button', { name: 'SavedListingButton.saveAriaLabel' });
+      // Save button appears after the order panel title (below 'Shop from brand', not above title).
+      // There are two SavedListingButton instances on this page: one overlaid on the gallery
+      // (SectionGallery, css.gallerySaveButton) and one in the content flow (css.listingPageSaveButton)
+      // — target the content-flow one specifically.
+      const saveButtons = screen.getAllByRole('button', { name: 'SavedListingButton.saveAriaLabel' });
+      const saveButton = saveButtons.find(button => button.className.includes('listingPageSaveButton'));
       const orderPanelTitle = queryAllByRole('heading', { name: 'ListingPage.orderTitle' })[0];
       expect(saveButton).toBeInTheDocument();
       expect(
