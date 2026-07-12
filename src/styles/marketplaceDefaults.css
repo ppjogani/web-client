@@ -76,6 +76,15 @@
   --colorAccentDark: #d98a1f;
   --colorAccentLight: rgba(240, 160, 48, 0.12);
 
+  /**
+   * Warm surface tints — the homepage commits to a warm palette so sections stay
+   * coherent with the marigold/navy hero (replaces the older cool mint tints).
+   * --colorSurfaceWarm: primary cream section background.
+   * --colorSurfaceWarmDeep: slightly deeper oat for trust/quiet sections.
+   */
+  --colorSurfaceWarm: #fdfaf5;
+  --colorSurfaceWarmDeep: #f8f4ec;
+
   /** 
    * The fill color used by <SecondaryButton>
    */
