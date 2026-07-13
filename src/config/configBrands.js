@@ -177,6 +177,18 @@ const brandConfigurationsByEnv = {
       category: 'baby_and_kids',
       featuredProductIds: [],
     },
+    '6a53dc15-d30a-4338-bdaf-b8bc718e54ef': {
+      // ISHARYA
+      slug: 'isharya',
+      category: 'jewelry_and_accessories',
+      featuredProductIds: [],
+    },
+    '6a30bcd4-e078-447d-9064-2cf773961ab9': {
+      // Nicobar
+      slug: 'nicobar',
+      category: 'fashion',
+      featuredProductIds: [],
+    },
     '68d8a4e9-533c-4b9c-914d-8b21edb8ee2d': {
       // mela-admin (Test) — no public slug; admin account
       featuredProductIds: [],
@@ -211,6 +223,8 @@ const allBrandIdsByEnv = {
     '6a13c498-39f9-4b74-94fb-fc99a19f5a40', // vilvah-store
     '6a14a6f7-615b-4f52-8725-30c064efe210', // the-alternate-india
     '6a170717-31bf-4e1e-998f-f613e05fd9c1', // fizzy-goblet
+    '6a53dc15-d30a-4338-bdaf-b8bc718e54ef', // isharya
+    '6a30bcd4-e078-447d-9064-2cf773961ab9', // nicobar
   ],
   production: [
     // Add production brand UUIDs here
@@ -259,28 +273,49 @@ export const getRandomBrandIds = count => {
 };
 
 /**
- * Curated carousel order for the homepage hero — craft-legible brands first,
- * Western-styled/utility brands last, per `homepage-hero-prd.md` §12 (the hero
- * is a curation statement; leading with US-DTC-looking brands reinforces "how is
- * this different from Amazon?"). Brands not listed are appended in config order
- * so nothing is ever dropped. Nicobar (§12 rank 2) is intentionally absent until
- * it is ingested.
+ * Curated carousel *display* order for the homepage hero. Follows the canonical
+ * 55-brand onboarding ranking in `homepage-hero-prd.md` §12A (multi-designer panel,
+ * 2026-07-12), as refined by the 2026-07-13 first-principles critique in §12A.1
+ * (content-strategy + craft-legibility lens). Ordering rule: brands whose India-shout
+ * is self-evident in a *no-copy* thumbnail come first; brands whose India-ness is a
+ * story (not a visual) or that read as generic US-DTC come last (leading with them
+ * reinforces "how is this different from Amazon?"). Slugs are §12A/§12A.1 filtered to
+ * brands currently in this config, in refined rank order.
+ *
+ * First-fold refinements (§12A.1) reflected here:
+ *   - The Nesavu pulled UP into the fold (silk pattu pavadai = instant visual
+ *     India-shout) and placed ahead of Baby Forest.
+ *   - Baby Forest pushed OUT of the first fold (ayurveda heritage is a story a
+ *     no-copy carousel can't show); retained as the lead breadth-builder.
+ *   - Nicobar demoted below the craft brands so it is never the isolated lead slide
+ *     (it fails the India-shout test on its own).
+ *   - Isharya kept at the jewelry slot pending the open re-justify-vs-Tarinika
+ *     decision (§12A.1).
+ *
+ * NOTE: this is the *display* order among live brands, distinct from §12A's
+ * *onboarding/supply* order. Not-yet-ingested first-fold brands — Suta (#2),
+ * Kaunteya (#6), House of Chikankari (#8) — are absent until they land. Unlisted
+ * brands are appended in config order so nothing is ever dropped.
  */
 const CURATED_BRAND_SLUG_ORDER = [
-  'fizzy-goblet',
-  'baby-forest',
-  'banjaaran-studio',
-  'gullylabs',
-  'the-alternate-india',
-  'vilvah-store',
-  'aagghhoo',
-  'masilo',
-  'the-nesavu',
-  // demoted — visually indistinguishable from a US DTC brand
-  'polite-society',
-  'pluchi',
-  'choosekind',
-  'superbottoms',
+  // First fold — self-evident India-shout in a no-copy thumbnail (§12A.1)
+  'fizzy-goblet',        // §12A #1
+  'isharya',             // §12A.1 first-fold (jewelry; re-justify vs Tarinika — open)
+  'the-nesavu',          // §12A.1 first-fold (replaces Baby Forest as the baby visual)
+  'nicobar',             // §12A.1 first-fold, demoted — never the isolated lead slide
+  'banjaaran-studio',    // §12A #7
+  // Breadth builders — craft-legible but not first-fold visual proof
+  'baby-forest',         // §12A #5, pulled from the fold (§12A.1); lead breadth-builder
+  'gullylabs',           // §12A #21
+  'vilvah-store',        // §12A #26
+  'aagghhoo',            // §12A #29
+  'masilo',              // §12A #33
+  'the-alternate-india', // §12A #34
+  // Tier 4 — Western-styled; featuring in the first fold reinforces F-002
+  'superbottoms',        // §12A #44
+  'pluchi',              // §12A #45
+  'choosekind',          // §12A #46
+  'polite-society',      // §12A #47
 ];
 
 /**
