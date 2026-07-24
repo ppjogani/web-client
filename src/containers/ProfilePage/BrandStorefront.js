@@ -13,6 +13,7 @@ import {
 } from '../../components';
 import CertificationBadge from '../../components/CertificationBadge/CertificationBadge';
 import BrandStorySection from './BrandStorySection';
+import BrandOccasionModule from './BrandOccasionModule';
 import { getCertification } from '../../config/certifications';
 import { getBrandSlugById } from '../../config/configBrands';
 
@@ -423,12 +424,22 @@ const BrandStorefront = props => {
                 <div className={css.featuredScroll}>
                   {featuredProducts.map(listing => (
                     <div className={css.featuredItem} key={listing.id.uuid}>
-                      <ListingCard listing={listing} showAuthorInfo={false} />
+                      <ListingCard
+                        listing={listing}
+                        showAuthorInfo={false}
+                        showTrustBadges={true}
+                        showConversionBadges={true}
+                        isBestseller={listing.attributes?.publicData?.isBestseller || false}
+                        renderSizes="(max-width: 767px) 85vw, (max-width: 1279px) 48vw, 23vw"
+                      />
                     </div>
                   ))}
                 </div>
               </div>
             )}
+
+            {/* Shop by Occasion - this brand's Diwali & Festivals / Gifting picks */}
+            <BrandOccasionModule listings={listings} brandUserId={userId} />
 
             {/* All Products Grid */}
             {hasNonFeaturedProducts && (
@@ -439,7 +450,14 @@ const BrandStorefront = props => {
                 <ul className={css.productGrid}>
                   {displayedProducts.map(listing => (
                     <li className={css.productItem} key={listing.id.uuid}>
-                      <ListingCard listing={listing} showAuthorInfo={false} />
+                      <ListingCard
+                        listing={listing}
+                        showAuthorInfo={false}
+                        showTrustBadges={true}
+                        showConversionBadges={true}
+                        isBestseller={listing.attributes?.publicData?.isBestseller || false}
+                        renderSizes="(max-width: 767px) 100vw, (max-width: 1023px) 50vw, (max-width: 1279px) 33vw, 25vw"
+                      />
                     </li>
                   ))}
                 </ul>
