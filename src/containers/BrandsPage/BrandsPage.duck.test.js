@@ -17,6 +17,8 @@ import {
   fetchFeaturedBrands,
   getBrandsWithProducts,
   getFeaturedBrandsWithProducts,
+  getHeroBrandsWithProducts,
+  hasHeroImageSource,
 } from './BrandsPage.duck';
 import brandsPageReducer from './BrandsPage.duck';
 
@@ -419,6 +421,108 @@ describe('BrandsPage Duck', () => {
         expect(result).toHaveLength(1);
         expect(result[0].products).toHaveLength(1);
         expect(result[0].products[0].id.uuid).toBe('listing-bestseller-1');
+      });
+    });
+
+    describe('hasHeroImageSource', () => {
+      const brandWith = publicData => ({
+        id: { uuid: 'b' },
+        attributes: { profile: { displayName: 'B', publicData } },
+      });
+
+      it('is true when brandHeroImageIds is a non-empty array', () => {
+        expect(hasHeroImageSource(brandWith({ brandHeroImageIds: ['id-1'] }))).toBe(true);
+      });
+
+      it('is true when only brandHeroImages (Shopify URLs) is non-empty', () => {
+        expect(hasHeroImageSource(brandWith({ brandHeroImages: ['http://cdn/x.jpg'] }))).toBe(true);
+      });
+
+      it('is false when both are empty, absent, or malformed', () => {
+        expect(hasHeroImageSource(brandWith({}))).toBe(false);
+        expect(hasHeroImageSource(brandWith({ brandHeroImageIds: [], brandHeroImages: [] }))).toBe(
+          false
+        );
+        expect(
+          hasHeroImageSource(brandWith({ brandHeroImageIds: [null], brandHeroImages: 'nope' }))
+        ).toBe(false);
+        expect(hasHeroImageSource(null)).toBe(false);
+      });
+    });
+
+    describe('getHeroBrandsWithProducts', () => {
+      const makeState = () => ({
+        BrandsPage: {
+          featuredBrandIds: ['brand-hero', 'brand-no-hero'],
+          bestsellerProductsByBrand: {
+            'brand-hero': {
+              data: [{ id: { uuid: 'listing-bestseller-1' }, type: 'listing' }],
+              included: [],
+            },
+            'brand-no-hero': {
+              data: [{ id: { uuid: 'listing-bestseller-1' }, type: 'listing' }],
+              included: [],
+            },
+          },
+        },
+        marketplaceData: {
+          entities: {
+            ...mockEntities,
+            user: {
+              'brand-hero': {
+                id: { uuid: 'brand-hero' },
+                type: 'user',
+                attributes: {
+                  profile: {
+                    displayName: 'Hero Brand',
+                    publicData: {
+                      brandHeroImageIds: ['hero-img-1', 'hero-img-unresolved'],
+                      brandHeroImageListingIds: ['hero-listing-1', 'hero-listing-2'],
+                      brandHeroImages: ['http://cdn.shopify.com/0.jpg', 'http://cdn.shopify.com/1.jpg'],
+                    },
+                  },
+                },
+              },
+              'brand-no-hero': {
+                id: { uuid: 'brand-no-hero' },
+                type: 'user',
+                attributes: {
+                  profile: { displayName: 'No Hero Brand', publicData: {} },
+                },
+              },
+            },
+            image: {
+              ...mockEntities.image,
+              'hero-img-1': {
+                id: { uuid: 'hero-img-1' },
+                type: 'image',
+                attributes: {
+                  variants: {
+                    'square-hero': { url: 'http://sharetribe.imgix.net/hero-1.jpg' },
+                    'square-hero2x': { url: 'http://sharetribe.imgix.net/hero-1@2x.jpg' },
+                  },
+                },
+              },
+            },
+          },
+        },
+      });
+
+      it('filters out brands with no hero source and keeps order', () => {
+        const result = getHeroBrandsWithProducts(makeState());
+
+        expect(result).toHaveLength(1);
+        expect(result[0].brand.id.uuid).toBe('brand-hero');
+      });
+
+      it('resolves hero image ids to variant URLs, preferring the 2x variant', () => {
+        const result = getHeroBrandsWithProducts(makeState());
+
+        expect(result[0].heroImageUrlById).toEqual({
+          'hero-img-1': 'http://sharetribe.imgix.net/hero-1@2x.jpg',
+          // 'hero-img-unresolved' has no image entity → omitted from the map;
+          // BrandHeroCard falls back to the Shopify URL at that index.
+        });
       });
     });
   });

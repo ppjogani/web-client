@@ -16,6 +16,72 @@ import { denormalisedEntities } from '../../util/data';
 
 // ================ Utility Functions ================ //
 
+/**
+ * Does this brand user carry at least one hero-image source?
+ * (`publicData.brandHeroImageIds` — Sharetribe UUIDs — OR `brandHeroImages` —
+ * Shopify URLs — is a non-empty array.) Used to filter the hero carousel so
+ * BrandHeroCard's skip-if-empty contract never yields an empty slide or a dead
+ * dot (brand-hero-card-webclient-prd.md §5).
+ */
+export const hasHeroImageSource = brand => {
+  const publicData = brand?.attributes?.profile?.publicData || {};
+  const { brandHeroImageIds, brandHeroImages } = publicData;
+  return (
+    (Array.isArray(brandHeroImageIds) && brandHeroImageIds.filter(Boolean).length > 0) ||
+    (Array.isArray(brandHeroImages) && brandHeroImages.filter(Boolean).length > 0)
+  );
+};
+
+/**
+ * Batch-fetch the Sharetribe listings referenced by the brands'
+ * `publicData.brandHeroImageListingIds` so their image entities (and variant
+ * URLs) land in marketplaceData for BrandHeroCard to resolve against.
+ * Requests the square hero variants PLUS the square-small variants already
+ * used app-wide: entity merge is shallow on `attributes`, so a response
+ * carrying only hero variants would clobber square-small for images shared
+ * with the bestseller grids.
+ */
+const fetchHeroListings = (sdk, brandUsers) => {
+  const heroListingIds = [
+    ...new Set(
+      brandUsers
+        .flatMap(u => u?.attributes?.profile?.publicData?.brandHeroImageListingIds || [])
+        .filter(Boolean)
+    ),
+  ];
+
+  if (heroListingIds.length === 0) {
+    return Promise.resolve({ data: [], included: [] });
+  }
+
+  return sdk.listings
+    .query({
+      ids: heroListingIds,
+      include: ['images'],
+      'fields.listing': ['title'],
+      'fields.image': [
+        'variants.square-hero',
+        'variants.square-hero2x',
+        'variants.square-small',
+        'variants.square-small2x',
+      ],
+      'imageVariant.square-hero': 'w:600;h:600;fit:crop',
+      'imageVariant.square-hero2x': 'w:1200;h:1200;fit:crop',
+      'imageVariant.square-small': 'w:400;h:300;fit:crop',
+      'imageVariant.square-small2x': 'w:800;h:600;fit:crop',
+      perPage: 100,
+    })
+    .then(response => {
+      const { data = [], included = [] } = response.data || {};
+      return { data, included };
+    })
+    .catch(error => {
+      // Non-fatal: BrandHeroCard falls back to the Shopify URL at the same index.
+      console.warn('Failed to fetch hero listings:', error);
+      return { data: [], included: [] };
+    });
+};
+
 const fetchBestsellerListingsForBrand = (sdk, brandId) => {
   return sdk.listings
     .query({
@@ -478,6 +544,17 @@ export const fetchFeaturedBrands = () => (dispatch, getState, sdk) => {
   // Wait for brands, bestsellers, and configured products to fetch in parallel
   return Promise.all([Promise.all(brandPromises), Promise.all(bestsellerPromises), productsPromise])
     .then(([brandResponses, bestsellerResponses, configProductsResponse]) => {
+      // Hero listings can only be fetched once the brand users (and their
+      // publicData.brandHeroImageListingIds) are known — chain, then process.
+      const brandUsers = brandResponses.filter(r => r !== null).map(r => r?.data);
+      return fetchHeroListings(sdk, brandUsers).then(heroListingsResponse => [
+        brandResponses,
+        bestsellerResponses,
+        configProductsResponse,
+        heroListingsResponse,
+      ]);
+    })
+    .then(([brandResponses, bestsellerResponses, configProductsResponse, heroListingsResponse]) => {
       const validResponses = brandResponses.filter(r => r !== null);
 
       // Build bestseller products map by brand ID
@@ -600,9 +677,37 @@ export const fetchFeaturedBrands = () => (dispatch, getState, sdk) => {
         );
       });
 
-      // Combine all entities (users + configured products + bestseller products + images)
-      const allEntities = [...validUsers, ...validConfigProducts, ...bestsellerProducts];
-      const allIncluded = [...validIncluded, ...validConfigProductImages, ...bestsellerImages];
+      // Hero listings + their images (for BrandHeroCard's Sharetribe-first resolution)
+      const heroListings = (heroListingsResponse.data || []).filter(
+        listing =>
+          listing &&
+          typeof listing === 'object' &&
+          listing.id &&
+          listing.id.uuid &&
+          listing.type === 'listing'
+      );
+      const heroImages = (heroListingsResponse.included || []).filter(
+        entity =>
+          entity &&
+          typeof entity === 'object' &&
+          entity.id &&
+          entity.id.uuid &&
+          entity.type === 'image'
+      );
+
+      // Combine all entities (users + configured products + bestseller products + hero listings + images)
+      const allEntities = [
+        ...validUsers,
+        ...validConfigProducts,
+        ...bestsellerProducts,
+        ...heroListings,
+      ];
+      const allIncluded = [
+        ...validIncluded,
+        ...validConfigProductImages,
+        ...bestsellerImages,
+        ...heroImages,
+      ];
 
       // Only dispatch if we have valid data
       if (allEntities.length > 0 || allIncluded.length > 0) {
@@ -763,6 +868,38 @@ export const getFeaturedBrandsWithProducts = state => {
       products,
     };
   }).filter(({ products }) => products.length > 0);
+};
+
+/**
+ * Hero-carousel slide list: featured brands filtered to those with at least
+ * one hero-image source (brand-hero-card-webclient-prd.md §5), each entry
+ * augmented with `heroImageUrlById` — Sharetribe image UUID → square hero
+ * variant URL, resolved from the marketplace entities fetched by
+ * fetchHeroListings. Curated order is preserved (filter only, no re-sort).
+ * BrandHeroCard falls back to the Shopify URL at the same index for any id
+ * missing from the map.
+ */
+export const getHeroBrandsWithProducts = state => {
+  const imageEntities = state.marketplaceData.entities?.image || {};
+
+  return getFeaturedBrandsWithProducts(state)
+    .filter(({ brand }) => hasHeroImageSource(brand))
+    .map(entry => {
+      const { brandHeroImageIds = [] } = entry.brand.attributes?.profile?.publicData || {};
+      const heroImageUrlById = {};
+      (Array.isArray(brandHeroImageIds) ? brandHeroImageIds : []).forEach(imageId => {
+        const variants = imageEntities[imageId]?.attributes?.variants || {};
+        const url =
+          variants['square-hero2x']?.url ||
+          variants['square-hero']?.url ||
+          variants['square-small2x']?.url ||
+          null;
+        if (url) {
+          heroImageUrlById[imageId] = url;
+        }
+      });
+      return { ...entry, heroImageUrlById };
+    });
 };
 
 /**

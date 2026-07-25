@@ -13,26 +13,28 @@ import { ConfigurationProvider } from '../../../../context/configurationContext'
 jest.mock('../../../../routing/routeConfiguration', () => []);
 
 // ── Mock the BrandsPage duck selectors and actions ────────────────────────────
+// getHeroBrandsWithProducts owns the "filter brands with no hero source"
+// behavior — that logic is tested in BrandsPage.duck.test.js. Here the mock
+// passes the state list straight through so we can drive HeroSection's wiring.
 jest.mock('../../../BrandsPage/BrandsPage.duck', () => ({
   fetchFeaturedBrands: () => ({ type: 'FETCH_FEATURED_BRANDS' }),
-  getFeaturedBrandsWithProducts: state => state.BrandsPage?.brandsWithProducts ?? [],
+  getHeroBrandsWithProducts: state => state.BrandsPage?.brandsWithProducts ?? [],
   getFeaturedBrandsInProgress: state => state.BrandsPage?.fetchInProgress ?? false,
   getFeaturedBrandsError: state => state.BrandsPage?.fetchError ?? null,
 }));
 
-// Mock BrandCardHome — we test HeroSection's wiring, not BrandCardHome internals
-jest.mock('../../../../components/BrandCardHome/BrandCardHome', () => {
-  const BrandCardHome = ({ brand, maxProducts, showCta, showCertifications }) => (
+// Mock BrandHeroCard — we test HeroSection's wiring, not BrandHeroCard internals
+jest.mock('../../../../components/BrandHeroCard/BrandHeroCard', () => {
+  const BrandHeroCard = ({ brand, heroImageUrlById, isPriority }) => (
     <div
-      data-testid="brand-card-home"
+      data-testid="brand-hero-card"
       data-brand-name={brand?.attributes?.profile?.displayName}
-      data-max-products={maxProducts}
-      data-show-cta={String(showCta)}
-      data-show-certifications={String(showCertifications)}
+      data-hero-url-count={Object.keys(heroImageUrlById || {}).length}
+      data-is-priority={String(isPriority)}
     />
   );
-  BrandCardHome.displayName = 'BrandCardHome';
-  return { __esModule: true, default: BrandCardHome };
+  BrandHeroCard.displayName = 'BrandHeroCard';
+  return { __esModule: true, default: BrandHeroCard };
 });
 
 jest.mock('../../../../components', () => ({
@@ -41,10 +43,15 @@ jest.mock('../../../../components', () => ({
       {children}
     </a>
   ),
-  BrandCardHome: require('../../../../components/BrandCardHome/BrandCardHome').default,
 }));
 
 import HeroSection from './HeroSection';
+
+// jsdom has no Element#scrollTo — the carousel track syncs scroll position on
+// index changes.
+beforeAll(() => {
+  Element.prototype.scrollTo = jest.fn();
+});
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -56,11 +63,16 @@ const makeBrandWithProducts = (name, id = `brand-${name}`) => ({
       profile: {
         displayName: name,
         bio: `${name} bio.`,
-        publicData: { certifications: [] },
+        publicData: {
+          brandHeroImageIds: [`${id}-img-0`],
+          brandHeroImageListingIds: [`${id}-listing-0`],
+          brandHeroImages: [`https://cdn.shopify.com/${id}-0.jpg`],
+        },
       },
     },
   },
   products: [],
+  heroImageUrlById: { [`${id}-img-0`]: `https://sharetribe.imgix.net/${id}-0.jpg` },
 });
 
 const mockConfig = {
@@ -128,7 +140,7 @@ describe('HeroSection', () => {
       const { container } = renderHeroSection({ fetchInProgress: true });
       // Skeleton div is present (no brand card)
       expect(container.querySelector('.brandSkeleton')).toBeInTheDocument();
-      expect(screen.queryByTestId('brand-card-home')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('brand-hero-card')).not.toBeInTheDocument();
     });
 
     it('still shows headline during loading', () => {
@@ -139,111 +151,131 @@ describe('HeroSection', () => {
     });
   });
 
-  describe('Empty state (no brands configured)', () => {
-    it('shows headline and CTA with no brand card', () => {
+  describe('Empty state (no hero brands)', () => {
+    it('shows headline and CTA with no brand card or carousel', () => {
       renderHeroSection({ brandsWithProducts: [] });
       expect(
         screen.getByText('Independent Indian Brands, Curated for Your Family')
       ).toBeInTheDocument();
       expect(screen.getByTestId('link-BrandsPage')).toBeInTheDocument();
-      expect(screen.queryByTestId('brand-card-home')).not.toBeInTheDocument();
+      expect(screen.queryByTestId('brand-hero-card')).not.toBeInTheDocument();
     });
   });
 
   describe('Brand carousel', () => {
-    it('renders BrandCardHome with the current brand', () => {
-      renderHeroSection({
-        brandsWithProducts: [makeBrandWithProducts('Masilo')],
-      });
-
-      const card = screen.getByTestId('brand-card-home');
-      expect(card).toBeInTheDocument();
-      expect(card).toHaveAttribute('data-brand-name', 'Masilo');
-    });
-
-    it('passes showCta={false} so the card CTA does not compete with Explore Brands', () => {
-      renderHeroSection({
-        brandsWithProducts: [makeBrandWithProducts('Masilo')],
-      });
-
-      expect(screen.getByTestId('brand-card-home')).toHaveAttribute('data-show-cta', 'false');
-    });
-
-    it('passes maxProducts={2} to limit hero card to one product row', () => {
-      renderHeroSection({
-        brandsWithProducts: [makeBrandWithProducts('Masilo')],
-      });
-
-      expect(screen.getByTestId('brand-card-home')).toHaveAttribute('data-max-products', '2');
-    });
-
-    it('passes showCertifications={false} to keep hero card clean', () => {
-      renderHeroSection({
-        brandsWithProducts: [makeBrandWithProducts('Masilo')],
-      });
-
-      expect(screen.getByTestId('brand-card-home')).toHaveAttribute(
-        'data-show-certifications',
-        'false'
-      );
-    });
-
-    it('hides prev/next arrows when only one brand is configured', () => {
-      const { container } = renderHeroSection({
-        brandsWithProducts: [makeBrandWithProducts('Masilo')],
-      });
-
-      // navArrow buttons are display:none on mobile and not rendered when hasMultiple=false
-      expect(container.querySelectorAll('button[aria-label]').length).toBe(0);
-    });
-
-    it('renders navigation dots when multiple brands are configured', () => {
+    it('renders a BrandHeroCard slide for every hero brand in the list', () => {
       renderHeroSection({
         brandsWithProducts: [
-          makeBrandWithProducts('Masilo', 'brand-1'),
-          makeBrandWithProducts('Ekibeki', 'brand-2'),
-          makeBrandWithProducts('Tiber Taber', 'brand-3'),
+          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
+          makeBrandWithProducts('Tarinika', 'brand-2'),
+          makeBrandWithProducts('Ankid', 'brand-3'),
         ],
       });
 
-      const dots = screen.getAllByRole('button');
-      // 3 brand dots + 2 nav arrows
-      expect(dots.length).toBeGreaterThanOrEqual(3);
+      const cards = screen.getAllByTestId('brand-hero-card');
+      expect(cards).toHaveLength(3);
+      expect(cards[0]).toHaveAttribute('data-brand-name', 'Fizzy Goblet');
+      expect(cards[1]).toHaveAttribute('data-brand-name', 'Tarinika');
+      expect(cards[2]).toHaveAttribute('data-brand-name', 'Ankid');
+    });
+
+    it('passes the resolved hero image URL map to each card', () => {
+      renderHeroSection({
+        brandsWithProducts: [makeBrandWithProducts('Fizzy Goblet', 'brand-1')],
+      });
+
+      expect(screen.getByTestId('brand-hero-card')).toHaveAttribute('data-hero-url-count', '1');
+    });
+
+    it('marks only the first slide as priority (LCP eager-load)', () => {
+      renderHeroSection({
+        brandsWithProducts: [
+          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
+          makeBrandWithProducts('Tarinika', 'brand-2'),
+        ],
+      });
+
+      const cards = screen.getAllByTestId('brand-hero-card');
+      expect(cards[0]).toHaveAttribute('data-is-priority', 'true');
+      expect(cards[1]).toHaveAttribute('data-is-priority', 'false');
+    });
+
+    it('renders one dot per visible slide — no dead dots (WCAG 2.2.2 count parity)', () => {
+      renderHeroSection({
+        brandsWithProducts: [
+          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
+          makeBrandWithProducts('Tarinika', 'brand-2'),
+          makeBrandWithProducts('Ankid', 'brand-3'),
+        ],
+      });
+
+      const dots = screen.getAllByRole('button', { name: /View/ });
+      expect(dots).toHaveLength(3);
+      expect(screen.getAllByTestId('brand-hero-card')).toHaveLength(3);
+    });
+
+    it('hides arrows, dots and pause control when only one brand remains', () => {
+      const { container } = renderHeroSection({
+        brandsWithProducts: [makeBrandWithProducts('Fizzy Goblet', 'brand-1')],
+      });
+
+      expect(container.querySelectorAll('button[aria-label]').length).toBe(0);
+    });
+
+    it('renders the pause/play control with multiple brands (WCAG 2.2.2)', () => {
+      renderHeroSection({
+        brandsWithProducts: [
+          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
+          makeBrandWithProducts('Tarinika', 'brand-2'),
+        ],
+      });
+
+      expect(screen.getByRole('button', { name: /Pause brand rotation/i })).toBeInTheDocument();
     });
 
     it('navigation dots carry brand name aria-labels', () => {
       renderHeroSection({
         brandsWithProducts: [
-          makeBrandWithProducts('Masilo', 'brand-1'),
-          makeBrandWithProducts('Ekibeki', 'brand-2'),
+          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
+          makeBrandWithProducts('Tarinika', 'brand-2'),
         ],
       });
 
-      expect(screen.getByRole('button', { name: /Masilo/i })).toBeInTheDocument();
-      expect(screen.getByRole('button', { name: /Ekibeki/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Fizzy Goblet/i })).toBeInTheDocument();
+      expect(screen.getByRole('button', { name: /Tarinika/i })).toBeInTheDocument();
     });
 
-    it('clicking a dot switches the displayed brand', async () => {
-      renderHeroSection({
+    it('clicking a dot activates that slide and scrolls the track to it', async () => {
+      const { container } = renderHeroSection({
         brandsWithProducts: [
-          makeBrandWithProducts('Masilo', 'brand-1'),
-          makeBrandWithProducts('Ekibeki', 'brand-2'),
+          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
+          makeBrandWithProducts('Tarinika', 'brand-2'),
         ],
       });
 
-      // Initially shows first brand
-      expect(screen.getByTestId('brand-card-home')).toHaveAttribute('data-brand-name', 'Masilo');
+      Element.prototype.scrollTo.mockClear();
 
-      // Click dot for second brand
-      const ekibekiDot = screen.getByRole('button', { name: /Ekibeki/i });
-      await userEvent.click(ekibekiDot);
+      const tarinikaDot = screen.getByRole('button', { name: /Tarinika/i });
+      await userEvent.click(tarinikaDot);
 
       await waitFor(() => {
-        expect(screen.getByTestId('brand-card-home')).toHaveAttribute(
-          'data-brand-name',
-          'Ekibeki'
-        );
+        expect(tarinikaDot.className).toContain('activeDot');
       });
+      expect(Element.prototype.scrollTo).toHaveBeenCalled();
+    });
+
+    it('labels the track as a carousel with per-slide group labels', () => {
+      const { container } = renderHeroSection({
+        brandsWithProducts: [
+          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
+          makeBrandWithProducts('Tarinika', 'brand-2'),
+        ],
+      });
+
+      const track = container.querySelector('[aria-roledescription="carousel"]');
+      expect(track).toBeInTheDocument();
+      expect(screen.getByRole('group', { name: '1 of 2: Fizzy Goblet' })).toBeInTheDocument();
+      expect(screen.getByRole('group', { name: '2 of 2: Tarinika' })).toBeInTheDocument();
     });
   });
 });

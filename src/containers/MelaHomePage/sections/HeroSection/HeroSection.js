@@ -3,14 +3,15 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { Link } from 'react-router-dom';
 import { FormattedMessage, useIntl } from '../../../../util/reactIntl';
-import { NamedLink, BrandCardHome } from '../../../../components';
-// Direct import (not via the components barrel) to avoid the barrel's
+import { NamedLink } from '../../../../components';
+// Direct imports (not via the components barrel) to avoid the barrel's
 // circular-dependency chain that resolves sdkLoader/sdkTypes — adding a new
 // export to index.js reorders evaluation and can break `sdkTypes.UUID`.
 import CategoryIcon from '../../../../components/CategoryIcon/CategoryIcon';
+import BrandHeroCard from '../../../../components/BrandHeroCard/BrandHeroCard';
 import {
   fetchFeaturedBrands,
-  getFeaturedBrandsWithProducts,
+  getHeroBrandsWithProducts,
   getFeaturedBrandsInProgress,
   getFeaturedBrandsError,
 } from '../../../BrandsPage/BrandsPage.duck';
@@ -36,7 +37,8 @@ const TOP_CATEGORY_PILLS = [
 const AUTOPLAY_INTERVAL = 8000;
 const MANUAL_PAUSE_DURATION = 15000;
 const TOUCH_PAUSE_DURATION = 5000;
-const SWIPE_THRESHOLD = 50;
+// Debounce for deriving the active slide from the track's scroll position
+const SCROLL_SETTLE_MS = 120;
 
 // Breadth signal (T1-7): show the numeric count only once supply is credible;
 // below the threshold, render the qualitative label so a small number never
@@ -59,8 +61,12 @@ const HeroSectionComponent = ({
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const [currentBrandIndex, setCurrentBrandIndex] = useState(0);
   const [isAutoPlaying, setIsAutoPlaying] = useState(!prefersReducedMotion);
-  const touchStartXRef = useRef(null);
   const resumeTimerRef = useRef(null);
+  const trackRef = useRef(null);
+  const scrollSettleTimerRef = useRef(null);
+  // 'program' when an index change should scroll the track; 'user' when the
+  // index change came FROM the track's own scroll (skip re-scrolling).
+  const scrollSourceRef = useRef('program');
 
   // Fetch on mount if not already loaded
   useEffect(() => {
@@ -85,12 +91,28 @@ const HeroSectionComponent = ({
     }
   }, [brandsWithProducts.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // Cleanup resume timer on unmount
+  // Cleanup timers on unmount
   useEffect(() => {
     return () => {
       if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+      if (scrollSettleTimerRef.current) clearTimeout(scrollSettleTimerRef.current);
     };
   }, []);
+
+  // Keep the scroll-snap track in sync with the active index (autoplay, dots,
+  // arrows). Index changes that originated from the track's own scroll skip
+  // this — the track is already there.
+  useEffect(() => {
+    if (scrollSourceRef.current === 'user') {
+      scrollSourceRef.current = 'program';
+      return;
+    }
+    const track = trackRef.current;
+    const slide = track?.children?.[currentBrandIndex];
+    if (!track || !slide) return;
+    const left = slide.offsetLeft - (track.clientWidth - slide.clientWidth) / 2;
+    track.scrollTo({ left, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
+  }, [currentBrandIndex, brandsWithProducts.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const scheduleResume = duration => {
     if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
@@ -109,21 +131,50 @@ const HeroSectionComponent = ({
   const goToNext = () =>
     goToBrand((currentBrandIndex + 1) % brandsWithProducts.length);
 
-  // Touch: pause + swipe
-  const handleTouchStart = e => {
-    touchStartXRef.current = e.touches[0].clientX;
+  // Derive the active slide from scroll position once scrolling settles.
+  // Native scroll-snap owns the swipe gesture; this keeps dots/autoplay in sync.
+  const handleTrackScroll = () => {
+    if (scrollSettleTimerRef.current) clearTimeout(scrollSettleTimerRef.current);
+    scrollSettleTimerRef.current = setTimeout(() => {
+      const track = trackRef.current;
+      if (!track || track.children.length === 0) return;
+      const trackCenter = track.scrollLeft + track.clientWidth / 2;
+      let nearest = 0;
+      let nearestDistance = Infinity;
+      Array.from(track.children).forEach((slide, index) => {
+        const slideCenter = slide.offsetLeft + slide.clientWidth / 2;
+        const distance = Math.abs(slideCenter - trackCenter);
+        if (distance < nearestDistance) {
+          nearestDistance = distance;
+          nearest = index;
+        }
+      });
+      setCurrentBrandIndex(prev => {
+        if (nearest === prev) return prev;
+        scrollSourceRef.current = 'user';
+        return nearest;
+      });
+    }, SCROLL_SETTLE_MS);
+  };
+
+  // Touch: pause autoplay while the user is interacting; native scroll-snap
+  // handles the swipe itself.
+  const handleTouchStart = () => {
     setIsAutoPlaying(false);
     if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
   };
 
-  const handleTouchEnd = e => {
-    if (touchStartXRef.current === null) return;
-    const delta = e.changedTouches[0].clientX - touchStartXRef.current;
-    touchStartXRef.current = null;
-    if (Math.abs(delta) >= SWIPE_THRESHOLD) {
-      delta < 0 ? goToNext() : goToPrev();
-    }
+  const handleTouchEnd = () => {
     scheduleResume(TOUCH_PAUSE_DURATION);
+  };
+
+  // Desktop trackpad: pause when the user scrolls the track horizontally
+  const handleTrackWheel = e => {
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) {
+      setIsAutoPlaying(false);
+      if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
+      scheduleResume(MANUAL_PAUSE_DURATION);
+    }
   };
 
   // Desktop: pause on hover
@@ -253,7 +304,6 @@ const HeroSectionComponent = ({
     );
   }
 
-  const currentBrand = brandsWithProducts[currentBrandIndex];
   const hasMultiple = brandsWithProducts.length > 1;
 
   return (
@@ -281,17 +331,42 @@ const HeroSectionComponent = ({
               </button>
             )}
 
-            <div className={css.brandSlide}>
-              <BrandCardHome
-                brand={currentBrand.brand}
-                products={currentBrand.products}
-                showCertifications={false}
-                showCta={false}
-                maxProducts={2}
-                showPlaceholders={false}
-                showProductMeta={false}
-                showCraftOrigin={true}
-              />
+            {/* Scroll-snap track: 88%-wide slides with next-card peek on
+                mobile; single 340px slide on desktop. All slides are in the
+                DOM (keyboard/tab-reachable), snap owns the swipe gesture. */}
+            <div
+              className={css.brandTrack}
+              ref={trackRef}
+              onScroll={handleTrackScroll}
+              onWheel={handleTrackWheel}
+              aria-roledescription="carousel"
+              aria-label={intl.formatMessage({
+                id: 'HeroSection.carouselLabel',
+                defaultMessage: 'Featured brands',
+              })}
+            >
+              {brandsWithProducts.map((item, index) => (
+                <div
+                  className={css.trackSlide}
+                  key={item.brand.id.uuid}
+                  role="group"
+                  aria-roledescription="slide"
+                  aria-label={intl.formatMessage(
+                    { id: 'HeroSection.slideLabel', defaultMessage: '{position} of {total}: {brandName}' },
+                    {
+                      position: index + 1,
+                      total: brandsWithProducts.length,
+                      brandName: item.brand?.attributes?.profile?.displayName || String(index + 1),
+                    }
+                  )}
+                >
+                  <BrandHeroCard
+                    brand={item.brand}
+                    heroImageUrlById={item.heroImageUrlById}
+                    isPriority={index === 0}
+                  />
+                </div>
+              ))}
             </div>
 
             {hasMultiple && (
@@ -345,7 +420,7 @@ const HeroSectionComponent = ({
 };
 
 const mapStateToProps = state => ({
-  brandsWithProducts: getFeaturedBrandsWithProducts(state),
+  brandsWithProducts: getHeroBrandsWithProducts(state),
   fetchInProgress: getFeaturedBrandsInProgress(state),
   fetchError: getFeaturedBrandsError(state),
 });
