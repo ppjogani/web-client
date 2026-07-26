@@ -5,6 +5,9 @@ import {
   FETCH_FEATURED_BRANDS_REQUEST,
   FETCH_FEATURED_BRANDS_SUCCESS,
   FETCH_FEATURED_BRANDS_ERROR,
+  FETCH_HERO_BRANDS_REQUEST,
+  FETCH_HERO_BRANDS_SUCCESS,
+  FETCH_HERO_BRANDS_ERROR,
   SET_BESTSELLER_PRODUCTS,
   fetchBrandsRequest,
   fetchBrandsSuccess,
@@ -12,12 +15,16 @@ import {
   fetchFeaturedBrandsRequest,
   fetchFeaturedBrandsSuccess,
   fetchFeaturedBrandsError,
+  fetchHeroBrandsRequest,
+  fetchHeroBrandsSuccess,
+  fetchHeroBrandsError,
   setBestsellerProducts,
   fetchBrands,
   fetchFeaturedBrands,
+  fetchHeroBrands,
   getBrandsWithProducts,
   getFeaturedBrandsWithProducts,
-  getHeroBrandsWithProducts,
+  getHeroBrands,
   hasHeroImageSource,
 } from './BrandsPage.duck';
 import brandsPageReducer from './BrandsPage.duck';
@@ -96,17 +103,48 @@ describe('BrandsPage Duck', () => {
         expect(action.error).toBe(true);
       });
     });
+
+    describe('fetchHeroBrandsRequest', () => {
+      it('should return action with correct type', () => {
+        const action = fetchHeroBrandsRequest();
+        expect(action.type).toBe(FETCH_HERO_BRANDS_REQUEST);
+      });
+    });
+
+    describe('fetchHeroBrandsSuccess', () => {
+      it('should return action with hero-eligible brand IDs', () => {
+        const brandIds = ['hero-1', 'hero-2'];
+        const action = fetchHeroBrandsSuccess(brandIds);
+
+        expect(action.type).toBe(FETCH_HERO_BRANDS_SUCCESS);
+        expect(action.payload.brandIds).toEqual(brandIds);
+      });
+    });
+
+    describe('fetchHeroBrandsError', () => {
+      it('should return action with error', () => {
+        const error = new Error('Hero fetch failed');
+        const action = fetchHeroBrandsError(error);
+
+        expect(action.type).toBe(FETCH_HERO_BRANDS_ERROR);
+        expect(action.payload).toEqual(error);
+        expect(action.error).toBe(true);
+      });
+    });
   });
 
   describe('Reducer', () => {
     const initialState = {
       brandIds: [],
       featuredBrandIds: [],
+      heroBrandIds: [],
       pagination: null,
       fetchBrandsInProgress: false,
       fetchBrandsError: null,
       fetchFeaturedBrandsInProgress: false,
       fetchFeaturedBrandsError: null,
+      fetchHeroBrandsInProgress: false,
+      fetchHeroBrandsError: null,
       bestsellerProductsByBrand: {},
     };
 
@@ -256,6 +294,51 @@ describe('BrandsPage Duck', () => {
 
         expect(state.fetchFeaturedBrandsError).toEqual(error);
         expect(state.fetchFeaturedBrandsInProgress).toBe(false);
+      });
+    });
+
+    describe('FETCH_HERO_BRANDS_REQUEST', () => {
+      it('should set fetchHeroBrandsInProgress to true', () => {
+        const state = brandsPageReducer(initialState, {
+          type: FETCH_HERO_BRANDS_REQUEST,
+        });
+
+        expect(state.fetchHeroBrandsInProgress).toBe(true);
+        expect(state.fetchHeroBrandsError).toBe(null);
+      });
+    });
+
+    describe('FETCH_HERO_BRANDS_SUCCESS', () => {
+      it('should set hero brand IDs and clear loading', () => {
+        const brandIds = ['hero-1', 'hero-2'];
+
+        const state = brandsPageReducer(
+          { ...initialState, fetchHeroBrandsInProgress: true },
+          {
+            type: FETCH_HERO_BRANDS_SUCCESS,
+            payload: { brandIds },
+          }
+        );
+
+        expect(state.heroBrandIds).toEqual(brandIds);
+        expect(state.fetchHeroBrandsInProgress).toBe(false);
+      });
+    });
+
+    describe('FETCH_HERO_BRANDS_ERROR', () => {
+      it('should set error and clear loading state', () => {
+        const error = new Error('Hero fetch failed');
+
+        const state = brandsPageReducer(
+          { ...initialState, fetchHeroBrandsInProgress: true },
+          {
+            type: FETCH_HERO_BRANDS_ERROR,
+            payload: error,
+          }
+        );
+
+        expect(state.fetchHeroBrandsError).toEqual(error);
+        expect(state.fetchHeroBrandsInProgress).toBe(false);
       });
     });
   });
@@ -450,24 +533,19 @@ describe('BrandsPage Duck', () => {
       });
     });
 
-    describe('getHeroBrandsWithProducts', () => {
+    describe('getHeroBrands', () => {
+      // Deliberately NO `bestsellerProductsByBrand` and NO `featuredBrandIds`
+      // in this state — getHeroBrands reads only `heroBrandIds`, proving it
+      // has no products dependency (the fixed architecture gap: the old
+      // getHeroBrandsWithProducts was layered on getFeaturedBrandsWithProducts,
+      // which silently dropped any brand with zero fetched products, even
+      // though BrandHeroCard never renders products at all).
       const makeState = () => ({
         BrandsPage: {
-          featuredBrandIds: ['brand-hero', 'brand-no-hero'],
-          bestsellerProductsByBrand: {
-            'brand-hero': {
-              data: [{ id: { uuid: 'listing-bestseller-1' }, type: 'listing' }],
-              included: [],
-            },
-            'brand-no-hero': {
-              data: [{ id: { uuid: 'listing-bestseller-1' }, type: 'listing' }],
-              included: [],
-            },
-          },
+          heroBrandIds: ['brand-hero', 'brand-hero-no-products'],
         },
         marketplaceData: {
           entities: {
-            ...mockEntities,
             user: {
               'brand-hero': {
                 id: { uuid: 'brand-hero' },
@@ -483,16 +561,18 @@ describe('BrandsPage Duck', () => {
                   },
                 },
               },
-              'brand-no-hero': {
-                id: { uuid: 'brand-no-hero' },
+              'brand-hero-no-products': {
+                id: { uuid: 'brand-hero-no-products' },
                 type: 'user',
                 attributes: {
-                  profile: { displayName: 'No Hero Brand', publicData: {} },
+                  profile: {
+                    displayName: 'Hero Brand No Products',
+                    publicData: { brandHeroImages: ['http://cdn.shopify.com/2.jpg'] },
+                  },
                 },
               },
             },
             image: {
-              ...mockEntities.image,
               'hero-img-1': {
                 id: { uuid: 'hero-img-1' },
                 type: 'image',
@@ -508,21 +588,45 @@ describe('BrandsPage Duck', () => {
         },
       });
 
-      it('filters out brands with no hero source and keeps order', () => {
-        const result = getHeroBrandsWithProducts(makeState());
+      it('includes a hero-eligible brand that has zero products in state', () => {
+        const result = getHeroBrands(makeState());
 
-        expect(result).toHaveLength(1);
-        expect(result[0].brand.id.uuid).toBe('brand-hero');
+        expect(result.map(({ brand }) => brand.id.uuid)).toEqual(
+          expect.arrayContaining(['brand-hero', 'brand-hero-no-products'])
+        );
+      });
+
+      it('preserves heroBrandIds order (no re-sort)', () => {
+        const result = getHeroBrands(makeState());
+
+        expect(result.map(({ brand }) => brand.id.uuid)).toEqual([
+          'brand-hero',
+          'brand-hero-no-products',
+        ]);
       });
 
       it('resolves hero image ids to variant URLs, preferring the 2x variant', () => {
-        const result = getHeroBrandsWithProducts(makeState());
+        const result = getHeroBrands(makeState());
 
         expect(result[0].heroImageUrlById).toEqual({
           'hero-img-1': 'http://sharetribe.imgix.net/hero-1@2x.jpg',
           // 'hero-img-unresolved' has no image entity → omitted from the map;
           // BrandHeroCard falls back to the Shopify URL at that index.
         });
+      });
+
+      it('filters out a listed id that turns out to have no hero source (defensive re-check)', () => {
+        const state = makeState();
+        state.BrandsPage.heroBrandIds.push('brand-no-hero');
+        state.marketplaceData.entities.user['brand-no-hero'] = {
+          id: { uuid: 'brand-no-hero' },
+          type: 'user',
+          attributes: { profile: { displayName: 'No Hero Brand', publicData: {} } },
+        };
+
+        const result = getHeroBrands(state);
+
+        expect(result.map(({ brand }) => brand.id.uuid)).not.toContain('brand-no-hero');
       });
     });
   });
@@ -620,6 +724,33 @@ describe('BrandsPage Duck', () => {
           call => call[0]?.type === FETCH_BRANDS_SUCCESS
         );
         expect(successCalls.length).toBeGreaterThan(0);
+      });
+    });
+
+    describe('fetchHeroBrands', () => {
+      // configBrands.js resolves its env at module-load time from
+      // process.env.REACT_APP_ENV, which no jest config in this repo sets —
+      // so allBrandIds (and therefore getCuratedBrandIds()) is always the
+      // empty 'production' list under Jest, for every test file, already
+      // true before this change. That makes the thunk's real candidate list
+      // untestable end-to-end here; the short-circuit path below IS
+      // meaningfully testable, and the eligibility-filter logic itself
+      // (hasHeroImageSource, products-independence) is covered directly by
+      // the getHeroBrands selector tests and the hasHeroImageSource tests
+      // above, which construct state without going through this thunk.
+      it('short-circuits to an empty success without calling the SDK when there are no curated candidates', async () => {
+        await fetchHeroBrands()(mockDispatch, mockGetState, mockSdk);
+
+        const requestCalls = mockDispatch.mock.calls.filter(
+          call => call[0]?.type === FETCH_HERO_BRANDS_REQUEST
+        );
+        const successCalls = mockDispatch.mock.calls.filter(
+          call => call[0]?.type === FETCH_HERO_BRANDS_SUCCESS
+        );
+        expect(requestCalls.length).toBe(1);
+        expect(successCalls.length).toBe(1);
+        expect(successCalls[0][0].payload.brandIds).toEqual([]);
+        expect(mockSdk.users.show).not.toHaveBeenCalled();
       });
     });
   });

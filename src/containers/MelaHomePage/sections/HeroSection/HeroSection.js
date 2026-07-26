@@ -10,10 +10,10 @@ import { NamedLink } from '../../../../components';
 import CategoryIcon from '../../../../components/CategoryIcon/CategoryIcon';
 import BrandHeroCard from '../../../../components/BrandHeroCard/BrandHeroCard';
 import {
-  fetchFeaturedBrands,
-  getHeroBrandsWithProducts,
-  getFeaturedBrandsInProgress,
-  getFeaturedBrandsError,
+  fetchHeroBrands,
+  getHeroBrands,
+  getHeroBrandsInProgress,
+  getHeroBrandsError,
 } from '../../../BrandsPage/BrandsPage.duck';
 import { getAllBrandIds, getPopulatedCategoryCount } from '../../../../config/configBrands';
 
@@ -47,10 +47,10 @@ const BREADTH_MIN_BRANDS = 25;
 const BREADTH_MIN_CATEGORIES = 4;
 
 const HeroSectionComponent = ({
-  brandsWithProducts = [],
+  heroBrands = [],
   fetchInProgress = false,
   fetchError = null,
-  onFetchFeaturedBrands,
+  onFetchHeroBrands,
 }) => {
   const intl = useIntl();
   // Respect prefers-reduced-motion: start with autoplay OFF for those users
@@ -70,26 +70,26 @@ const HeroSectionComponent = ({
 
   // Fetch on mount if not already loaded
   useEffect(() => {
-    if (onFetchFeaturedBrands && brandsWithProducts.length === 0 && !fetchInProgress) {
-      onFetchFeaturedBrands();
+    if (onFetchHeroBrands && heroBrands.length === 0 && !fetchInProgress) {
+      onFetchHeroBrands();
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Auto-advance every 8s
   useEffect(() => {
-    if (!isAutoPlaying || brandsWithProducts.length < 2) return;
+    if (!isAutoPlaying || heroBrands.length < 2) return;
     const interval = setInterval(() => {
-      setCurrentBrandIndex(prev => (prev + 1) % brandsWithProducts.length);
+      setCurrentBrandIndex(prev => (prev + 1) % heroBrands.length);
     }, AUTOPLAY_INTERVAL);
     return () => clearInterval(interval);
-  }, [isAutoPlaying, brandsWithProducts.length]);
+  }, [isAutoPlaying, heroBrands.length]);
 
   // Clamp index if brands list shrinks
   useEffect(() => {
-    if (brandsWithProducts.length > 0 && currentBrandIndex >= brandsWithProducts.length) {
+    if (heroBrands.length > 0 && currentBrandIndex >= heroBrands.length) {
       setCurrentBrandIndex(0);
     }
-  }, [brandsWithProducts.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [heroBrands.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Cleanup timers on unmount
   useEffect(() => {
@@ -112,7 +112,7 @@ const HeroSectionComponent = ({
     if (!track || !slide) return;
     const left = slide.offsetLeft - (track.clientWidth - slide.clientWidth) / 2;
     track.scrollTo({ left, behavior: prefersReducedMotion ? 'auto' : 'smooth' });
-  }, [currentBrandIndex, brandsWithProducts.length]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [currentBrandIndex, heroBrands.length]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const scheduleResume = duration => {
     if (resumeTimerRef.current) clearTimeout(resumeTimerRef.current);
@@ -126,10 +126,10 @@ const HeroSectionComponent = ({
   };
 
   const goToPrev = () =>
-    goToBrand((currentBrandIndex - 1 + brandsWithProducts.length) % brandsWithProducts.length);
+    goToBrand((currentBrandIndex - 1 + heroBrands.length) % heroBrands.length);
 
   const goToNext = () =>
-    goToBrand((currentBrandIndex + 1) % brandsWithProducts.length);
+    goToBrand((currentBrandIndex + 1) % heroBrands.length);
 
   // Derive the active slide from scroll position once scrolling settles.
   // Native scroll-snap owns the swipe gesture; this keeps dots/autoplay in sync.
@@ -272,7 +272,7 @@ const HeroSectionComponent = ({
   );
 
   // Loading state — show text + skeleton + CTA
-  if (fetchInProgress && brandsWithProducts.length === 0) {
+  if (fetchInProgress && heroBrands.length === 0) {
     return (
       <div className={css.hero}>
         <div className={css.container}>
@@ -290,7 +290,7 @@ const HeroSectionComponent = ({
   }
 
   // No brands configured — show hero text + CTA + pills only
-  if (brandsWithProducts.length === 0) {
+  if (heroBrands.length === 0) {
     return (
       <div className={css.hero}>
         <div className={css.container}>
@@ -304,7 +304,7 @@ const HeroSectionComponent = ({
     );
   }
 
-  const hasMultiple = brandsWithProducts.length > 1;
+  const hasMultiple = heroBrands.length > 1;
 
   return (
     <div className={css.hero}>
@@ -345,7 +345,7 @@ const HeroSectionComponent = ({
                 defaultMessage: 'Featured brands',
               })}
             >
-              {brandsWithProducts.map((item, index) => (
+              {heroBrands.map((item, index) => (
                 <div
                   className={css.trackSlide}
                   key={item.brand.id.uuid}
@@ -355,7 +355,7 @@ const HeroSectionComponent = ({
                     { id: 'HeroSection.slideLabel', defaultMessage: '{position} of {total}: {brandName}' },
                     {
                       position: index + 1,
-                      total: brandsWithProducts.length,
+                      total: heroBrands.length,
                       brandName: item.brand?.attributes?.profile?.displayName || String(index + 1),
                     }
                   )}
@@ -382,7 +382,7 @@ const HeroSectionComponent = ({
             {hasMultiple && (
               <div className={css.carouselControls}>
                 <div className={css.productDots}>
-                  {brandsWithProducts.map((item, index) => (
+                  {heroBrands.map((item, index) => (
                     <button
                       key={index}
                       className={`${css.dot} ${index === currentBrandIndex ? css.activeDot : ''}`}
@@ -420,13 +420,13 @@ const HeroSectionComponent = ({
 };
 
 const mapStateToProps = state => ({
-  brandsWithProducts: getHeroBrandsWithProducts(state),
-  fetchInProgress: getFeaturedBrandsInProgress(state),
-  fetchError: getFeaturedBrandsError(state),
+  heroBrands: getHeroBrands(state),
+  fetchInProgress: getHeroBrandsInProgress(state),
+  fetchError: getHeroBrandsError(state),
 });
 
 const mapDispatchToProps = {
-  onFetchFeaturedBrands: fetchFeaturedBrands,
+  onFetchHeroBrands: fetchHeroBrands,
 };
 
 const HeroSection = compose(

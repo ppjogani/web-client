@@ -13,14 +13,16 @@ import { ConfigurationProvider } from '../../../../context/configurationContext'
 jest.mock('../../../../routing/routeConfiguration', () => []);
 
 // ── Mock the BrandsPage duck selectors and actions ────────────────────────────
-// getHeroBrandsWithProducts owns the "filter brands with no hero source"
-// behavior — that logic is tested in BrandsPage.duck.test.js. Here the mock
-// passes the state list straight through so we can drive HeroSection's wiring.
+// getHeroBrands owns the "filter brands with no hero source" behavior (and,
+// deliberately, has no products dependency at all — a brand with a hero
+// image but zero bestseller/configured products still qualifies) — that
+// logic is tested in BrandsPage.duck.test.js. Here the mock passes the state
+// list straight through so we can drive HeroSection's wiring.
 jest.mock('../../../BrandsPage/BrandsPage.duck', () => ({
-  fetchFeaturedBrands: () => ({ type: 'FETCH_FEATURED_BRANDS' }),
-  getHeroBrandsWithProducts: state => state.BrandsPage?.brandsWithProducts ?? [],
-  getFeaturedBrandsInProgress: state => state.BrandsPage?.fetchInProgress ?? false,
-  getFeaturedBrandsError: state => state.BrandsPage?.fetchError ?? null,
+  fetchHeroBrands: () => ({ type: 'FETCH_HERO_BRANDS' }),
+  getHeroBrands: state => state.BrandsPage?.heroBrands ?? [],
+  getHeroBrandsInProgress: state => state.BrandsPage?.fetchInProgress ?? false,
+  getHeroBrandsError: state => state.BrandsPage?.fetchError ?? null,
 }));
 
 // Mock BrandHeroCard — we test HeroSection's wiring, not BrandHeroCard internals
@@ -55,7 +57,10 @@ beforeAll(() => {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-const makeBrandWithProducts = (name, id = `brand-${name}`) => ({
+// No `products` field — getHeroBrands entries never carry one (see gap-#1
+// fix note above); a fixture that included it would misrepresent the real
+// selector shape HeroSection actually receives.
+const makeHeroBrand = (name, id = `brand-${name}`) => ({
   brand: {
     id: { uuid: id },
     type: 'user',
@@ -71,7 +76,6 @@ const makeBrandWithProducts = (name, id = `brand-${name}`) => ({
       },
     },
   },
-  products: [],
   heroImageUrlById: { [`${id}-img-0`]: `https://sharetribe.imgix.net/${id}-0.jpg` },
 });
 
@@ -82,7 +86,7 @@ const mockConfig = {
 
 const renderHeroSection = (brandsState = {}) => {
   const defaultBrandsPage = {
-    brandsWithProducts: [],
+    heroBrands: [],
     fetchInProgress: false,
     fetchError: null,
     ...brandsState,
@@ -153,7 +157,7 @@ describe('HeroSection', () => {
 
   describe('Empty state (no hero brands)', () => {
     it('shows headline and CTA with no brand card or carousel', () => {
-      renderHeroSection({ brandsWithProducts: [] });
+      renderHeroSection({ heroBrands: [] });
       expect(
         screen.getByText('Independent Indian Brands, Curated for Your Family')
       ).toBeInTheDocument();
@@ -165,10 +169,10 @@ describe('HeroSection', () => {
   describe('Brand carousel', () => {
     it('renders a BrandHeroCard slide for every hero brand in the list', () => {
       renderHeroSection({
-        brandsWithProducts: [
-          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
-          makeBrandWithProducts('Tarinika', 'brand-2'),
-          makeBrandWithProducts('Ankid', 'brand-3'),
+        heroBrands: [
+          makeHeroBrand('Fizzy Goblet', 'brand-1'),
+          makeHeroBrand('Tarinika', 'brand-2'),
+          makeHeroBrand('Ankid', 'brand-3'),
         ],
       });
 
@@ -179,9 +183,23 @@ describe('HeroSection', () => {
       expect(cards[2]).toHaveAttribute('data-brand-name', 'Ankid');
     });
 
+    it('renders a hero brand with zero products (no products dependency)', () => {
+      // Proves the fixed architecture gap: BrandHeroCard needs no product
+      // data, so a brand entry with no `products` key at all must still
+      // render — getHeroBrands never required one.
+      renderHeroSection({
+        heroBrands: [makeHeroBrand('Fizzy Goblet', 'brand-1')],
+      });
+
+      expect(screen.getByTestId('brand-hero-card')).toHaveAttribute(
+        'data-brand-name',
+        'Fizzy Goblet'
+      );
+    });
+
     it('passes the resolved hero image URL map to each card', () => {
       renderHeroSection({
-        brandsWithProducts: [makeBrandWithProducts('Fizzy Goblet', 'brand-1')],
+        heroBrands: [makeHeroBrand('Fizzy Goblet', 'brand-1')],
       });
 
       expect(screen.getByTestId('brand-hero-card')).toHaveAttribute('data-hero-url-count', '1');
@@ -189,10 +207,7 @@ describe('HeroSection', () => {
 
     it('marks only the first slide as priority (LCP eager-load)', () => {
       renderHeroSection({
-        brandsWithProducts: [
-          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
-          makeBrandWithProducts('Tarinika', 'brand-2'),
-        ],
+        heroBrands: [makeHeroBrand('Fizzy Goblet', 'brand-1'), makeHeroBrand('Tarinika', 'brand-2')],
       });
 
       const cards = screen.getAllByTestId('brand-hero-card');
@@ -202,10 +217,10 @@ describe('HeroSection', () => {
 
     it('renders one dot per visible slide — no dead dots (WCAG 2.2.2 count parity)', () => {
       renderHeroSection({
-        brandsWithProducts: [
-          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
-          makeBrandWithProducts('Tarinika', 'brand-2'),
-          makeBrandWithProducts('Ankid', 'brand-3'),
+        heroBrands: [
+          makeHeroBrand('Fizzy Goblet', 'brand-1'),
+          makeHeroBrand('Tarinika', 'brand-2'),
+          makeHeroBrand('Ankid', 'brand-3'),
         ],
       });
 
@@ -216,7 +231,7 @@ describe('HeroSection', () => {
 
     it('hides arrows, dots and pause control when only one brand remains', () => {
       const { container } = renderHeroSection({
-        brandsWithProducts: [makeBrandWithProducts('Fizzy Goblet', 'brand-1')],
+        heroBrands: [makeHeroBrand('Fizzy Goblet', 'brand-1')],
       });
 
       expect(container.querySelectorAll('button[aria-label]').length).toBe(0);
@@ -224,10 +239,7 @@ describe('HeroSection', () => {
 
     it('renders the pause/play control with multiple brands (WCAG 2.2.2)', () => {
       renderHeroSection({
-        brandsWithProducts: [
-          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
-          makeBrandWithProducts('Tarinika', 'brand-2'),
-        ],
+        heroBrands: [makeHeroBrand('Fizzy Goblet', 'brand-1'), makeHeroBrand('Tarinika', 'brand-2')],
       });
 
       expect(screen.getByRole('button', { name: /Pause brand rotation/i })).toBeInTheDocument();
@@ -235,10 +247,7 @@ describe('HeroSection', () => {
 
     it('navigation dots carry brand name aria-labels', () => {
       renderHeroSection({
-        brandsWithProducts: [
-          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
-          makeBrandWithProducts('Tarinika', 'brand-2'),
-        ],
+        heroBrands: [makeHeroBrand('Fizzy Goblet', 'brand-1'), makeHeroBrand('Tarinika', 'brand-2')],
       });
 
       expect(screen.getByRole('button', { name: /Fizzy Goblet/i })).toBeInTheDocument();
@@ -246,11 +255,8 @@ describe('HeroSection', () => {
     });
 
     it('clicking a dot activates that slide and scrolls the track to it', async () => {
-      const { container } = renderHeroSection({
-        brandsWithProducts: [
-          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
-          makeBrandWithProducts('Tarinika', 'brand-2'),
-        ],
+      renderHeroSection({
+        heroBrands: [makeHeroBrand('Fizzy Goblet', 'brand-1'), makeHeroBrand('Tarinika', 'brand-2')],
       });
 
       Element.prototype.scrollTo.mockClear();
@@ -266,10 +272,7 @@ describe('HeroSection', () => {
 
     it('labels the track as a carousel with per-slide group labels', () => {
       const { container } = renderHeroSection({
-        brandsWithProducts: [
-          makeBrandWithProducts('Fizzy Goblet', 'brand-1'),
-          makeBrandWithProducts('Tarinika', 'brand-2'),
-        ],
+        heroBrands: [makeHeroBrand('Fizzy Goblet', 'brand-1'), makeHeroBrand('Tarinika', 'brand-2')],
       });
 
       const track = container.querySelector('[aria-roledescription="carousel"]');
