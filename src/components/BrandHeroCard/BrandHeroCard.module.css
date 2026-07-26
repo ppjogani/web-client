@@ -23,7 +23,11 @@
   }
 
   &:focus-visible {
-    outline: 3px solid var(--marketplaceColorLight, #f0a030);
+    /* --colorAccent is Mela's marigold token; --marketplaceColorLight is
+       ALREADY defined elsewhere (a light purple, #3d3485) so a fallback on
+       it would never fire — this needs the real accent variable, not a
+       fallback on an existing one. */
+    outline: 3px solid var(--colorAccent);
     outline-offset: 3px;
   }
 }
