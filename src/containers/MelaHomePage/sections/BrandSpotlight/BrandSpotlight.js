@@ -1,24 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { FormattedMessage } from '../../../../util/reactIntl';
-import { NamedLink } from '../../../../components';
-import {
-  getWeeklyFlagshipBrandId,
-  getBrandSlugById,
-  getFeaturedProductIds,
-} from '../../../../config/configBrands';
+import { FormattedMessage, useIntl } from '../../../../util/reactIntl';
+import { NamedLink, ProductCarousel } from '../../../../components';
+import { getWeeklyFlagshipBrandId, getBrandSlugById } from '../../../../config/configBrands';
 import { denormalisedEntities, updatedEntities } from '../../../../util/data';
 import { pushSpotlightView, pushSpotlightBrandClick } from '../../../../util/analytics/homepageEditorial';
 import sdk from '../../../../util/homepageSdk';
 
 import css from './BrandSpotlight.module.css';
 
-const MAX_PRODUCTS = 3;
+const MAX_PRODUCTS = 8;
 
 /**
  * Module A: Brand Spotlight (homepage-editorial-modules.md).
  * Deterministic weekly rotation through the 5 flagship brands — one brand treated the
  * way a magazine would treat it. Everything it needs (brandHeroImages, brandCraft, bio,
  * hero listing ids) is already seeded (P1.1b); no new backend.
+ *
+ * Product row is the brand's own bestsellers (pub_isBestseller), rendered via the
+ * shared ProductCarousel component (decision 2026-07-26) instead of a static 3-item
+ * grid — lets a brand with more bestsellers than fit on screen still show them all.
  *
  * No outbound Shopify link here (decision 2026-07-26, matching BrandStorefront.js) —
  * the sole CTA is "See {Brand} on Mela".
@@ -29,6 +29,7 @@ const BrandSpotlight = () => {
   const [isLoading, setIsLoading] = useState(true);
   const rootRef = useRef(null);
   const hasFiredView = useRef(false);
+  const intl = useIntl();
 
   const brandId = getWeeklyFlagshipBrandId();
 
@@ -50,28 +51,18 @@ const BrandSpotlight = () => {
         });
 
         let productEntities = [];
-        const featuredIds = getFeaturedProductIds([brandId]).slice(0, MAX_PRODUCTS);
-        const listingsResponse = featuredIds.length
-          ? await sdk.listings.query({
-              ids: featuredIds,
-              include: ['images'],
-              'fields.listing': ['title', 'price', 'publicData'],
-              'fields.image': ['variants.square-small', 'variants.square-small2x'],
-            })
-          : await sdk.listings.query({
-              author_id: brandId,
-              pub_isBestseller: true,
-              perPage: MAX_PRODUCTS,
-              include: ['images'],
-              'fields.listing': ['title', 'price', 'publicData'],
-              'fields.image': ['variants.square-small', 'variants.square-small2x'],
-            });
+        const listingsResponse = await sdk.listings.query({
+          author_id: brandId,
+          pub_isBestseller: true,
+          perPage: MAX_PRODUCTS,
+          include: ['images'],
+          'fields.listing': ['title', 'price', 'publicData'],
+          'fields.image': ['variants.square-small', 'variants.square-small2x'],
+        });
 
         if (listingsResponse?.data) {
           const entities = updatedEntities({}, listingsResponse.data);
-          const ids = featuredIds.length
-            ? featuredIds
-            : listingsResponse.data.data.map(l => l.id.uuid);
+          const ids = listingsResponse.data.data.map(l => l.id.uuid);
           const refs = ids.map(id => ({ id: { uuid: id }, type: 'listing' }));
           productEntities = denormalisedEntities(entities, refs, false);
         }
@@ -148,28 +139,16 @@ const BrandSpotlight = () => {
 
         {storySentence && <p className={css.story}>{storySentence}.</p>}
 
-        {products.length > 0 && (
-          <div className={css.products}>
-            {products.map(product => (
-              <div key={product.id.uuid} className={css.miniCard}>
-                <div className={css.miniImage}>
-                  {product.images?.[0]?.attributes?.variants?.['square-small']?.url && (
-                    <img
-                      src={product.images[0].attributes.variants['square-small'].url}
-                      alt={product.attributes.title}
-                    />
-                  )}
-                </div>
-                <span className={css.miniPrice}>
-                  {product.attributes.price
-                    ? `$${(product.attributes.price.amount / 100).toFixed(0)}`
-                    : ''}
-                </span>
-                <span className={css.miniTitle}>{product.attributes.title}</span>
-              </div>
-            ))}
-          </div>
-        )}
+        <ProductCarousel
+          title={intl.formatMessage(
+            { id: 'BrandSpotlight.bestsellersTitle', defaultMessage: 'Bestsellers from {brand}' },
+            { brand: displayName }
+          )}
+          listings={products}
+          minItems={1}
+          viewAllLinkName={brandLinkProps.name}
+          viewAllLinkParams={brandLinkProps.params}
+        />
 
         <div className={css.ctas}>
           {/* NamedLink doesn't forward onClick — wrap it so the click still bubbles to

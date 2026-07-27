@@ -11,7 +11,6 @@ jest.mock('../../../../routing/routeConfiguration', () => []);
 jest.mock('../../../../config/configBrands', () => ({
   getWeeklyFlagshipBrandId: jest.fn(),
   getBrandSlugById: jest.fn(() => 'fizzy-goblet'),
-  getFeaturedProductIds: jest.fn(() => []),
 }));
 
 jest.mock('../../../../util/homepageSdk', () => ({
@@ -24,12 +23,24 @@ jest.mock('../../../../util/analytics/homepageEditorial', () => ({
   pushSpotlightBrandClick: jest.fn(),
 }));
 
+// Real ListingCard/Money rendering isn't the point of these tests — stub the shared
+// carousel so assertions can read the props BrandSpotlight passed it directly.
+jest.mock('../../../../components/ProductCarousel/ProductCarousel', () => {
+  return function MockProductCarousel({ title, listings, viewAllLinkName, viewAllLinkParams }) {
+    return (
+      <div
+        data-testid="product-carousel"
+        data-title={title}
+        data-count={listings?.length ?? 0}
+        data-view-all-name={viewAllLinkName}
+        data-view-all-params={JSON.stringify(viewAllLinkParams || {})}
+      />
+    );
+  };
+});
+
 import BrandSpotlight from './BrandSpotlight';
-import {
-  getWeeklyFlagshipBrandId,
-  getBrandSlugById,
-  getFeaturedProductIds,
-} from '../../../../config/configBrands';
+import { getWeeklyFlagshipBrandId, getBrandSlugById } from '../../../../config/configBrands';
 import sdk from '../../../../util/homepageSdk';
 import { pushSpotlightBrandClick } from '../../../../util/analytics/homepageEditorial';
 
@@ -37,6 +48,7 @@ const mockMessages = {
   'BrandSpotlight.overline': 'Our Brands, Worth Knowing',
   'BrandSpotlight.madeInIndia': 'Made in India',
   'BrandSpotlight.seeOnMela': 'See {brand} on Mela',
+  'BrandSpotlight.bestsellersTitle': 'Bestsellers from {brand}',
   'BrandSpotlight.rotationNote': 'A different vetted brand is featured each week',
 };
 
@@ -71,6 +83,12 @@ const brandResponse = ({ brandCraft, brandStoreUrl, brandHeroImages } = {}) => (
   },
 });
 
+const makeListing = (id, title) => ({
+  id: { uuid: id },
+  type: 'listing',
+  attributes: { title, price: { amount: 2500, currency: 'USD' }, publicData: {} },
+});
+
 describe('BrandSpotlight', () => {
   beforeEach(() => {
     jest.clearAllMocks();
@@ -79,7 +97,6 @@ describe('BrandSpotlight', () => {
     // time — so every mock implementation must be (re-)installed here, not just once.
     getWeeklyFlagshipBrandId.mockReturnValue('brand-1');
     getBrandSlugById.mockReturnValue('fizzy-goblet');
-    getFeaturedProductIds.mockReturnValue([]);
     sdk.listings.query.mockResolvedValue({ data: { data: [], included: [] } });
   });
 
@@ -109,6 +126,31 @@ describe('BrandSpotlight', () => {
     expect(screen.getByText(/Every pair is stitched by hand/)).toBeInTheDocument();
     // The tagline sentence itself should not repeat as the story sentence.
     expect(screen.queryByText(/Handcrafted juttis for the modern wardrobe\./)).not.toBeInTheDocument();
+  });
+
+  it('renders a ProductCarousel of the brand\'s own bestsellers', async () => {
+    sdk.users.show.mockResolvedValue(brandResponse({}));
+    sdk.listings.query.mockResolvedValue({
+      data: { data: [makeListing('p1', 'Jutti One'), makeListing('p2', 'Jutti Two')], included: [] },
+    });
+
+    render(
+      <TestWrapper>
+        <BrandSpotlight />
+      </TestWrapper>
+    );
+
+    await waitFor(() => expect(screen.getByTestId('product-carousel')).toBeInTheDocument());
+    expect(sdk.listings.query).toHaveBeenCalledWith(
+      expect.objectContaining({ author_id: 'brand-1', pub_isBestseller: true })
+    );
+    const carousel = screen.getByTestId('product-carousel');
+    expect(carousel).toHaveAttribute('data-count', '2');
+    expect(carousel).toHaveAttribute('data-title', 'Bestsellers from Fizzy Goblet');
+    expect(carousel).toHaveAttribute('data-view-all-name', 'BrandPage');
+    expect(JSON.parse(carousel.getAttribute('data-view-all-params'))).toEqual({
+      brandSlug: 'fizzy-goblet',
+    });
   });
 
   it('never renders a Shopify storefront link, even when brandStoreUrl is present', async () => {
