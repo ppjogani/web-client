@@ -1697,6 +1697,7 @@
   "CategoryPage.loadingProducts": "Loading products…",
   "CategoryPage.noProducts": "No products in {categoryName} yet.",
   "CategoryPage.browseBrands": "Browse all brands",
+  "CategoryPage.brandCarouselTitle": "Shop {categoryName} Brands",
   "CategoryPage.browseCategory": "Browse →",
   "CategoryPage.allCategories": "All Categories",
 
