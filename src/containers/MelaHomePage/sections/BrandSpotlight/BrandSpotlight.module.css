@@ -137,7 +137,6 @@
   display: contents;
 }
 
-.btnOutline,
 .btnSolid {
   flex: 1;
   display: flex;
@@ -150,16 +149,6 @@
   text-decoration: none;
   border: none;
   cursor: pointer;
-}
-
-.btnOutline {
-  background: var(--colorWhite);
-  color: var(--marketplaceColorDark);
-  border: 1.5px solid var(--marketplaceColor);
-}
-
-.btnSolid {
-  flex: 1.2;
   background: var(--marketplaceColor);
   color: var(--colorWhite);
   box-shadow: 0 2px 6px rgba(38, 34, 97, 0.25);

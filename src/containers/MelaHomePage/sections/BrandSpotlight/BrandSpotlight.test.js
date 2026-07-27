@@ -19,27 +19,9 @@ jest.mock('../../../../util/homepageSdk', () => ({
   listings: { query: jest.fn() },
 }));
 
-jest.mock('../../../../components/RedirectTrustSheet/RedirectTrustSheet', () => {
-  return function MockRedirectTrustSheet({ isOpen, brandName, onContinue, productUrl }) {
-    if (!isOpen) return null;
-    return (
-      <div data-testid="redirect-trust-sheet">
-        {brandName}
-        <button onClick={() => onContinue(productUrl)}>Continue</button>
-      </div>
-    );
-  };
-});
-
-jest.mock('../../../../util/analytics/brandClickout', () => ({ openBrandStorefront: jest.fn() }));
-jest.mock('../../../../util/sentimentCapture', () => ({
-  shouldShowRedirectTrust: jest.fn(() => true),
-  markRedirectTrustShown: jest.fn(),
-}));
 jest.mock('../../../../util/analytics/homepageEditorial', () => ({
   pushSpotlightView: jest.fn(),
   pushSpotlightBrandClick: jest.fn(),
-  pushSpotlightStoreClick: jest.fn(),
 }));
 
 import BrandSpotlight from './BrandSpotlight';
@@ -49,15 +31,12 @@ import {
   getFeaturedProductIds,
 } from '../../../../config/configBrands';
 import sdk from '../../../../util/homepageSdk';
-import { openBrandStorefront } from '../../../../util/analytics/brandClickout';
-import { shouldShowRedirectTrust } from '../../../../util/sentimentCapture';
-import { pushSpotlightStoreClick, pushSpotlightBrandClick } from '../../../../util/analytics/homepageEditorial';
+import { pushSpotlightBrandClick } from '../../../../util/analytics/homepageEditorial';
 
 const mockMessages = {
   'BrandSpotlight.overline': 'Our Brands, Worth Knowing',
   'BrandSpotlight.madeInIndia': 'Made in India',
   'BrandSpotlight.seeOnMela': 'See {brand} on Mela',
-  'BrandSpotlight.visitStore': "Visit {brand}'s Store",
   'BrandSpotlight.rotationNote': 'A different vetted brand is featured each week',
 };
 
@@ -73,6 +52,9 @@ const TestWrapper = ({ children }) => (
   </MemoryRouter>
 );
 
+// brandStoreUrl is still accepted in the fixture (real seeded data carries it) even
+// though the component no longer reads it — the point of several tests below is to
+// confirm it has zero effect on rendering (no Shopify link, decision 2026-07-26).
 const brandResponse = ({ brandCraft, brandStoreUrl, brandHeroImages } = {}) => ({
   data: {
     data: {
@@ -98,7 +80,6 @@ describe('BrandSpotlight', () => {
     getWeeklyFlagshipBrandId.mockReturnValue('brand-1');
     getBrandSlugById.mockReturnValue('fizzy-goblet');
     getFeaturedProductIds.mockReturnValue([]);
-    shouldShowRedirectTrust.mockReturnValue(true);
     sdk.listings.query.mockResolvedValue({ data: { data: [], included: [] } });
   });
 
@@ -130,8 +111,8 @@ describe('BrandSpotlight', () => {
     expect(screen.queryByText(/Handcrafted juttis for the modern wardrobe\./)).not.toBeInTheDocument();
   });
 
-  it('omits the "Visit Store" CTA when brandStoreUrl is absent', async () => {
-    sdk.users.show.mockResolvedValue(brandResponse({}));
+  it('never renders a Shopify storefront link, even when brandStoreUrl is present', async () => {
+    sdk.users.show.mockResolvedValue(brandResponse({ brandStoreUrl: 'https://fizzygoblet.com' }));
 
     render(
       <TestWrapper>
@@ -142,28 +123,6 @@ describe('BrandSpotlight', () => {
     await waitFor(() => expect(screen.getByText('Fizzy Goblet')).toBeInTheDocument());
     expect(screen.queryByText(/Visit Fizzy Goblet's Store/)).not.toBeInTheDocument();
     expect(screen.getByText(/See Fizzy Goblet on Mela/)).toBeInTheDocument();
-  });
-
-  it('opens the redirect trust sheet and fires spotlight_store_click on Visit Store', async () => {
-    sdk.users.show.mockResolvedValue(brandResponse({ brandStoreUrl: 'https://fizzygoblet.com' }));
-
-    render(
-      <TestWrapper>
-        <BrandSpotlight />
-      </TestWrapper>
-    );
-
-    await waitFor(() => expect(screen.getByText('Fizzy Goblet')).toBeInTheDocument());
-    fireEvent.click(screen.getByText(/Visit Fizzy Goblet's Store/));
-
-    expect(pushSpotlightStoreClick).toHaveBeenCalledWith('brand-1');
-    expect(screen.getByTestId('redirect-trust-sheet')).toBeInTheDocument();
-
-    fireEvent.click(screen.getByText('Continue'));
-    expect(openBrandStorefront).toHaveBeenCalledWith(
-      'https://fizzygoblet.com',
-      expect.objectContaining({ brandName: 'Fizzy Goblet' })
-    );
   });
 
   it('fires spotlight_brand_click when the "See on Mela" link is clicked', async () => {
