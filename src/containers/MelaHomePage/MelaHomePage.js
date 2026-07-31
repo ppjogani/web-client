@@ -96,7 +96,7 @@ const MelaHomePage = props => {
               name: 'Do Indian brands on Mela ship to the United States?',
               acceptedAnswer: {
                 '@type': 'Answer',
-                text: 'Yes. Every brand featured on Mela ships directly to US addresses. Most brands offer standard and express international shipping to all 50 states. Delivery typically takes 7–14 business days for standard shipping.',
+                text: 'Yes. Every brand featured on Mela ships directly to US addresses. Most brands offer standard and express international shipping to all 50 states. Delivery typically takes 7–10 working days for standard shipping.',
               },
             },
             {
@@ -128,7 +128,7 @@ const MelaHomePage = props => {
               name: 'How long does shipping from India to the US take?',
               acceptedAnswer: {
                 '@type': 'Answer',
-                text: "Standard international shipping from India to the US takes 7–14 business days. Many brands also offer expedited options (3–7 business days). Exact timelines and costs are shown at checkout on each brand's store.",
+                text: "Standard international shipping from India to the US takes 7–10 working days. Many brands also offer expedited options (3–7 business days). Exact timelines and costs are shown at checkout on each brand's store.",
               },
             },
           ],
