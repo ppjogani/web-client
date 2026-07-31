@@ -630,7 +630,7 @@
   "BrandSpotlight.rotationNote": "A different vetted brand is featured each week",
   "CraftStories.title": "The Crafts Behind the Brands",
   "CraftStories.subtitle": "Techniques with centuries of practice, still made by hand",
-  "CraftStories.rotationNote": "Three of nineteen crafts, rotating daily",
+  "CraftStories.rotationNote": "Three of {count} crafts, rotating daily",
   "NewFromIndia.title": "New from India",
   "NewFromIndia.subtitle": "Fresh arrivals from the brands we vet",
   "VettingStrip.brandsVetted": "{count} brands, hand vetted",
