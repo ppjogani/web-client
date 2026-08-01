@@ -67,7 +67,7 @@ const TrustAssurance = () => {
           <h2 className={css.title}>
             <FormattedMessage
               id="MelaHomePage.trustTitle"
-              defaultMessage="Every Brand Here Earned Its Place"
+              defaultMessage="Shop with Confidence"
             />
           </h2>
         </div>
