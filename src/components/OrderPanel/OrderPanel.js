@@ -38,7 +38,7 @@ import {
   resolveLatestProcessName,
 } from '../../transactions/transaction';
 
-import { ModalInMobile, PrimaryButton, AvatarSmall, H1, H2 } from '../../components';
+import { ModalInMobile, PrimaryButton, SavedListingButton, AvatarSmall, H1, H2 } from '../../components';
 import PriceVariantPicker from './PriceVariantPicker/PriceVariantPicker';
 import SubmitFinePrint from './SubmitFinePrint/SubmitFinePrint';
 
@@ -345,6 +345,13 @@ const OrderPanel = React.forwardRef((props, ref) => {
   };
   const shopNow = onShopNow || (url => openBrandStorefront(url, brandTrackingParams));
 
+  // Add-to-Cart writes to the shared saved-listings list (SavedListingButton), which
+  // needs the same { title, imageUrl } shape used elsewhere for anon localStorage saves.
+  const listingData = {
+    title: listing?.attributes?.title || '',
+    imageUrl: listing?.images?.[0]?.attributes?.variants?.['listing-card']?.url || '',
+  };
+
   const processName = resolveLatestProcessName(transactionProcessAlias.split('/')[0]);
   const lineItemUnitType = lineItemUnitTypeMaybe || `line-item/${unitType}`;
 
@@ -440,6 +447,7 @@ const OrderPanel = React.forwardRef((props, ref) => {
     price,
     marketplaceCurrency,
     listingId: listing.id,
+    listingData,
     isOwnListing,
     marketplaceName,
     onFetchTransactionLineItems,
@@ -574,7 +582,8 @@ const OrderPanel = React.forwardRef((props, ref) => {
             onSubmit={onSubmit}
             brand={brand}
             productUrl={productUrl}
-            onShopNow={shopNow}
+            listingId={listing?.id?.uuid}
+            listingData={listingData}
             finePrintComponent={SubmitFinePrint}
             isOwnListing={isOwnListing}
           />
@@ -614,14 +623,17 @@ const OrderPanel = React.forwardRef((props, ref) => {
           <div className={css.closedListingButton}>
             <FormattedMessage id="OrderPanel.closedListingButtonText" />
           </div>
-        ) : brand && productUrl ? (
+        ) : brand && productUrl && isOutOfStock ? (
           <PrimaryButton onClick={() => shopNow(productUrl)}>
-            {isOutOfStock ? (
-              <FormattedMessage id="OrderPanel.ctaButtonMessageViewOnBrand" values={{ brand }} />
-            ) : (
-              <FormattedMessage id="OrderPanel.ctaButtonMessageShopFromBrand" values={{ brand }} />
-            )}
+            <FormattedMessage id="OrderPanel.ctaButtonMessageViewOnBrand" values={{ brand }} />
           </PrimaryButton>
+        ) : brand && productUrl ? (
+          <SavedListingButton
+            listingId={listing?.id?.uuid}
+            listingData={listingData}
+            variant="cta"
+            source="add_to_cart_button"
+          />
         ) : (
           <PrimaryButton
             id={ORDER_PANEL_SUBMIT_BUTTON_ID}

@@ -12,6 +12,7 @@ import {
   FieldTextInput,
   InlineTextButton,
   PrimaryButton,
+  SavedListingButton,
   H3,
   H6,
 } from '../../../components';
@@ -136,6 +137,7 @@ const renderForm = formRenderProps => {
     brand,
     productUrl,
     onShopNow,
+    listingData,
     values,
   } = formRenderProps;
 
@@ -281,7 +283,7 @@ const renderForm = formRenderProps => {
       <FetchLineItemsError error={fetchLineItemsError} />
 
       <div className={css.submitButton}>
-        {brand && productUrl ? (
+        {brand && productUrl && !hasStock ? (
           <PrimaryButton
             type="button"
             onClick={() =>
@@ -290,12 +292,15 @@ const renderForm = formRenderProps => {
                 : window.open(productUrl, '_blank', 'noopener,noreferrer')
             }
           >
-            {hasStock ? (
-              <FormattedMessage id="ProductOrderForm.ctaButtonShopFromBrand" values={{ brand }} />
-            ) : (
-              <FormattedMessage id="ProductOrderForm.ctaButtonViewOnBrand" values={{ brand }} />
-            )}
+            <FormattedMessage id="ProductOrderForm.ctaButtonViewOnBrand" values={{ brand }} />
           </PrimaryButton>
+        ) : brand && productUrl ? (
+          <SavedListingButton
+            listingId={listingId?.uuid}
+            listingData={listingData}
+            variant="cta"
+            source="add_to_cart_button"
+          />
         ) : (
           <PrimaryButton type="submit" inProgress={submitInProgress} disabled={submitDisabled}>
             {hasStock ? (

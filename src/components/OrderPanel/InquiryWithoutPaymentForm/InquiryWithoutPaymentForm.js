@@ -4,7 +4,7 @@ import classNames from 'classnames';
 
 import { FormattedMessage, useIntl } from '../../../util/reactIntl';
 
-import { Form, PrimaryButton } from '../..';
+import { Form, PrimaryButton, SavedListingButton } from '../..';
 
 import css from './InquiryWithoutPaymentForm.module.css';
 
@@ -17,7 +17,8 @@ const renderForm = formRenderProps => {
     handleSubmit,
     brand,
     productUrl,
-    onShopNow,
+    listingId,
+    listingData,
     isOwnListing,
     finePrintComponent: FinePrint,
   } = formRenderProps;
@@ -27,16 +28,12 @@ const renderForm = formRenderProps => {
     <Form id={formId} onSubmit={handleSubmit} className={classes}>
       <div className={css.submitButton}>
         {brand && productUrl ? (
-          <PrimaryButton
-            type="button"
-            onClick={() =>
-              onShopNow
-                ? onShopNow(productUrl)
-                : window.open(productUrl, '_blank', 'noopener,noreferrer')
-            }
-          >
-            <FormattedMessage id="ProductOrderForm.ctaButtonShopFromBrand" values={{ brand }} />
-          </PrimaryButton>
+          <SavedListingButton
+            listingId={listingId}
+            listingData={listingData}
+            variant="cta"
+            source="add_to_cart_button"
+          />
         ) : (
           <PrimaryButton type="submit">
             <FormattedMessage id="InquiryWithoutPaymentForm.ctaButton" />
