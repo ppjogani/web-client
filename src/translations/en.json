@@ -677,6 +677,8 @@
   "LimitedAccessBanner.message": "You're logged in as {firstName} {lastName}. You have limited access rights. You can't add payout details, initiate transactions, move them forward, or send messages on the user's behalf.",
   "ListingCard.author": "{authorName}",
   "ListingCard.brand": "By {brandName}",
+  "ListingCard.shopOnBrand": "Shop on {brand} →",
+  "ListingCard.viewOnBrand": "View on {brand} →",
   "ListingCard.perUnit": "{unitType, select, day {per day} night {per night} hour {per hour} other {}}",
   "ListingCard.price": "{priceValue} {pricePerUnit}",
   "ListingCard.priceStartingFrom": "From {priceValue} {pricePerUnit}",
@@ -1800,6 +1802,8 @@
   "SavedListingButton.savedAriaLabel": "Remove from saved items",
   "SavedListingButton.signUpToSave": "Sign up to save your favourites",
   "SavedListingButton.capReached": "You've saved 200 items — the maximum. Remove one to save another.",
+  "SavedListingButton.addToCart": "Add to Cart",
+  "SavedListingButton.addedToCart": "Added to Cart ✓",
 
   "SavedItemsBanner.message": "You have {count, plural, one {# saved item} other {# saved items}} waiting — {signUpLink} to keep them.",
   "SavedItemsBanner.signUpLink": "sign up",
@@ -1812,6 +1816,14 @@
   "SavedPage.emptyBrowseCta": "Browse products",
   "SavedPage.loading": "Loading your saved items…",
   "SavedPage.error": "Could not load saved items. Please try again.",
+  "SavedPage.itemsReadyToShop": "{count, plural, one {# item} other {# items}} ready to shop",
+
+  "SavedPageSignupPush.earlyAccessHeading": "Save your list — be first in when we open direct checkout",
+  "SavedPageSignupPush.earlyAccessBody": "Create a free account to keep this list across devices and get early access as we build toward checkout on Mela.",
+  "SavedPageSignupPush.earlyAccessCta": "Get early access",
+  "SavedPageSignupPush.controlHeading": "Don't lose this list",
+  "SavedPageSignupPush.controlBody": "Create a free account to keep your saved items across devices.",
+  "SavedPageSignupPush.controlCta": "Create an account",
   "SavedPage.schemaTitle": "Saved Items | Mela",
   "SavedPage.schemaDescription": "Your saved items on Mela — Indian baby brands curated for you.",
 

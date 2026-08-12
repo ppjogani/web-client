@@ -73,6 +73,16 @@
   text-decoration: none;
 }
 
+.signupPush {
+  margin-bottom: 32px;
+}
+
+.itemCount {
+  composes: textSmall from global;
+  color: var(--colorGrey500);
+  margin: 0 0 16px;
+}
+
 /* ── Listings grid ───────────────────────────── */
 
 .grid {

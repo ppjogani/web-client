@@ -16,6 +16,7 @@ import { useDisplayPrice } from '../../util/liveInrRate';
 import { ensureListing, ensureUser } from '../../util/data';
 import { richText } from '../../util/richText';
 import { createSlug } from '../../util/urlHelpers';
+import { isMelaVerified } from '../../util/certificationHelpers';
 import { isBookingProcessAlias } from '../../transactions/transaction';
 
 import {
@@ -279,6 +280,9 @@ const ListingCardImage = props => {
  * @param {number?} props.stockCount remaining stock for urgency display (default: null)
  * @param {boolean?} props.isNew whether product is newly listed (default: false)
  * @param {boolean?} props.showInrPrice whether to show the "~₹" INR equivalent under the price (default: true)
+ * @param {Function?} props.onShopNow when provided, renders a stock-aware "Shop on {brand} →" /
+ *   "View on {brand} →" CTA for listings with brand + productUrl (used on SavedPage — see
+ *   add-to-cart-restoration-prd.md §6). Called with { url, brandName, isVerified, isOutOfStock, trackingParams }.
  * @returns {JSX.Element} listing card to be used in search result panel etc.
  */
 export const ListingCard = props => {
@@ -301,6 +305,7 @@ export const ListingCard = props => {
     isNew = false,
     lazyLoadImage = true,
     showInrPrice = true,
+    onShopNow,
   } = props;
 
   const translations = getListingCardTranslations(listing, config, intl);
@@ -333,7 +338,32 @@ export const ListingCard = props => {
 
   // Extract brand and certifications from publicData
   const brand = publicData?.brand || null;
+  const productUrl = publicData?.productUrl || null;
   const certifications = publicData?.certification || [];
+
+  // Stock-aware Shop CTA (SavedPage only — gated on onShopNow being passed).
+  // Undefined/null currentStock means stock has never been set, treated as in-stock
+  // (matches ProductOrderForm's hasNoStockLeft logic).
+  const currentStockQty = currentListing.currentStock?.attributes?.quantity;
+  const isOutOfStock = currentStockQty === 0;
+  const showShopCta = !!onShopNow && !!brand && !!productUrl;
+
+  const handleShopClick = e => {
+    e.preventDefault();
+    e.stopPropagation();
+    onShopNow({
+      url: productUrl,
+      brandName: brand,
+      isVerified: isMelaVerified(publicData),
+      isOutOfStock,
+      trackingParams: {
+        brandName: brand,
+        brandId: author?.id?.uuid,
+        category: publicData.categoryLevel3 || publicData.categoryLevel2 || publicData.categoryLevel1,
+        productId: id,
+      },
+    });
+  };
 
   const { listingType, cardStyle } = publicData || {};
   const validListingTypes = config.listing.listingTypes || [];
@@ -439,6 +469,14 @@ export const ListingCard = props => {
           </div>
         </div>
       </NamedLink>
+      {showShopCta && (
+        <button type="button" className={css.shopCta} onClick={handleShopClick}>
+          <FormattedMessage
+            id={isOutOfStock ? 'ListingCard.viewOnBrand' : 'ListingCard.shopOnBrand'}
+            values={{ brand }}
+          />
+        </button>
+      )}
     </div>
   );
 };
