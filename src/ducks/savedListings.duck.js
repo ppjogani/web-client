@@ -107,6 +107,22 @@ export const selectToggleInProgress = (state, listingId) =>
 export const selectAnonSavedItems = state => state.savedListings.anonSavedItems;
 export const selectLastToggleSource = state => state.savedListings.lastToggleSource;
 
+// The listing IDs that belong to *this* shopper right now, regardless of auth state —
+// authenticated and anonymous shoppers are tracked in different underlying lists
+// (savedListingIds vs. anonSavedItems), and SavedPage needs this unified view to fetch
+// and render the grid for anonymous shoppers too (found via manual browser verification:
+// SavedPage previously only ever fetched from savedListingIds, so anonymous shoppers saw
+// "Nothing saved yet" even with items saved — see add-to-cart-restoration-prd.md §12/§13).
+export const selectEffectiveSavedListingIds = state =>
+  state.auth.isAuthenticated
+    ? state.savedListings.savedListingIds
+    : state.savedListings.anonSavedItems.map(item => item.id);
+
+// Single source of truth for "how many items does this shopper have saved right now" —
+// shared by the header badge, the Add-to-Cart confirmation, and SavedPage's total count so
+// those three surfaces can't drift out of sync with each other (add-to-cart-restoration-prd.md §12.3).
+export const selectSavedItemsCount = state => selectEffectiveSavedListingIds(state).length;
+
 // ================ Action creators ================ //
 
 export const toggleSaveRequest = listingId => ({ type: TOGGLE_SAVE_REQUEST, payload: { listingId } });
