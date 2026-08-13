@@ -33,6 +33,9 @@ const MAX_SAVED = 200;
  * @param {"add_to_cart_button"|"heart_icon"} [props.source="heart_icon"] tags the saved_listing_toggle analytics event
  * @param {string} [props.className]
  * @param {string} [props.rootClassName]
+ * @param {Function} [props.onAdded] called synchronously when a click transitions the listing
+ *   from unsaved to saved — used by the PDP CTA call sites to trigger the inline
+ *   "✓ Added · View Saved" confirmation (add-to-cart-restoration-prd.md §12.2 fix #4)
  * -- injected by connect --
  * @param {boolean} props.isSaved
  * @param {boolean} props.inProgress
@@ -53,6 +56,7 @@ const SavedListingButtonComponent = props => {
     isAuthenticated,
     savedCount,
     onToggle,
+    onAdded,
   } = props;
 
   const intl = useIntl();
@@ -75,7 +79,13 @@ const SavedListingButtonComponent = props => {
     e.preventDefault();
     e.stopPropagation();
     if (inProgress || capReached) return;
+    const wasSaved = isSaved;
     onToggle(listingId, listingData, source);
+    // The optimistic update inside onToggle is synchronous, so isSaved has already
+    // flipped by the time this runs — no need to await the network round-trip.
+    if (!wasSaved && typeof onAdded === 'function') {
+      onAdded();
+    }
   };
 
   const classes = classNames(

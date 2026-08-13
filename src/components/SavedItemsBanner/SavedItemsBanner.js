@@ -7,7 +7,9 @@ import NamedLink from '../NamedLink/NamedLink';
 
 import css from './SavedItemsBanner.module.css';
 
-const AUTO_DISMISS_MS = 4000;
+// Exported so AddToCartConfirmation can reuse the same auto-dismiss timing rather than
+// hand-rolling its own value (add-to-cart-restoration-prd.md §12.3 build note).
+export const AUTO_DISMISS_MS = 4000;
 
 /**
  * SavedItemsBanner

@@ -141,6 +141,7 @@ export { default as ProductCarousel } from './ProductCarousel/ProductCarousel';
 export { default as SavedListingButton } from './SavedListingButton/SavedListingButton';
 export { default as SavedItemsBanner } from './SavedItemsBanner/SavedItemsBanner';
 export { default as SavedPageSignupPush } from './SavedPageSignupPush/SavedPageSignupPush';
+export { default as AddToCartConfirmation } from './AddToCartConfirmation/AddToCartConfirmation';
 export { default as ListingCardMini } from './ListingCardMini/ListingCardMini';
 export { default as ListingImage } from './ListingImage/ListingImage';
 export { default as BrandCard } from './BrandCard/BrandCard';

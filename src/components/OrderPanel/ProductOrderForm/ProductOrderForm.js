@@ -13,6 +13,7 @@ import {
   InlineTextButton,
   PrimaryButton,
   SavedListingButton,
+  AddToCartConfirmation,
   H3,
   H6,
 } from '../../../components';
@@ -112,6 +113,7 @@ const DeliveryMethodMaybe = props => {
 
 const renderForm = formRenderProps => {
   const [mounted, setMounted] = useState(false);
+  const [addedTrigger, setAddedTrigger] = useState(0);
   const {
     // FormRenderProps from final-form
     handleSubmit,
@@ -295,12 +297,16 @@ const renderForm = formRenderProps => {
             <FormattedMessage id="ProductOrderForm.ctaButtonViewOnBrand" values={{ brand }} />
           </PrimaryButton>
         ) : brand && productUrl ? (
-          <SavedListingButton
-            listingId={listingId?.uuid}
-            listingData={listingData}
-            variant="cta"
-            source="add_to_cart_button"
-          />
+          <>
+            <SavedListingButton
+              listingId={listingId?.uuid}
+              listingData={listingData}
+              variant="cta"
+              source="add_to_cart_button"
+              onAdded={() => setAddedTrigger(t => t + 1)}
+            />
+            <AddToCartConfirmation trigger={addedTrigger} />
+          </>
         ) : (
           <PrimaryButton type="submit" inProgress={submitInProgress} disabled={submitDisabled}>
             {hasStock ? (

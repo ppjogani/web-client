@@ -38,7 +38,15 @@ import {
   resolveLatestProcessName,
 } from '../../transactions/transaction';
 
-import { ModalInMobile, PrimaryButton, SavedListingButton, AvatarSmall, H1, H2 } from '../../components';
+import {
+  ModalInMobile,
+  PrimaryButton,
+  SavedListingButton,
+  AddToCartConfirmation,
+  AvatarSmall,
+  H1,
+  H2,
+} from '../../components';
 import PriceVariantPicker from './PriceVariantPicker/PriceVariantPicker';
 import SubmitFinePrint from './SubmitFinePrint/SubmitFinePrint';
 
@@ -292,6 +300,7 @@ const hasValidPriceVariants = priceVariants => {
  */
 const OrderPanel = React.forwardRef((props, ref) => {
   const [mounted, setMounted] = useState(false);
+  const [addedTrigger, setAddedTrigger] = useState(0);
   const intl = useIntl();
   const location = useLocation();
   const history = useHistory();
@@ -628,12 +637,16 @@ const OrderPanel = React.forwardRef((props, ref) => {
             <FormattedMessage id="OrderPanel.ctaButtonMessageViewOnBrand" values={{ brand }} />
           </PrimaryButton>
         ) : brand && productUrl ? (
-          <SavedListingButton
-            listingId={listing?.id?.uuid}
-            listingData={listingData}
-            variant="cta"
-            source="add_to_cart_button"
-          />
+          <>
+            <SavedListingButton
+              listingId={listing?.id?.uuid}
+              listingData={listingData}
+              variant="cta"
+              source="add_to_cart_button"
+              onAdded={() => setAddedTrigger(t => t + 1)}
+            />
+            <AddToCartConfirmation trigger={addedTrigger} />
+          </>
         ) : (
           <PrimaryButton
             id={ORDER_PANEL_SUBMIT_BUTTON_ID}

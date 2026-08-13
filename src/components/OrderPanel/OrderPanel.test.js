@@ -748,6 +748,34 @@ describe('OrderPanel', () => {
       });
     });
 
+    it('shows an inline confirmation with a link to Saved after clicking "Add to Cart"', async () => {
+      const listing = createListingWithBrand();
+      const config = getConfig();
+      const props = { ...commonProps, listing, isOwnListing: false, validListingTypes };
+
+      render(<OrderPanel {...props} />, { config, routeConfiguration });
+
+      const addToCartButtons = await waitFor(() => {
+        const buttons = screen.queryAllByText('SavedListingButton.addToCart');
+        expect(buttons).toHaveLength(2);
+        return buttons;
+      });
+
+      // Confirmation is absent until a click.
+      expect(screen.queryByText('AddToCartConfirmation.added')).not.toBeInTheDocument();
+
+      addToCartButtons[0].click();
+
+      await waitFor(() => {
+        const confirmations = screen.getAllByText('AddToCartConfirmation.added');
+        expect(confirmations.length).toBeGreaterThan(0);
+        // aria-live="polite" is required so anonymous/authenticated shoppers alike get
+        // non-visual feedback (add-to-cart-restoration-prd.md §12.3, P0).
+        expect(confirmations[0].closest('[aria-live="polite"]')).toBeInTheDocument();
+        expect(screen.getAllByText(/AddToCartConfirmation\.viewSaved/).length).toBeGreaterThan(0);
+      });
+    });
+
     it('displays correct button text for different stock states', async () => {
       // Test in-stock scenario
       const inStockListing = createListingWithBrand();

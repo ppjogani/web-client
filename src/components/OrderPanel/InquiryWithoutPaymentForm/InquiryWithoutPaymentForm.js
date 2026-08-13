@@ -1,14 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Form as FinalForm } from 'react-final-form';
 import classNames from 'classnames';
 
 import { FormattedMessage, useIntl } from '../../../util/reactIntl';
 
-import { Form, PrimaryButton, SavedListingButton } from '../..';
+import { Form, PrimaryButton, SavedListingButton, AddToCartConfirmation } from '../..';
 
 import css from './InquiryWithoutPaymentForm.module.css';
 
 const renderForm = formRenderProps => {
+  const [addedTrigger, setAddedTrigger] = useState(0);
   // FormRenderProps from final-form
   const {
     formId,
@@ -28,12 +29,16 @@ const renderForm = formRenderProps => {
     <Form id={formId} onSubmit={handleSubmit} className={classes}>
       <div className={css.submitButton}>
         {brand && productUrl ? (
-          <SavedListingButton
-            listingId={listingId}
-            listingData={listingData}
-            variant="cta"
-            source="add_to_cart_button"
-          />
+          <>
+            <SavedListingButton
+              listingId={listingId}
+              listingData={listingData}
+              variant="cta"
+              source="add_to_cart_button"
+              onAdded={() => setAddedTrigger(t => t + 1)}
+            />
+            <AddToCartConfirmation trigger={addedTrigger} />
+          </>
         ) : (
           <PrimaryButton type="submit">
             <FormattedMessage id="InquiryWithoutPaymentForm.ctaButton" />
