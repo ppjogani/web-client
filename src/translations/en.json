@@ -679,6 +679,7 @@
   "ListingCard.brand": "By {brandName}",
   "ListingCard.shopOnBrand": "Shop on {brand} →",
   "ListingCard.viewOnBrand": "View on {brand} →",
+  "ListingCard.viewListingFallback": "View listing →",
   "ListingCard.perUnit": "{unitType, select, day {per day} night {per night} hour {per hour} other {}}",
   "ListingCard.price": "{priceValue} {pricePerUnit}",
   "ListingCard.priceStartingFrom": "From {priceValue} {pricePerUnit}",
@@ -1809,6 +1810,9 @@
   "SavedItemsBanner.signUpLink": "sign up",
   "SavedItemsBanner.dismiss": "Dismiss",
 
+  "AddToCartConfirmation.added": "Added",
+  "AddToCartConfirmation.viewSaved": "View Saved ({count}) →",
+
   "SavedPage.title": "Saved",
   "SavedPage.subheading": "Your personal Mela collection — meri pasand ❤️",
   "SavedPage.emptyHeading": "Nothing saved yet",
@@ -1817,6 +1821,8 @@
   "SavedPage.loading": "Loading your saved items…",
   "SavedPage.error": "Could not load saved items. Please try again.",
   "SavedPage.itemsReadyToShop": "{count, plural, one {# item} other {# items}} ready to shop",
+  "SavedPage.totalSavedCount": "{count, plural, one {# item saved} other {# items saved}}",
+  "SavedPage.itemsSummary": "{total, plural, one {# saved} other {# saved}} · {ready, plural, one {# ready to shop} other {# ready to shop}}",
 
   "SavedPageSignupPush.earlyAccessHeading": "Save your list — be first in when we open direct checkout",
   "SavedPageSignupPush.earlyAccessBody": "Create a free account to keep this list across devices and get early access as we build toward checkout on Mela.",
@@ -1855,6 +1861,8 @@
   "RedirectTrustSheet.continue": "Continue to {brand} →",
   "RedirectTrustSheet.dismissLabel": "Not now",
   "RedirectTrustSheet.dismissLabelExpanded": "Cancel",
+  "RedirectTrustSheet.continueDelayAnnouncement": "The Continue button will be available in a moment.",
+  "RedirectTrustSheet.continueReadyAnnouncement": "The Continue button is now available.",
   "SentimentSheet.ariaLabel": "Share your feedback about Mela",
   "SentimentSheet.prompt": "How's your Mela experience?",
   "SentimentSheet.thumbsUp": "Thumbs up",
