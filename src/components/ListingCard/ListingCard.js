@@ -356,6 +356,10 @@ export const ListingCard = props => {
       brandName: brand,
       isVerified: isMelaVerified(publicData),
       isOutOfStock,
+      // Lets the caller (SavedPage) return keyboard focus to this exact button when
+      // RedirectTrustSheet closes — see ListingCard.viewListingFallback docs and
+      // add-to-cart-restoration-prd.md §13.1 fix #7 (WCAG 2.4.3).
+      triggerElement: e.currentTarget,
       trackingParams: {
         brandName: brand,
         brandId: author?.id?.uuid,
@@ -469,14 +473,25 @@ export const ListingCard = props => {
           </div>
         </div>
       </NamedLink>
-      {showShopCta && (
+      {showShopCta ? (
         <button type="button" className={css.shopCta} onClick={handleShopClick}>
           <FormattedMessage
             id={isOutOfStock ? 'ListingCard.viewOnBrand' : 'ListingCard.shopOnBrand'}
             values={{ brand }}
           />
         </button>
-      )}
+      ) : onShopNow ? (
+        // Card is rendered in a Shop-CTA context (SavedPage) but has no brand/productUrl
+        // to route through — a defined fallback instead of an unexplained gap next to
+        // cards that do have a Shop CTA (add-to-cart-restoration-prd.md §13.1 fix #9, P2).
+        <NamedLink
+          className={css.shopCtaFallback}
+          name="ListingPage"
+          params={{ id, slug }}
+        >
+          <FormattedMessage id="ListingCard.viewListingFallback" />
+        </NamedLink>
+      ) : null}
     </div>
   );
 };

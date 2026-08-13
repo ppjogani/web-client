@@ -1,15 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
+import { useLocation } from 'react-router-dom';
 
 import { useIntl, FormattedMessage } from '../../util/reactIntl';
 import { useConfiguration } from '../../context/configurationContext';
 import { getListingsById } from '../../ducks/marketplaceData.duck';
 import { shouldShowRedirectTrust, markRedirectTrustShown } from '../../util/sentimentCapture';
 import { openBrandStorefront } from '../../util/analytics/brandClickout';
+import { pushSavedPageView } from '../../util/analytics/savedPageView';
+import { parse } from '../../util/urlHelpers';
 import {
-  selectSavedListingIds,
+  selectEffectiveSavedListingIds,
   selectAnonSavedItems,
+  selectSavedItemsCount,
   fetchSavedListings,
 } from '../../ducks/savedListings.duck';
 
@@ -28,8 +32,9 @@ import css from './SavedPage.module.css';
 /**
  * SavedPage — /saved
  *
- * Client-side only (no SSR loadData). Listings are fetched lazily after paint
- * using the savedListingIds already loaded by fetchCurrentUser.
+ * Client-side only (no SSR loadData). Listings are fetched lazily after paint using
+ * selectEffectiveSavedListingIds — savedListingIds (loaded by fetchCurrentUser) for
+ * authenticated shoppers, anonSavedItems' ids (localStorage) for anonymous ones.
  *
  * Hosts the brand redirect + RedirectTrustSheet trust/feedback modal relocated here
  * from the PDP (see mela-docs/product/prds/add-to-cart-restoration-prd.md) — each
@@ -46,10 +51,12 @@ const SavedPageComponent = props => {
     onFetchSavedListings,
     isAuthenticated,
     anonSavedItems,
+    savedItemsCount,
   } = props;
 
   const intl = useIntl();
   const config = useConfiguration();
+  const location = useLocation();
 
   const [redirectSheetOpen, setRedirectSheetOpen] = useState(false);
   const [pendingRedirectUrl, setPendingRedirectUrl] = useState(null);
@@ -57,13 +64,28 @@ const SavedPageComponent = props => {
   const [pendingBrandName, setPendingBrandName] = useState(null);
   const [pendingIsVerified, setPendingIsVerified] = useState(false);
 
+  // The Shop-CTA button that opened the trust sheet — refocused when it closes
+  // (WCAG 2.4.3, see §13.1 fix #7). Not component state: changing it should never
+  // trigger a re-render, only be read back on close.
+  const shopTriggerRef = useRef(null);
+
   useEffect(() => {
     if (savedListingIds.length > 0) {
       onFetchSavedListings(savedListingIds);
     }
   }, [savedListingIds.join(',')]); // stable string key — avoids re-fetch on same IDs
 
-  const handleShopNow = ({ url, brandName, isVerified, trackingParams }) => {
+  // Fires once per page visit, tagged with which UI surface sent the shopper here —
+  // connects "clicked Add to Cart" / "clicked header badge" to "landed on /saved" for
+  // the funnel-linking analytics requirement in §12.3.
+  useEffect(() => {
+    const { entry } = parse(location.search);
+    pushSavedPageView({ entry });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleShopNow = ({ url, brandName, isVerified, trackingParams, triggerElement }) => {
+    shopTriggerRef.current = triggerElement || null;
     if (shouldShowRedirectTrust()) {
       markRedirectTrustShown();
       setPendingRedirectUrl(url);
@@ -74,6 +96,13 @@ const SavedPageComponent = props => {
     } else {
       openBrandStorefront(url, trackingParams);
     }
+  };
+
+  const handleTrustSheetClose = () => {
+    setRedirectSheetOpen(false);
+    // Return focus to the card's Shop button (Continue, dismiss, and backdrop click
+    // all route through this same onClose).
+    shopTriggerRef.current?.focus();
   };
 
   const schemaTitle = intl.formatMessage({ id: 'SavedPage.schemaTitle' });
@@ -101,8 +130,6 @@ const SavedPageComponent = props => {
             </p>
           </div>
 
-          {showSignupPush && <SavedPageSignupPush className={css.signupPush} />}
-
           {fetchError && (
             <div className={css.error}>
               <FormattedMessage id="SavedPage.error" />
@@ -129,9 +156,16 @@ const SavedPageComponent = props => {
             </div>
           )}
 
-          {hasListings && shoppableCount > 0 && (
+          {hasListings && (
             <p className={css.itemCount}>
-              <FormattedMessage id="SavedPage.itemsReadyToShop" values={{ count: shoppableCount }} />
+              {shoppableCount > 0 ? (
+                <FormattedMessage
+                  id="SavedPage.itemsSummary"
+                  values={{ total: savedItemsCount, ready: shoppableCount }}
+                />
+              ) : (
+                <FormattedMessage id="SavedPage.totalSavedCount" values={{ count: savedItemsCount }} />
+              )}
             </p>
           )}
 
@@ -149,6 +183,11 @@ const SavedPageComponent = props => {
               ))}
             </div>
           )}
+
+          {/* Rendered after the shopper's own items (not above them) — an anon shopper
+              arriving to confirm a save should see their item before a sign-up pitch
+              (founder browser-testing feedback, §13.1 fix #5). */}
+          {showSignupPush && <SavedPageSignupPush className={css.signupPush} />}
         </div>
       </LayoutSingleColumn>
 
@@ -160,7 +199,7 @@ const SavedPageComponent = props => {
           productUrl={pendingRedirectUrl}
           isVerified={pendingIsVerified}
           onContinue={url => openBrandStorefront(url, pendingTrackingParams)}
-          onClose={() => setRedirectSheetOpen(false)}
+          onClose={handleTrustSheetClose}
         />
       )}
     </Page>
@@ -168,7 +207,10 @@ const SavedPageComponent = props => {
 };
 
 const mapStateToProps = state => {
-  const savedListingIds = selectSavedListingIds(state);
+  // Effective ids — savedListingIds for authenticated shoppers, anonSavedItems' ids for
+  // anonymous ones — so the grid actually fetches and renders for both (see
+  // selectEffectiveSavedListingIds' docstring).
+  const savedListingIds = selectEffectiveSavedListingIds(state);
   const savedListings = getListingsById(state, savedListingIds.map(id => ({ uuid: id })));
   return {
     savedListingIds,
@@ -177,6 +219,7 @@ const mapStateToProps = state => {
     fetchError: state.savedListings.fetchError,
     isAuthenticated: state.auth.isAuthenticated,
     anonSavedItems: selectAnonSavedItems(state),
+    savedItemsCount: selectSavedItemsCount(state),
   };
 };
 
