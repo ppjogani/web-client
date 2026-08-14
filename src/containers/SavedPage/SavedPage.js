@@ -20,14 +20,47 @@ import {
 import {
   Page,
   NamedLink,
-  ListingCard,
   LayoutSingleColumn,
   RedirectTrustSheet,
   SavedPageSignupPush,
+  SavedBrandGroup,
+  SavedPageRecommendations,
 } from '../../components';
 import TopbarContainer from '../../containers/TopbarContainer/TopbarContainer';
 import FooterContainer from '../../containers/FooterContainer/FooterContainer';
 import css from './SavedPage.module.css';
+
+/**
+ * Groups listings by publicData.brand, preserving the order they first appear in
+ * (savedListings is already in savedListingIds insertion/recency order). Listings with
+ * no brand collect into a trailing { brandName: null } group ("More saved") so nothing
+ * saved is ever dropped from the page — see add-to-cart-restoration-prd.md §14.
+ */
+const groupListingsByBrand = listings => {
+  const groups = [];
+  const groupsByBrand = {};
+  const ungrouped = [];
+
+  listings.forEach(listing => {
+    const brand = listing.attributes?.publicData?.brand;
+    if (!brand) {
+      ungrouped.push(listing);
+      return;
+    }
+    if (!groupsByBrand[brand]) {
+      const group = { brandName: brand, listings: [] };
+      groupsByBrand[brand] = group;
+      groups.push(group);
+    }
+    groupsByBrand[brand].listings.push(listing);
+  });
+
+  if (ungrouped.length > 0) {
+    groups.push({ brandName: null, listings: ungrouped });
+  }
+
+  return groups;
+};
 
 /**
  * SavedPage — /saved
@@ -40,7 +73,9 @@ import css from './SavedPage.module.css';
  * from the PDP (see mela-docs/product/prds/add-to-cart-restoration-prd.md) — each
  * saved item's "Shop on {brand}" CTA routes through the same
  * handleShopNow → RedirectTrustSheet (first click of session) → openBrandStorefront
- * pipeline the PDP used to run directly.
+ * pipeline the PDP used to run directly. §14 restructures the flat grid into per-brand
+ * SavedBrandGroup sections (the group CTA reuses this same handleShopNow) and adds an
+ * inspiration-first SavedPageRecommendations rail.
  */
 const SavedPageComponent = props => {
   const {
@@ -75,14 +110,39 @@ const SavedPageComponent = props => {
     }
   }, [savedListingIds.join(',')]); // stable string key — avoids re-fetch on same IDs
 
+  const isEmpty = savedListingIds.length === 0;
+  const hasListings = savedListings.length > 0;
+  const brandGroups = hasListings ? groupListingsByBrand(savedListings) : [];
+
+  // Entities can already be in the store (hasListings) before the fetch that put them
+  // there has actually settled (fetchInProgress can lag a render behind) — gating on
+  // hasListings too avoids a one-render flash where the grid/recs are ready but briefly
+  // treated as still-loading. Falls back to !fetchInProgress once entities are known to
+  // never arrive (e.g. a fetch error) so this doesn't wait forever either.
+  const dataSettled = hasListings || !fetchInProgress;
+
+  // Whether SavedPageRecommendations rendered a non-empty rail — null until its own
+  // fetch settles, reported back via onLoaded. Feeds recs_shown below.
+  const [recsShown, setRecsShown] = useState(null);
+  const pageViewFiredRef = useRef(false);
+
   // Fires once per page visit, tagged with which UI surface sent the shopper here —
   // connects "clicked Add to Cart" / "clicked header badge" to "landed on /saved" for
-  // the funnel-linking analytics requirement in §12.3.
+  // the funnel-linking analytics requirement in §12.3. Delayed (vs. firing immediately
+  // on mount) until the saved-listings data has settled and the recs rail has reported
+  // whether it rendered anything, so recs_shown/brand_group_count (§14,
+  // insights/crossshop-tracking-prd.md §14) are accurate rather than always-false.
   useEffect(() => {
+    if (pageViewFiredRef.current || !dataSettled || recsShown === null) return;
+    pageViewFiredRef.current = true;
     const { entry } = parse(location.search);
-    pushSavedPageView({ entry });
+    pushSavedPageView({
+      entry,
+      recsShown,
+      brandGroupCount: brandGroups.length,
+    });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [dataSettled, recsShown]);
 
   const handleShopNow = ({ url, brandName, isVerified, trackingParams, triggerElement }) => {
     shopTriggerRef.current = triggerElement || null;
@@ -108,8 +168,6 @@ const SavedPageComponent = props => {
   const schemaTitle = intl.formatMessage({ id: 'SavedPage.schemaTitle' });
   const schemaDescription = intl.formatMessage({ id: 'SavedPage.schemaDescription' });
 
-  const isEmpty = savedListingIds.length === 0;
-  const hasListings = savedListings.length > 0;
   const shoppableCount = savedListings.filter(
     listing => listing.attributes?.publicData?.brand && listing.attributes?.publicData?.productUrl
   ).length;
@@ -143,17 +201,29 @@ const SavedPageComponent = props => {
           )}
 
           {!fetchInProgress && isEmpty && (
-            <div className={css.emptyState}>
-              <h2 className={css.emptyHeading}>
-                <FormattedMessage id="SavedPage.emptyHeading" />
-              </h2>
-              <p className={css.emptySubheading}>
-                <FormattedMessage id="SavedPage.emptySubheading" />
-              </p>
-              <NamedLink name="SearchPage" className={css.browseCta}>
-                <FormattedMessage id="SavedPage.emptyBrowseCta" />
-              </NamedLink>
-            </div>
+            <>
+              <div className={css.emptyState}>
+                <h2 className={css.emptyHeading}>
+                  <FormattedMessage id="SavedPage.emptyHeading" />
+                </h2>
+                <p className={css.emptySubheading}>
+                  <FormattedMessage id="SavedPage.emptySubheading" />
+                </p>
+                <NamedLink name="SearchPage" className={css.browseCta}>
+                  <FormattedMessage id="SavedPage.emptyBrowseCta" />
+                </NamedLink>
+              </div>
+              {/* Empty-cart entry point into discovery — "Popular on Mela" framing
+                  (add-to-cart-restoration-prd.md §14.0). Self-hides if the query returns
+                  nothing, so an empty cart never shows a broken/empty carousel. */}
+              <SavedPageRecommendations
+                excludeIds={savedListingIds}
+                onLoaded={setRecsShown}
+                titleId="SavedPageRecommendations.emptyTitle"
+                subtitleId="SavedPageRecommendations.emptySubtitle"
+                className={css.emptyRecs}
+              />
+            </>
           )}
 
           {hasListings && (
@@ -170,18 +240,29 @@ const SavedPageComponent = props => {
           )}
 
           {hasListings && (
-            <div className={css.grid}>
-              {savedListings.map(listing => (
-                <ListingCard
-                  key={listing.id.uuid}
-                  listing={listing}
-                  renderSizes={renderSizes}
-                  showAuthorInfo
-                  showTrustBadges
+            <div className={css.groups}>
+              {brandGroups.map(group => (
+                <SavedBrandGroup
+                  key={group.brandName || '__more_saved__'}
+                  brandName={group.brandName}
+                  listings={group.listings}
                   onShopNow={handleShopNow}
+                  renderSizes={renderSizes}
                 />
               ))}
             </div>
+          )}
+
+          {/* Bottom-of-page recs on a non-empty cart once data has settled (see
+              dataSettled above) — also covers the (rare) case where savedListingIds is
+              non-empty but the listings fetch errored, so recsShown still resolves and
+              the delayed saved_page_view push above isn't blocked indefinitely. */}
+          {dataSettled && !isEmpty && (
+            <SavedPageRecommendations
+              excludeIds={savedListingIds}
+              onLoaded={setRecsShown}
+              className={css.bottomRecs}
+            />
           )}
 
           {/* Rendered after the shopper's own items (not above them) — an anon shopper

@@ -18,6 +18,7 @@ import {
 import { mergeConfig } from '../../util/configHelpers';
 
 import SavedPage from './SavedPage';
+import { pushSavedPageView } from '../../util/analytics/savedPageView';
 
 // Topbar/Footer/ListingCard are already covered by their own unit tests —
 // stub them here so SavedPage tests stay focused on SavedPage's own logic.
@@ -45,6 +46,30 @@ jest.mock('../../components/ListingCard/ListingCard', () => props => (
   </div>
 ));
 
+// SavedPageRecommendations has its own dedicated unit tests (SavedPageRecommendations.test.js,
+// including "excludes already-saved ids"), and it queries via a completely separate SDK
+// instance (util/homepageSdk, not the redux-thunk sdk these tests configure) — stubbing it
+// here keeps SavedPage tests from making real network calls and lets tests control
+// recs_shown deterministically via window.__mockRecsHasItems.
+jest.mock('../../components/SavedPageRecommendations/SavedPageRecommendations', () => props => {
+  const React = require('react');
+  React.useEffect(() => {
+    props.onLoaded?.(global.__mockRecsHasItems ?? false);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+  return (
+    <div
+      data-testid="recs-rail"
+      data-title-id={props.titleId || ''}
+      data-exclude-ids={(props.excludeIds || []).join(',')}
+    />
+  );
+});
+
+jest.mock('../../util/analytics/savedPageView', () => ({
+  pushSavedPageView: jest.fn(),
+}));
+
 const mockMessages = {
   'SavedPage.title': 'Saved',
   'SavedPage.subheading': 'Your personal Mela collection — meri pasand ❤️',
@@ -57,6 +82,9 @@ const mockMessages = {
   'SavedPage.schemaDescription': 'Your saved items on Mela.',
   'SavedPage.totalSavedCount': '{count} saved',
   'SavedPage.itemsSummary': '{total} saved · {ready} ready to shop',
+  'SavedBrandGroup.moreSaved': 'More saved',
+  'SavedBrandGroup.itemCount': '{count} items',
+  'SavedBrandGroup.shopBrandCta': 'Shop {brandName} →',
   'Page.schemaTitle': '{marketplaceName}',
   'Page.schemaDescription': 'Marketplace',
 };
@@ -111,6 +139,8 @@ describe('SavedPage', () => {
     // shouldShowRedirectTrust()/markRedirectTrustShown() (util/sentimentCapture.js) key off
     // sessionStorage, which otherwise leaks session-shown state across tests in this file.
     window.sessionStorage.clear();
+    global.__mockRecsHasItems = false;
+    pushSavedPageView.mockClear();
   });
 
   it('always renders the Mela header (Topbar) and footer', () => {
@@ -262,5 +292,125 @@ describe('SavedPage', () => {
     fireEvent.click(dismissButton);
 
     expect(document.activeElement).toBe(shopButton);
+  });
+
+  describe('multi-brand grouping (§14)', () => {
+    it('groups saved items by brand as real h2 headings, preserving first-seen order', () => {
+      // Insertion order: Nicobar, Nesavu, Nicobar again — Nicobar's group should still
+      // appear first (first-seen order), with both its items inside one group.
+      const listing1 = createListing('listing1', {
+        title: 'Nicobar Kurta',
+        publicData: { brand: 'Nicobar', productUrl: 'https://nicobar.example/1' },
+      });
+      const listing2 = createListing('listing2', {
+        title: 'Nesavu Onesie',
+        publicData: { brand: 'Nesavu', productUrl: 'https://nesavu.example/1' },
+      });
+      const listing3 = createListing('listing3', {
+        title: 'Nicobar Dupatta',
+        publicData: { brand: 'Nicobar', productUrl: 'https://nicobar.example/2' },
+      });
+
+      renderSavedPage(
+        buildState(
+          { savedListingIds: ['listing1', 'listing2', 'listing3'] },
+          { listing: { listing1, listing2, listing3 } },
+          { isAuthenticated: true }
+        )
+      );
+
+      const headings = screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent);
+      expect(headings).toEqual(['Nicobar', 'Nesavu']);
+      expect(screen.getByText('2 items')).toBeInTheDocument(); // Nicobar's group
+      expect(screen.getByText('1 items')).toBeInTheDocument(); // Nesavu's group
+    });
+
+    it('collects brand-less listings into a trailing "More saved" group so nothing is dropped', () => {
+      const listing1 = createListing('listing1', {
+        title: 'Nicobar Kurta',
+        publicData: { brand: 'Nicobar', productUrl: 'https://nicobar.example/1' },
+      });
+      const listing2 = createListing('listing2', { title: 'Unbranded Thing', publicData: {} });
+
+      renderSavedPage(
+        buildState(
+          { savedListingIds: ['listing1', 'listing2'] },
+          { listing: { listing1, listing2 } },
+          { isAuthenticated: true }
+        )
+      );
+
+      const headings = screen.getAllByRole('heading', { level: 2 }).map(h => h.textContent);
+      expect(headings).toEqual(['Nicobar', 'More saved']);
+      expect(screen.getByText('Unbranded Thing')).toBeInTheDocument();
+    });
+
+    it('each brand group section is labelled for assistive tech (aria-label on the section)', () => {
+      const listing1 = createListing('listing1', {
+        title: 'Nicobar Kurta',
+        publicData: { brand: 'Nicobar', productUrl: 'https://nicobar.example/1' },
+      });
+
+      renderSavedPage(
+        buildState(
+          { savedListingIds: ['listing1'] },
+          { listing: { listing1 } },
+          { isAuthenticated: true }
+        )
+      );
+
+      expect(screen.getByRole('region', { name: 'Nicobar' })).toBeInTheDocument();
+    });
+
+    it('passes the current saved ids as excludeIds to the recommendations rail', () => {
+      const listing1 = createListing('listing1', { title: 'Item One' });
+
+      renderSavedPage(
+        buildState(
+          { savedListingIds: ['listing1'] },
+          { listing: { listing1 } },
+          { isAuthenticated: true }
+        )
+      );
+
+      expect(screen.getByTestId('recs-rail')).toHaveAttribute('data-exclude-ids', 'listing1');
+    });
+
+    it('shows the recs rail with "Popular on Mela" framing in the empty state', () => {
+      renderSavedPage(buildState());
+      expect(screen.getByTestId('recs-rail')).toHaveAttribute(
+        'data-title-id',
+        'SavedPageRecommendations.emptyTitle'
+      );
+    });
+
+    it('fires the delayed saved_page_view once the fetch settles and recs visibility is known, with brand_group_count', () => {
+      global.__mockRecsHasItems = true;
+      const listing1 = createListing('listing1', {
+        title: 'Nicobar Kurta',
+        publicData: { brand: 'Nicobar', productUrl: 'https://nicobar.example/1' },
+      });
+      const listing2 = createListing('listing2', { title: 'Unbranded Thing', publicData: {} });
+
+      renderSavedPage(
+        buildState(
+          { savedListingIds: ['listing1', 'listing2'] },
+          { listing: { listing1, listing2 } },
+          { isAuthenticated: true }
+        )
+      );
+
+      expect(pushSavedPageView).toHaveBeenCalledTimes(1);
+      expect(pushSavedPageView).toHaveBeenCalledWith(
+        expect.objectContaining({ recsShown: true, brandGroupCount: 2 })
+      );
+    });
+
+    it('reports brandGroupCount: 0 on an empty cart', () => {
+      renderSavedPage(buildState());
+      expect(pushSavedPageView).toHaveBeenCalledWith(
+        expect.objectContaining({ recsShown: false, brandGroupCount: 0 })
+      );
+    });
   });
 });

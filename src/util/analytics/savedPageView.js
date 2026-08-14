@@ -16,14 +16,20 @@ export const SAVED_PAGE_ENTRY_PARAM = 'entry';
  * @param {object} params
  * @param {'add_to_cart_confirmation'|'header_badge'|'direct'} params.entry - which UI
  *   surface sent the shopper to /saved
+ * @param {boolean} [params.recsShown] - whether SavedPageRecommendations rendered a
+ *   non-empty rail on this visit (§14, insights/crossshop-tracking-prd.md §14)
+ * @param {number} [params.brandGroupCount] - number of SavedBrandGroup sections rendered
+ *   (0 for an empty cart)
  */
 export const pushSavedPageView = (params = {}) => {
-  const { entry } = params || {};
+  const { entry, recsShown, brandGroupCount } = params || {};
   if (typeof window === 'undefined') return;
 
   window.dataLayer = window.dataLayer || [];
   window.dataLayer.push({
     event: 'saved_page_view',
     entry: entry || 'direct',
+    recs_shown: !!recsShown,
+    brand_group_count: typeof brandGroupCount === 'number' ? brandGroupCount : 0,
   });
 };
