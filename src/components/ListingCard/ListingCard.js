@@ -365,6 +365,10 @@ export const ListingCard = props => {
         brandId: author?.id?.uuid,
         category: publicData.categoryLevel3 || publicData.categoryLevel2 || publicData.categoryLevel1,
         productId: id,
+        // onShopNow is only ever wired up from SavedPage's per-card CTA — the group-level
+        // CTA (SavedBrandGroup) tags 'saved_brand_group' itself. See §14 of
+        // insights/crossshop-tracking-prd.md.
+        savedSurface: 'saved_item_card',
       },
     });
   };
