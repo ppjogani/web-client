@@ -372,6 +372,7 @@ export const ListingPageComponent = props => {
       scrollingDisabled={scrollingDisabled}
       author={authorDisplayName}
       description={seoDescription}
+      keywords={publicData.searchKeywords}
       facebookImages={facebookImages}
       twitterImages={twitterImages}
       openGraphType="product"

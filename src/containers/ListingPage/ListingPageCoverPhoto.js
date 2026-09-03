@@ -400,6 +400,7 @@ export const ListingPageComponent = props => {
       scrollingDisabled={scrollingDisabled}
       author={authorDisplayName}
       description={seoDescription} // SEO ONLY: Meta description for search engines, NOT visible on page
+      keywords={publicData.searchKeywords} // SEO ONLY: Meta keywords for search engines, NOT visible on page
       facebookImages={facebookImages}
       twitterImages={twitterImages}
       openGraphType="product"
