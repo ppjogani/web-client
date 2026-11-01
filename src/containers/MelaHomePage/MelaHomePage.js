@@ -18,7 +18,7 @@ import SavedItemsModule from './sections/SavedItems/SavedItemsModule';
 import FAQSection from './sections/FAQSection/FAQSection';
 import { useConfiguration } from '../../context/configurationContext';
 import { FormattedMessage } from '../../util/reactIntl';
-// The card answer is shared with the other card copy in en.json; read directly so the visible
+// The what-is-Mela and card answers live in en.json; read directly so the visible
 // FAQ and the FAQPage JSON-LD built from FAQ_ITEMS stay identical.
 import enMessages from '../../translations/en.json';
 
@@ -28,7 +28,7 @@ import css from './MelaHomePage.module.css';
 // copy below (title/description/FAQ) actually changes. Deliberately not derived from
 // any live data (e.g. newest listing), which would be a freshness-spam pattern AI
 // answer engines are tuned to discount.
-export const HOMEPAGE_LAST_UPDATED = '2026-10-24';
+export const HOMEPAGE_LAST_UPDATED = '2026-11-01';
 
 // Single source of truth for the homepage FAQ: rendered as visible copy by
 // <FAQSection> below AND used to build the FAQPage JSON-LD in `schema`, so the two
@@ -36,6 +36,10 @@ export const HOMEPAGE_LAST_UPDATED = '2026-10-24';
 // <script type="application/ld+json"> block — invisible to AI answer engines that
 // weight visible passages, and to human visitors.
 export const FAQ_ITEMS = [
+  {
+    question: 'What is Mela?',
+    answer: enMessages['MelaHomePage.faqWhatIsMelaAnswer'],
+  },
   {
     question: 'Do Indian brands on Mela ship to the United States, and how long does it take?',
     answer:
@@ -153,19 +157,6 @@ const MelaHomePage = props => {
         {/* Hero Section - Product Showcase + Trust Signals */}
         <section className={css.heroSection}>
           <HeroSection />
-        </section>
-
-        {/* Answer block - one plain, server-rendered passage that says what Mela is,
-            so AI assistants have a self-contained 40-60 word lead to quote. */}
-        <section className={css.answerBlockSection}>
-          <div className={css.container}>
-            <p className={css.answerBlock}>
-              <FormattedMessage
-                id="MelaHomePage.answerBlock"
-                defaultMessage={enMessages['MelaHomePage.answerBlock']}
-              />
-            </p>
-          </div>
         </section>
 
         {/* Vetting Strip - P0.1 compressed trust band, above the first carousel */}
