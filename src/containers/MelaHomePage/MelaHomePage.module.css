@@ -32,14 +32,6 @@
   }
 }
 
-.categoryChips {
-  margin-top: 16px;
-
-  @media (min-width: 768px) {
-    margin-top: 20px;
-  }
-}
-
 /* New from India — bare ProductCarousel, no section wrapper of its own.
    Vertical padding matches .brandsSection's
    double-sided rhythm (see history). Horizontal padding + centering max-width

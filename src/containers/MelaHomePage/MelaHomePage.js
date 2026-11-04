@@ -9,7 +9,6 @@ import HeroSection from './sections/HeroSection/HeroSection';
 import VettingStrip from './sections/VettingStrip/VettingStrip';
 import BrandSpotlight from './sections/BrandSpotlight/BrandSpotlight';
 import { OccasionMosaic } from './sections/CategoryShowcase/CategoryShowcase';
-import CategoryChips from '../../components/CategoryChips/CategoryChips';
 import NewFromIndia from './sections/NewFromIndia/NewFromIndia';
 import CraftStories from './sections/CraftStories/CraftStories';
 import EarnedItsPlaceContainer from './sections/EarnedItsPlace/EarnedItsPlaceContainer';
@@ -165,14 +164,14 @@ const MelaHomePage = props => {
         {/* Saved Items Module — shows only for authenticated users with saves */}
         <SavedItemsModule />
 
-        {/* Shop by occasion — photo mosaic of the in-season occasions (no product rows),
-            then category chips that wrap (homepage declutter v3, 2026-10-24). Replaces
-            OccasionStrip + CategoryTiles here; both stay in the repo (OccasionStrip is
-            still used on CategoryPage). */}
+        {/* Shop by occasion — photo mosaic of the in-season occasions (no product rows;
+            homepage declutter v3, 2026-10-24). Replaces OccasionStrip + CategoryTiles here;
+            both stay in the repo (OccasionStrip is still used on CategoryPage). The hero's
+            category pills already cover category navigation, and wrap on mobile, so there
+            is no second category row here (CategoryChips is no longer used on the homepage). */}
         <section className={css.browseSection}>
           <div className={css.container}>
             <OccasionMosaic />
-            <CategoryChips className={css.categoryChips} />
           </div>
         </section>
 

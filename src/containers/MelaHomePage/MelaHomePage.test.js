@@ -89,12 +89,6 @@ jest.mock('./sections/HowWeVet/HowWeVet', () => {
   };
 });
 
-jest.mock('../../components/CategoryChips/CategoryChips', () => {
-  return function CategoryChips() {
-    return <div data-testid="category-chips">Category Chips</div>;
-  };
-});
-
 jest.mock('./sections/SavedItems/SavedItemsModule', () => {
   return function SavedItemsModule() {
     return <div data-testid="saved-items-module">Saved Items</div>;
@@ -196,7 +190,7 @@ describe('MelaHomePage', () => {
   });
 
   it('renders all homepage sections', () => {
-    const { getByTestId } = render(
+    const { getByTestId, queryByTestId } = render(
       <TestWrapper>
         <MelaHomePage {...defaultProps} />
       </TestWrapper>
@@ -205,7 +199,7 @@ describe('MelaHomePage', () => {
     expect(getByTestId('hero-section')).toBeTruthy();
     expect(getByTestId('saved-items-module')).toBeTruthy();
     expect(getByTestId('occasion-mosaic')).toBeTruthy();
-    expect(getByTestId('category-chips')).toBeTruthy();
+    expect(queryByTestId('category-chips')).toBeNull();
     expect(getByTestId('earned-its-place')).toBeTruthy();
     expect(getByTestId('how-we-vet')).toBeTruthy();
   });
@@ -224,7 +218,6 @@ describe('MelaHomePage', () => {
           'vetting-strip',
           'saved-items-module',
           'occasion-mosaic',
-          'category-chips',
           'brand-spotlight',
           'new-from-india',
           'craft-stories',
@@ -237,7 +230,6 @@ describe('MelaHomePage', () => {
       'vetting-strip',
       'saved-items-module',
       'occasion-mosaic',
-      'category-chips',
       'brand-spotlight',
       'new-from-india',
       'craft-stories',
