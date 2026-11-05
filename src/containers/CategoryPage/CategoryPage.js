@@ -69,7 +69,7 @@ const buildCategoryGridItems = (mergedListings, brandTiles) => {
 // Manually maintained "content last reviewed" date for all entries below — bump by
 // hand only when this copy actually changes. Not derived from listing data: an
 // auto-computed date would be a freshness-spam pattern AI answer engines discount.
-export const CATEGORY_CONTENT_LAST_UPDATED = '2026-10-07';
+export const CATEGORY_CONTENT_LAST_UPDATED = '2026-11-05';
 
 export const CATEGORY_CONTENT = {
   'Baby-Kids': {

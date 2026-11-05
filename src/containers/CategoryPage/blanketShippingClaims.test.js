@@ -8,7 +8,9 @@ import {
 
 // Mela is a curated directory: brands ship, Mela does not. No page may say every brand ships to
 // the US (not true while a brand has no US shipping), and meta copy must not promise it.
-const BLANKET = /shipped to the US|shipping to the US|ships to the US|ship to the US|accepts US cards/i;
+// `(directly )?` closes the gap that let "ship directly to the US" through in the
+// CategoryPage.faqAnswer fallback (caught by the 2026-11-05 quarterly content review).
+const BLANKET = /(shipped|shipping|ships|ship) (directly )?to the US|accepts US cards/i;
 
 const collectStrings = value =>
   typeof value === 'string'
@@ -28,6 +30,10 @@ describe('no blanket shipping claims in page copy', () => {
     collectStrings(getGiftingContent('some-new-occasion', slug => slug)).forEach(text =>
       expect(text).not.toMatch(BLANKET)
     );
+  });
+
+  it('CategoryPage.faqAnswer fallback (renders on every category page without CATEGORY_CONTENT)', () => {
+    expect(enMessages['CategoryPage.faqAnswer']).not.toMatch(BLANKET);
   });
 
   it.each(['CategoryPage.description', 'BrandsPage.description'])('%s', key => {
